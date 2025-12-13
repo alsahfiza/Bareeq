@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "61168205277",
+    "project_id": "bareeq-stors",
+    "storage_bucket": "bareeq-stors.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:61168205277:android:7f3ed0463eee3865f68a34",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjwd63yvUb-9iWxHkuiJWU6nZ2BqJn16I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
