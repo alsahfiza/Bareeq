@@ -1,3 +1,4 @@
-# flutter_application_1
+# Bareeq application
 
 A new Flutter project.
+
