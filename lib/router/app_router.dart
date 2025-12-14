@@ -32,6 +32,8 @@ import '../admin/categories/edit_category_page.dart';
 
 import '../admin/orders/admin_orders_page.dart';
 import '../admin/orders/admin_order_details_page.dart';
+import '../admin/settings/admin_settings_page.dart';
+
 
 class AppRouter {
   /* -------------------------------------------------------------------
@@ -114,7 +116,13 @@ class AppRouter {
               child: const AdminDashboardPage(),
             ),
           ),
-
+          /* ------------------ SETTINGS ------------------ */
+          GoRoute(
+            path: '/admin/settings',
+            builder: (_, __) => AdminAuthGate(
+              child: const AdminSettingsPage()
+              ),
+            ),
           /* ------------------ PRODUCTS ------------------ */
           GoRoute(
             path: '/admin/products',
@@ -150,7 +158,7 @@ class AppRouter {
           GoRoute(
             path: '/admin/categories/add',
             builder: (_, __) => AdminAuthGate(
-              child: const AdminAddCategoryPage(),
+              child: const AddCategoryPage(),
             ),
           ),
 
@@ -170,7 +178,7 @@ class AppRouter {
               child: const AdminOrdersPage(),
             ),
           ),
-
+          
           GoRoute(
             path: '/admin/orders/:id',
             builder: (_, state) => AdminAuthGate(

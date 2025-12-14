@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,7 +16,15 @@ class _LoginPageState extends State<LoginPage> {
   bool loading = false;
   String? errorMsg;
 
-  void login() async {
+  Future<void> login() async {
+    final email = emailCtrl.text.trim();
+    final pass = passCtrl.text.trim();
+
+    if (email.isEmpty || pass.isEmpty) {
+      setState(() => errorMsg = "Email and password cannot be empty.");
+      return;
+    }
+
     setState(() {
       loading = true;
       errorMsg = null;
@@ -23,13 +32,21 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailCtrl.text.trim(),
-        password: passCtrl.text.trim(),
+        email: email,
+        password: pass,
       );
+
+      if (!mounted) return;
+
+      /// SUCCESS → Go to admin dashboard
+      context.go("/admin/dashboard");
+
+    } on FirebaseAuthException catch (e) {
+      setState(() => errorMsg = e.message ?? "Login error occurred.");
     } catch (e) {
-      errorMsg = e.toString();
-      setState(() => loading = false);
-      return;
+      setState(() => errorMsg = "Unexpected error: $e");
+    } finally {
+      if (mounted) setState(() => loading = false);
     }
   }
 
@@ -58,7 +75,6 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 25),
 
-              // Email field
               TextField(
                 controller: emailCtrl,
                 decoration: const InputDecoration(
@@ -69,7 +85,6 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 20),
 
-              // Password field
               TextField(
                 controller: passCtrl,
                 obscureText: true,
@@ -82,13 +97,14 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
 
               if (errorMsg != null)
-                Text(errorMsg!,
-                    style: const TextStyle(color: Colors.red),
-                    textAlign: TextAlign.center),
+                Text(
+                  errorMsg!,
+                  style: const TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
+                ),
 
               const SizedBox(height: 20),
 
-              // LOGIN BUTTON
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -99,7 +115,10 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: loading ? null : login,
                   child: loading
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("Login", style: TextStyle(color: Colors.white)),
+                      : const Text(
+                          "Login",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
                 ),
               ),
             ],

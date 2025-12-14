@@ -1,10 +1,9 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_compression_flutter/image_compression_flutter.dart';
 
 class AddCategoryPage extends StatefulWidget {
   const AddCategoryPage({super.key});
@@ -14,134 +13,193 @@ class AddCategoryPage extends StatefulWidget {
 }
 
 class _AddCategoryPageState extends State<AddCategoryPage> {
-  final TextEditingController _nameArCtrl = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  Uint8List? imageBytes;
+  final nameArCtrl = TextEditingController();
+  final nameEnCtrl = TextEditingController();
+
+  File? selectedImage;
   bool saving = false;
 
-  final picker = ImagePicker();
+  @override
+  void dispose() {
+    nameArCtrl.dispose();
+    nameEnCtrl.dispose();
+    super.dispose();
+  }
 
-  Future<void> pickImage() async {
+  /* -----------------------------------------------------------
+  |                     IMAGE PICK + COMPRESS
+  ------------------------------------------------------------ */
+
+  Future<File?> pickImage() async {
+    final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked == null) return;
-    imageBytes = await picked.readAsBytes();
-    setState(() {});
+    if (picked == null) return null;
+    return File(picked.path);
   }
 
-  Future<String> uploadImage(Uint8List bytes) async {
-    final fileName = "category_${DateTime.now().millisecondsSinceEpoch}.jpg";
-    final ref = FirebaseStorage.instance.ref().child("categories/$fileName");
-    await ref.putData(bytes, SettableMetadata(contentType: "image/jpeg"));
-    return await ref.getDownloadURL();
+  Future<File> compressImage(File file) async {
+    final config = Configuration(
+      outputType: ImageOutputType.jpg,
+      quality: 40,
+    );
+
+    final input = ImageFile(
+      rawBytes: await file.readAsBytes(),
+      filePath: file.path,
+    );
+
+    final output = await compressor.compress(
+      ImageFileConfiguration(input: input, config: config),
+    );
+
+    final out = File("${file.path}_compressed.jpg");
+    return await out.writeAsBytes(output.rawBytes);
   }
+
+  /* -----------------------------------------------------------
+  |                     ADD CATEGORY TO FIRESTORE
+  ------------------------------------------------------------ */
 
   Future<void> saveCategory() async {
-    if (_nameArCtrl.text.isEmpty || imageBytes == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a name and select an image.")),
-      );
+    if (!_formKey.currentState!.validate()) return;
+    if (selectedImage == null) {
+      showMessage("يجب اختيار صورة للقسم");
       return;
     }
 
     setState(() => saving = true);
 
     try {
-      // UPLOAD IMAGE
-      String imageUrl = await uploadImage(imageBytes!);
+      // Compress image
+      final compressed = await compressImage(selectedImage!);
 
-      // ADD TO FIRESTORE
+      // Upload image
+      final ref = FirebaseStorage.instance
+          .ref("categories/${DateTime.now().millisecondsSinceEpoch}.jpg");
+
+      await ref.putFile(compressed);
+      final imageUrl = await ref.getDownloadURL();
+
+      // Save Firestore category
       await FirebaseFirestore.instance.collection("categories").add({
-        "name_ar": _nameArCtrl.text.trim(),
+        "name_ar": nameArCtrl.text.trim(),
+        "name_en": nameEnCtrl.text.trim(),
         "image_url": imageUrl,
         "created_at": FieldValue.serverTimestamp(),
+        "keywords": [
+          nameArCtrl.text.trim(),
+          nameEnCtrl.text.trim().toLowerCase(),
+        ],
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Category added successfully ✔")),
-      );
-
+      showMessage("تم إضافة القسم بنجاح");
       Navigator.pop(context);
 
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
+      showMessage("خطأ أثناء الحفظ: $e");
     }
 
     setState(() => saving = false);
+  }
+
+  /* -----------------------------------------------------------
+  |                          UI
+  ------------------------------------------------------------ */
+
+  void showMessage(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(msg)),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Category"),
+        title: const Text("إضافة قسم جديد"),
         backgroundColor: Colors.blue.shade700,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-
-            // IMAGE PREVIEW
-            Container(
-              width: 180,
-              height: 180,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.grey.shade200,
-                border: Border.all(color: Colors.grey.shade400),
-              ),
-              child: imageBytes == null
-                  ? const Center(child: Text("No Image"))
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.memory(imageBytes!, fit: BoxFit.cover),
-                    ),
-            ),
-
-            const SizedBox(height: 20),
-
-            OutlinedButton(
-              onPressed: pickImage,
-              child: const Text("Choose Image"),
-            ),
-
-            const SizedBox(height: 30),
-
-            // CATEGORY NAME
-            TextField(
-              controller: _nameArCtrl,
-              textDirection: TextDirection.rtl,
-              decoration: const InputDecoration(
-                labelText: "اسم القسم (عربي)",
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-            // SAVE BUTTON
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: saving ? null : saveCategory,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade700,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: saving
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                        "Save Category",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+      body: saving
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    // Name AR
+                    TextFormField(
+                      controller: nameArCtrl,
+                      decoration: const InputDecoration(
+                        labelText: "اسم القسم (عربي)",
                       ),
+                      validator: (v) => v!.isEmpty ? "الحقل مطلوب" : null,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Name EN
+                    TextFormField(
+                      controller: nameEnCtrl,
+                      decoration: const InputDecoration(
+                        labelText: "اسم القسم (English)",
+                      ),
+                      validator: (v) => v!.isEmpty ? "الحقل مطلوب" : null,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Image Picker
+                    GestureDetector(
+                      onTap: () async {
+                        final img = await pickImage();
+                        if (img != null) {
+                          setState(() {
+                            selectedImage = img;
+                          });
+                        }
+                      },
+                      child: Container(
+                        height: 200,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade300),
+                          color: Colors.grey.shade200,
+                        ),
+                        child: selectedImage == null
+                            ? const Center(
+                                child: Text(
+                                  "اضغط لاختيار صورة",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.file(
+                                  selectedImage!,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                      ),
+                    ),
+                    const SizedBox(height: 25),
+
+                    // Save Button
+                    ElevatedButton(
+                      onPressed: saveCategory,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green.shade700,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: const Text(
+                        "إضافة القسم",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }

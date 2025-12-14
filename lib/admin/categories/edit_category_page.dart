@@ -1,10 +1,9 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_compression_flutter/image_compression_flutter.dart';
 
 class EditCategoryPage extends StatefulWidget {
   final String categoryId;
@@ -16,15 +15,16 @@ class EditCategoryPage extends StatefulWidget {
 }
 
 class _EditCategoryPageState extends State<EditCategoryPage> {
-  final TextEditingController _nameArCtrl = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  Uint8List? newImageBytes;
-  String? oldImageUrl;
+  final nameArCtrl = TextEditingController();
+  final nameEnCtrl = TextEditingController();
+
+  String? existingImageUrl;
+  File? selectedImage;
 
   bool loading = true;
   bool saving = false;
-
-  final picker = ImagePicker();
 
   @override
   void initState() {
@@ -32,78 +32,142 @@ class _EditCategoryPageState extends State<EditCategoryPage> {
     loadCategory();
   }
 
-  Future<void> loadCategory() async {
-    var snap = await FirebaseFirestore.instance
-        .collection("categories")
-        .doc(widget.categoryId)
-        .get();
+  @override
+  void dispose() {
+    nameArCtrl.dispose();
+    nameEnCtrl.dispose();
+    super.dispose();
+  }
 
-    var data = snap.data()!;
-    _nameArCtrl.text = data["name_ar"];
-    oldImageUrl = data["image_url"];
+  /* -----------------------------------------------------------
+  |                         LOAD DATA
+  ------------------------------------------------------------ */
+
+  Future<void> loadCategory() async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection("categories")
+          .doc(widget.categoryId)
+          .get();
+
+      if (!doc.exists) {
+        showMessage("القسم غير موجود");
+        Navigator.pop(context);
+        return;
+      }
+
+      final data = doc.data()!;
+      nameArCtrl.text = data["name_ar"];
+      nameEnCtrl.text = data["name_en"];
+      existingImageUrl = data["image_url"];
+
+    } catch (e) {
+      showMessage("خطأ أثناء تحميل البيانات: $e");
+    }
 
     setState(() => loading = false);
   }
 
-  Future<void> pickImage() async {
+  /* -----------------------------------------------------------
+  |                  IMAGE PICK + COMPRESS
+  ------------------------------------------------------------ */
+
+  Future<File?> pickImage() async {
+    final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked == null) return;
-
-    newImageBytes = await picked.readAsBytes();
-    setState(() {});
+    if (picked == null) return null;
+    return File(picked.path);
   }
 
-  Future<String> uploadImage(Uint8List bytes) async {
-    final fileName = "category_${DateTime.now().millisecondsSinceEpoch}.jpg";
-    final ref = FirebaseStorage.instance.ref().child("categories/$fileName");
+  Future<File> compressImage(File file) async {
+    final config = Configuration(
+      outputType: ImageOutputType.jpg,
+      quality: 40,
+    );
 
-    await ref.putData(bytes, SettableMetadata(contentType: "image/jpeg"));
-    return await ref.getDownloadURL();
+    final input = ImageFile(
+      rawBytes: await file.readAsBytes(),
+      filePath: file.path,
+    );
+
+    final output = await compressor.compress(
+      ImageFileConfiguration(
+        input: input,
+        config: config,
+      ),
+    );
+
+    final out = File("${file.path}_compressed.jpg");
+    return await out.writeAsBytes(output.rawBytes);
   }
 
-  Future<void> deleteOldImage(String url) async {
-    try {
-      await FirebaseStorage.instance.refFromURL(url).delete();
-    } catch (_) {
-      // ignore 
-    }
-  }
+  /* -----------------------------------------------------------
+  |                    UPDATE CATEGORY
+  ------------------------------------------------------------ */
 
-  Future<void> saveChanges() async {
-    if (_nameArCtrl.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a name.")),
-      );
-      return;
-    }
+  Future<void> updateCategory() async {
+    if (!_formKey.currentState!.validate()) return;
 
     setState(() => saving = true);
 
-    String finalImageUrl = oldImageUrl!;
+    String finalImageUrl = existingImageUrl ?? "";
 
-    // If a new image was selected
-    if (newImageBytes != null) {
-      await deleteOldImage(oldImageUrl!);
-      finalImageUrl = await uploadImage(newImageBytes!);
+    try {
+      /* ---------- If new image selected: upload it ---------- */
+      if (selectedImage != null) {
+        // Compress
+        final compressed = await compressImage(selectedImage!);
+
+        // Upload
+        final ref = FirebaseStorage.instance.ref(
+          "categories/${DateTime.now().millisecondsSinceEpoch}.jpg",
+        );
+
+        await ref.putFile(compressed);
+        finalImageUrl = await ref.getDownloadURL();
+
+        // Delete old image only if exists
+        if (existingImageUrl != null) {
+          try {
+            await FirebaseStorage.instance
+                .refFromURL(existingImageUrl!)
+                .delete();
+          } catch (_) {}
+        }
+      }
+
+      /* ---------- Update Firestore ---------- */
+      await FirebaseFirestore.instance
+          .collection("categories")
+          .doc(widget.categoryId)
+          .update({
+        "name_ar": nameArCtrl.text.trim(),
+        "name_en": nameEnCtrl.text.trim(),
+        "image_url": finalImageUrl,
+        "keywords": [
+          nameArCtrl.text.trim(),
+          nameEnCtrl.text.trim().toLowerCase(),
+        ],
+      });
+
+      showMessage("تم تحديث القسم بنجاح");
+      Navigator.pop(context);
+
+    } catch (e) {
+      showMessage("خطأ أثناء تحديث القسم: $e");
     }
 
-    // Save Firestore update
-    await FirebaseFirestore.instance
-        .collection("categories")
-        .doc(widget.categoryId)
-        .update({
-      "name_ar": _nameArCtrl.text.trim(),
-      "image_url": finalImageUrl,
-      "updated_at": FieldValue.serverTimestamp(),
-    });
-
     setState(() => saving = false);
+  }
 
+  /* -----------------------------------------------------------
+  |                           UI
+  ------------------------------------------------------------ */
+
+  void showMessage(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Category updated successfully ✔")),
+      SnackBar(content: Text(msg)),
     );
-
-    Navigator.pop(context);
   }
 
   @override
@@ -116,75 +180,97 @@ class _EditCategoryPageState extends State<EditCategoryPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Category"),
+        title: const Text("تعديل القسم"),
         backgroundColor: Colors.blue.shade700,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          children: [
-
-            // IMAGE PREVIEW
-            Container(
-              width: 180,
-              height: 180,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.grey.shade200,
-                border: Border.all(color: Colors.grey.shade400),
-              ),
-              child: newImageBytes != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.memory(newImageBytes!, fit: BoxFit.cover),
-                    )
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(oldImageUrl!, fit: BoxFit.cover),
-                    ),
-            ),
-
-            const SizedBox(height: 20),
-
-            OutlinedButton(
-              onPressed: pickImage,
-              child: const Text("Replace Image"),
-            ),
-
-            const SizedBox(height: 30),
-
-            // NAME AR
-            TextField(
-              controller: _nameArCtrl,
-              textDirection: TextDirection.rtl,
-              decoration: const InputDecoration(
-                labelText: "اسم القسم (عربي)",
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-            // SAVE BUTTON
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: saving ? null : saveChanges,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade700,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: saving
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                        "Save Changes",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+      body: saving
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    // Name AR
+                    TextFormField(
+                      controller: nameArCtrl,
+                      decoration: const InputDecoration(
+                        labelText: "اسم القسم (عربي)",
                       ),
+                      validator: (v) => v!.isEmpty ? "الحقل مطلوب" : null,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Name EN
+                    TextFormField(
+                      controller: nameEnCtrl,
+                      decoration: const InputDecoration(
+                        labelText: "اسم القسم (English)",
+                      ),
+                      validator: (v) => v!.isEmpty ? "الحقل مطلوب" : null,
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Image Picker / Preview
+                    GestureDetector(
+                      onTap: () async {
+                        final img = await pickImage();
+                        if (img != null) {
+                          setState(() {
+                            selectedImage = img;
+                          });
+                        }
+                      },
+                      child: Container(
+                        height: 220,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade300),
+                          color: Colors.grey.shade200,
+                        ),
+                        child: selectedImage != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.file(
+                                  selectedImage!,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : existingImageUrl != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.network(
+                                      existingImageUrl!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : const Center(
+                                    child: Text(
+                                      "اضغط لتغيير الصورة",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    // SAVE
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green.shade700,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      onPressed: updateCategory,
+                      child: const Text(
+                        "حفظ التعديلات",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -1,109 +1,87 @@
 import 'package:flutter/material.dart';
-// import '../dashboard/admin_dashboard_page.dart';
-// import '../categories/admin_categories_page.dart';
-// import '../categories/admin_add_category_page.dart';
-// import '../products/admin_products_page.dart';
-// import '../products/admin_add_product_page.dart';
-// import '../auth/admin_login_page.dart';
+import 'package:go_router/go_router.dart';
+import 'sidebar.dart';
 
-class AdminLayout extends StatefulWidget {
+class AdminLayout extends StatelessWidget {
   final Widget child;
+
   const AdminLayout({super.key, required this.child});
-
-  @override
-  State<AdminLayout> createState() => _AdminLayoutState();
-}
-
-class _AdminLayoutState extends State<AdminLayout> {
-  // FIXED: dynamic instead of Object
-  List<Map<String, dynamic>> get menuItems => [
-        {
-          "label": "لوحة التحكم",
-          "route": "/admin",
-          "icon": Icons.dashboard,
-        },
-        {
-          "label": "المنتجات",
-          "route": "/admin/products",
-          "icon": Icons.shopping_bag,
-        },
-        {
-          "label": "إضافة منتج",
-          "route": "/admin/products/add",
-          "icon": Icons.add_box,
-        },
-        {
-          "label": "الأقسام",
-          "route": "/admin/categories",
-          "icon": Icons.category,
-        },
-        {
-          "label": "إضافة قسم",
-          "route": "/admin/categories/add",
-          "icon": Icons.add_circle,
-        },
-      ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xfff5f5f5),
+      backgroundColor: const Color(0xfff5f7fa),
+
       body: Row(
         children: [
-          // SIDE MENU
-          Container(
-            width: 250,
-            color: Colors.teal[700],
+          // -------------------------
+          //     LEFT SIDEBAR
+          // -------------------------
+          const SizedBox(
+            width: 240,
+            child: AdminSidebar(),
+          ),
+
+          // -------------------------
+          //       MAIN CONTENT
+          // -------------------------
+          Expanded(
             child: Column(
               children: [
-                const SizedBox(height: 40),
-                const Text(
-                  "لوحة الإدارة",
-                  style: TextStyle(color: Colors.white, fontSize: 22),
+                // -------------------------
+                //      TOP APP BAR
+                // -------------------------
+                Container(
+                  height: 60,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 4,
+                          offset: Offset(0, 2))
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "BAREEQ Admin Panel",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.notifications_outlined),
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.settings_outlined),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 30),
 
-                // MENU LIST
-                ...List.generate(menuItems.length, (index) {
-                  return ListTile(
-                    leading: Icon(
-                      menuItems[index]["icon"],
-                      color: Colors.white,
-                    ),
-                    title: Text(
-                      menuItems[index]["label"],
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    onTap: () {
-                      Navigator.pushNamed(context, menuItems[index]["route"]);
-                    },
-                  );
-                }),
-
-                const Spacer(),
-
-                // LOGOUT
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.white),
-                  title: const Text("تسجيل الخروج",
-                      style: TextStyle(color: Colors.white)),
-                  onTap: () {
-                    Navigator.pushReplacementNamed(context, "/admin/login");
-                  },
+                // -------------------------
+                //         PAGE CONTENT
+                // -------------------------
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: child,
+                  ),
                 ),
-
-                const SizedBox(height: 20),
               ],
             ),
           ),
-
-          // MAIN CONTENT
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              child: widget.child,
-            ),
-          )
         ],
       ),
     );
