@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import '../layout/admin_layout.dart';
 import 'edit_product_page.dart';
 
-class AdminProductsPage extends StatefulWidget {
-  const AdminProductsPage({super.key});
+class AdminAddProductsPage extends StatefulWidget {
+  const AdminAddProductsPage({super.key});
 
   @override
-  State<AdminProductsPage> createState() => _AdminProductsPageState();
+  State<AdminAddProductsPage> createState() => _AdminAddProductsPageState();
 }
 
-class _AdminProductsPageState extends State<AdminProductsPage> {
+class _AdminAddProductsPageState extends State<AdminAddProductsPage> {
   final TextEditingController _searchCtrl = TextEditingController();
 
   List<DocumentSnapshot> allProducts = [];

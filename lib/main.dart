@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'router/app_router.dart'; // <-- correct import
+
+import 'app_customer.dart';
+import 'app_admin.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,30 +12,11 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const BareeqApp());
-}
+  final host = Uri.base.host.toLowerCase();
 
-class BareeqApp extends StatelessWidget {
-  const BareeqApp({super.key});
+  final bool isAdminDomain = host.contains("admin");
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      
-      title: 'Bareeq Stores',
-
-      // -------------------------------
-      // FIX: Use the "appRouter" instance
-      // -------------------------------
-      routerDelegate: AppRouter.router.routerDelegate,
-      routeInformationParser: AppRouter.router.routeInformationParser,
-      routeInformationProvider: AppRouter.router.routeInformationProvider,
-
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-        fontFamily: 'Cairo',
-      ),
-    );
-  }
+  runApp(
+    isAdminDomain ? const AdminApp() : const CustomerApp(),
+  );
 }

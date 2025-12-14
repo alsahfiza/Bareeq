@@ -1,9 +1,11 @@
 import 'package:go_router/go_router.dart';
 
-/* ---------------------- Public Pages ---------------------- */
+/* -------------------------
+   CUSTOMER PAGES
+-------------------------- */
 import '../pages/home_page.dart';
 import '../pages/products_page.dart';
-import '../pages/category_products_page.dart';
+import '../pages/category_page.dart';
 import '../pages/cart_page.dart';
 import '../pages/checkout_page.dart';
 import '../pages/order_success_page.dart';
@@ -11,15 +13,17 @@ import '../pages/search_page.dart';
 import '../pages/contact_page.dart';
 import '../pages/about_page.dart';
 
-/* ---------------------- Admin Pages ---------------------- */
+/* -------------------------
+   ADMIN PAGES
+-------------------------- */
 import '../admin/auth/admin_login_page.dart';
 import '../admin/auth/auth_gate.dart';
-import '../admin/layout/admin_layout.dart';
 
+import '../admin/layout/admin_layout.dart';
 import '../admin/dashboard/admin_dashboard_page.dart';
 
 import '../admin/products/admin_products_page.dart';
-import '../admin/products/admin_add_product_page.dart';
+import '../admin/products/admin_add_products_page.dart';
 import '../admin/products/edit_product_page.dart';
 
 import '../admin/categories/admin_categories_page.dart';
@@ -29,16 +33,13 @@ import '../admin/categories/edit_category_page.dart';
 import '../admin/orders/admin_orders_page.dart';
 import '../admin/orders/admin_order_details_page.dart';
 
-
 class AppRouter {
-  static final GoRouter router = GoRouter(
+  /* -------------------------------------------------------------------
+      CUSTOMER WEBSITE ROUTER
+     ------------------------------------------------------------------- */
+  static final GoRouter customerRouter = GoRouter(
     initialLocation: '/',
     routes: [
-
-      /* -----------------------------------------------------------
-      |                      PUBLIC ROUTES                         |
-      ------------------------------------------------------------ */
-
       GoRoute(
         path: '/',
         builder: (_, __) => const HomePage(),
@@ -46,18 +47,14 @@ class AppRouter {
 
       GoRoute(
         path: '/products/:id',
-        builder: (_, state) {
-          final id = state.pathParameters['id']!;
-          return ProductPage(productId: id);
-        },
+        builder: (_, state) =>
+            ProductPage(productId: state.pathParameters['id']!),
       ),
 
       GoRoute(
         path: '/category/:id',
-        builder: (_, state) {
-          final id = state.pathParameters['id']!;
-          return CategoryProductsPage(categoryId: id);
-        },
+        builder: (_, state) =>
+            CategoryPage(categoryId: state.pathParameters['id']!),
       ),
 
       GoRoute(
@@ -72,10 +69,8 @@ class AppRouter {
 
       GoRoute(
         path: '/order-success/:orderId',
-        builder: (_, state) {
-          final orderId = state.pathParameters['orderId']!;
-          return OrderSuccessPage(orderId: orderId);
-        },
+        builder: (_, state) =>
+            OrderSuccessPage(orderId: state.pathParameters['orderId']!),
       ),
 
       GoRoute(
@@ -92,30 +87,35 @@ class AppRouter {
         path: '/about',
         builder: (_, __) => const AboutPage(),
       ),
+    ],
+  );
 
-
-      /* -----------------------------------------------------------
-      |                       ADMIN ROUTES                          |
-      ------------------------------------------------------------ */
-
+  /* -------------------------------------------------------------------
+      ADMIN PANEL ROUTER
+     ------------------------------------------------------------------- */
+  static final GoRouter adminRouter = GoRouter(
+    initialLocation: '/admin/login',
+    routes: [
+      // LOGIN PAGE (no layout)
       GoRoute(
         path: '/admin/login',
         builder: (_, __) => const AdminLoginPage(),
       ),
 
-      // ADMIN AREA PROTECTED BY AUTH GATE + ADMIN LAYOUT
+      // EVERYTHING AFTER LOGIN USES THE ADMIN LAYOUT
       ShellRoute(
         builder: (_, __, child) => AdminLayout(child: child),
 
         routes: [
-
+          /* ------------------ DASHBOARD ------------------ */
           GoRoute(
-            path: '/admin',
+            path: '/admin/dashboard',
             builder: (_, __) => AdminAuthGate(
               child: const AdminDashboardPage(),
             ),
           ),
 
+          /* ------------------ PRODUCTS ------------------ */
           GoRoute(
             path: '/admin/products',
             builder: (_, __) => AdminAuthGate(
@@ -126,20 +126,20 @@ class AppRouter {
           GoRoute(
             path: '/admin/products/add',
             builder: (_, __) => AdminAuthGate(
-              child: const AdminAddProductPage(),
+              child: const AdminAddProductsPage(),
             ),
           ),
 
           GoRoute(
             path: '/admin/products/edit/:id',
-            builder: (_, state) {
-              final id = state.pathParameters['id']!;
-              return AdminAuthGate(
-                child: EditProductPage(productId: id),
-              );
-            },
+            builder: (_, state) => AdminAuthGate(
+              child: EditProductPage(
+                productId: state.pathParameters['id']!,
+              ),
+            ),
           ),
 
+          /* ------------------ CATEGORIES ------------------ */
           GoRoute(
             path: '/admin/categories',
             builder: (_, __) => AdminAuthGate(
@@ -150,36 +150,35 @@ class AppRouter {
           GoRoute(
             path: '/admin/categories/add',
             builder: (_, __) => AdminAuthGate(
-              child: const AddCategoryPage(),
+              child: const AdminAddCategoryPage(),
             ),
           ),
 
           GoRoute(
             path: '/admin/categories/edit/:id',
-            builder: (_, state) {
-              final id = state.pathParameters['id']!;
-              return AdminAuthGate(
-                child: EditCategoryPage(categoryId: id),
-              );
-            },
+            builder: (_, state) => AdminAuthGate(
+              child: EditCategoryPage(
+                categoryId: state.pathParameters['id']!,
+              ),
+            ),
           ),
 
+          /* ------------------ ORDERS ------------------ */
           GoRoute(
             path: '/admin/orders',
             builder: (_, __) => AdminAuthGate(
               child: const AdminOrdersPage(),
             ),
           ),
+
           GoRoute(
             path: '/admin/orders/:id',
-            builder: (_, state) {
-              final id = state.pathParameters['id']!;
-              return AdminAuthGate(
-                child: AdminOrderDetailsPage(orderId: id),
-              );
-            },
+            builder: (_, state) => AdminAuthGate(
+              child: AdminOrderDetailsPage(
+                orderId: state.pathParameters['id']!,
+              ),
+            ),
           ),
-
         ],
       ),
     ],

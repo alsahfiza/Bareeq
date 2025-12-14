@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "production": "bareeq-stors"
+  },
+  "targets": {
+    "bareeq-stors": {
+      "hosting": {
+        "bareeq-stors": [
+          "bareeq-stors"
+        ],
+        "bareeq-stors-admin": [
+          "bareeq-stors-admin"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
