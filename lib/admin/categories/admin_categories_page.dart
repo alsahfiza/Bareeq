@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../layout/admin_layout.dart';
 import 'edit_category_page.dart';
 
 class AdminCategoriesPage extends StatefulWidget {
@@ -82,120 +81,121 @@ class _AdminCategoriesPageState extends State<AdminCategoriesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AdminLayout(
-      child: Padding(
-        padding: const EdgeInsets.all(30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+    return Padding(
+      padding: const EdgeInsets.all(30),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // TITLE + ADD BUTTON
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text("Categories",
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue.shade700,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, "/admin/categories/add");
+                },
+                child: const Text("Add Category", style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Categories",
-                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade700,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          const SizedBox(height: 25),
+
+          // SEARCH BAR
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: const [
+                BoxShadow(color: Colors.black12, blurRadius: 4)
+              ],
+            ),
+            child: TextField(
+              controller: _searchCtrl,
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: "Search categories...",
+                border: InputBorder.none,
+              ),
+              onChanged: search,
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // HEADER ROW
+          Row(
+            children: const [
+              Expanded(flex: 2, child: Text("Image", style: _headerStyle)),
+              Expanded(flex: 3, child: Text("Name (AR)", style: _headerStyle)),
+              Expanded(flex: 2, child: Text("Actions", style: _headerStyle)),
+            ],
+          ),
+
+          const Divider(),
+
+          // TABLE CONTENT
+          Expanded(
+            child: filteredCats.isEmpty
+                ? const Center(child: Text("No categories found"))
+                : ListView(
+                    children: paginatedCats.map((cat) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Image.network(
+                                cat["image_url"],
+                                height: 60,
+                                width: 60,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 3,
+                              child: Text(cat["name_ar"]),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit, color: Colors.blue),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              EditCategoryPage(categoryId: cat.id),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () => confirmDelete(cat.id),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/admin/categories/add");
-                  },
-                  child: const Text("Add Category", style: TextStyle(color: Colors.white)),
-                ),
-              ],
-            ),
+          ),
 
-            const SizedBox(height: 25),
-
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
-              ),
-              child: TextField(
-                controller: _searchCtrl,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  hintText: "Search categories...",
-                  border: InputBorder.none,
-                ),
-                onChanged: search,
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            Row(
-              children: const [
-                Expanded(flex: 2, child: Text("Image", style: _headerStyle)),
-                Expanded(flex: 3, child: Text("Name (AR)", style: _headerStyle)),
-                Expanded(flex: 2, child: Text("Actions", style: _headerStyle)),
-              ],
-            ),
-
-            const Divider(),
-
-            Expanded(
-              child: filteredCats.isEmpty
-                  ? const Center(child: Text("No categories found"))
-                  : ListView(
-                      children: paginatedCats.map((cat) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Image.network(
-                                  cat["image_url"],
-                                  height: 60,
-                                  width: 60,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Text(cat["name_ar"]),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Row(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.edit, color: Colors.blue),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                EditCategoryPage(categoryId: cat.id),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete, color: Colors.red),
-                                      onPressed: () => confirmDelete(cat.id),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    ),
-            ),
-
-            const SizedBox(height: 10),
-
-            _paginationFooter(),
-          ],
-        ),
+          _paginationFooter(),
+        ],
       ),
     );
   }
@@ -208,23 +208,10 @@ class _AdminCategoriesPageState extends State<AdminCategoriesPage> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Text("Page ${currentPage + 1} of $totalPages"),
-        const SizedBox(width: 20),
-        IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: currentPage == 0 ? null : () => setState(() => currentPage--),
-        ),
-        IconButton(
-          icon: const Icon(Icons.arrow_forward_ios),
-          onPressed: (currentPage + 1) >= totalPages
-              ? null
-              : () => setState(() => currentPage++),
-        ),
-      ],
-    );
+        ],
+        );
   }
 }
 
-const _headerStyle = TextStyle(
-  fontSize: 16,
-  fontWeight: FontWeight.bold,
-);
+const _headerStyle =
+    TextStyle(fontSize: 16, fontWeight: FontWeight.bold);

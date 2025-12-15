@@ -45,6 +45,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() => errorMsg = e.message ?? "Login error occurred.");
     } catch (e) {
       setState(() => errorMsg = "Unexpected error: $e");
+      #loading = false;
     } finally {
       if (mounted) setState(() => loading = false);
     }
@@ -117,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                       ? const CircularProgressIndicator(color: Colors.white)
                       : const Text(
                           "Login",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          style: TextStyle(color: Colors.white, fontSize: 16,"/admin/dashboard"),
                         ),
                 ),
               ),

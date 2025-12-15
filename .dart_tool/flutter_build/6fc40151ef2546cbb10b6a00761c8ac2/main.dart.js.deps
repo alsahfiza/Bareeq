@@ -2067,13 +2067,13 @@ file:///workspaces/Bareeq/lib/admin/categories/admin_categories_page.dart
 file:///workspaces/Bareeq/lib/admin/categories/edit_category_page.dart
 file:///workspaces/Bareeq/lib/admin/dashboard/admin_dashboard_page.dart
 file:///workspaces/Bareeq/lib/admin/layout/admin_layout.dart
-file:///workspaces/Bareeq/lib/admin/layout/sidebar.dart
 file:///workspaces/Bareeq/lib/admin/orders/admin_order_details_page.dart
 file:///workspaces/Bareeq/lib/admin/orders/admin_orders_page.dart
 file:///workspaces/Bareeq/lib/admin/products/admin_add_products_page.dart
 file:///workspaces/Bareeq/lib/admin/products/admin_products_page.dart
 file:///workspaces/Bareeq/lib/admin/products/edit_product_page.dart
 file:///workspaces/Bareeq/lib/admin/settings/admin_settings_page.dart
+file:///workspaces/Bareeq/lib/admin/widgets/admin_sidebar.dart
 file:///workspaces/Bareeq/lib/app_admin.dart
 file:///workspaces/Bareeq/lib/app_customer.dart
 file:///workspaces/Bareeq/lib/firebase_options.dart

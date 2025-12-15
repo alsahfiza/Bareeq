@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 /* -------------------------
    CUSTOMER PAGES
@@ -93,102 +94,72 @@ class AppRouter {
   );
 
   /* -------------------------------------------------------------------
-      ADMIN PANEL ROUTER
+      ADMIN DASHBOARD ROUTER
      ------------------------------------------------------------------- */
   static final GoRouter adminRouter = GoRouter(
     initialLocation: '/admin/login',
     routes: [
-      // LOGIN PAGE (no layout)
+      // LOGIN PAGE
       GoRoute(
         path: '/admin/login',
         builder: (_, __) => const AdminLoginPage(),
       ),
 
-      // EVERYTHING AFTER LOGIN USES THE ADMIN LAYOUT
+      // ADMIN LAYOUT STARTS HERE
       ShellRoute(
         builder: (_, __, child) => AdminLayout(child: child),
-
         routes: [
           /* ------------------ DASHBOARD ------------------ */
           GoRoute(
             path: '/admin/dashboard',
-            builder: (_, __) => AdminAuthGate(
-              child: const AdminDashboardPage(),
-            ),
+            builder: (_, __) => const AdminDashboardPage(),
           ),
-          /* ------------------ SETTINGS ------------------ */
-          GoRoute(
-            path: '/admin/settings',
-            builder: (_, __) => AdminAuthGate(
-              child: const AdminSettingsPage()
-              ),
-            ),
+
           /* ------------------ PRODUCTS ------------------ */
           GoRoute(
             path: '/admin/products',
-            builder: (_, __) => AdminAuthGate(
-              child: const AdminProductsPage(),
-            ),
+            builder: (_, __) => const AdminProductsPage(),
           ),
-
           GoRoute(
             path: '/admin/products/add',
-            builder: (_, __) => AdminAuthGate(
-              child: const AdminAddProductsPage(),
-            ),
+            builder: (_, __) => const AdminAddProductsPage(),
           ),
-
           GoRoute(
             path: '/admin/products/edit/:id',
-            builder: (_, state) => AdminAuthGate(
-              child: EditProductPage(
-                productId: state.pathParameters['id']!,
-              ),
+            builder: (_, state) => EditProductPage(
+              productId: state.pathParameters['id']!,
             ),
           ),
 
           /* ------------------ CATEGORIES ------------------ */
           GoRoute(
             path: '/admin/categories',
-            builder: (_, __) => AdminAuthGate(
-              child: const AdminCategoriesPage(),
-            ),
+            builder: (_, __) => const AdminCategoriesPage(),
           ),
-
           GoRoute(
             path: '/admin/categories/add',
-            builder: (_, __) => AdminAuthGate(
-              child: const AddCategoryPage(),
-            ),
+            builder: (_, __) => const AddCategoryPage(),
           ),
-
           GoRoute(
             path: '/admin/categories/edit/:id',
-            builder: (_, state) => AdminAuthGate(
-              child: EditCategoryPage(
-                categoryId: state.pathParameters['id']!,
-              ),
+            builder: (_, state) => EditCategoryPage(
+              categoryId: state.pathParameters['id']!,  // FIXED
             ),
           ),
 
           /* ------------------ ORDERS ------------------ */
           GoRoute(
             path: '/admin/orders',
-            builder: (_, __) => AdminAuthGate(
-              child: const AdminOrdersPage(),
-            ),
+            builder: (_, __) => const AdminOrdersPage(),
           ),
-          
           GoRoute(
             path: '/admin/orders/:id',
-            builder: (_, state) => AdminAuthGate(
-              child: AdminOrderDetailsPage(
-                orderId: state.pathParameters['id']!,
-              ),
+            builder: (_, state) => AdminOrderDetailsPage(
+              orderId: state.pathParameters['id']!,  // FIXED
             ),
           ),
         ],
       ),
     ],
-  );
+  );   
 }

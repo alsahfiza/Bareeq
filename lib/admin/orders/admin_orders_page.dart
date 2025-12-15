@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../layout/admin_layout.dart';
 import 'package:csv/csv.dart';
 
 class AdminOrdersPage extends StatefulWidget {
@@ -39,12 +38,13 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
 
   void searchOrders(String text) {
     text = text.toLowerCase();
+
     setState(() {
       filteredOrders = allOrders.where((o) {
-        final name = o["customer_name"].toString().toLowerCase();
-        final phone = o["customer_phone"].toString().toLowerCase();
-        return name.contains(text) || phone.contains(text);
+        return o["customer_name"].toLowerCase().contains(text) ||
+            o["customer_phone"].toLowerCase().contains(text);
       }).toList();
+
       currentPage = 0;
     });
   }
@@ -55,6 +55,7 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
 
     if (start >= filteredOrders.length) return [];
     if (end > filteredOrders.length) end = filteredOrders.length;
+
     return filteredOrders.sublist(start, end);
   }
 
@@ -66,46 +67,10 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
     return "";
   }
 
-  String statusText(String s) {
-    switch (s) {
-      case "pending":
-        return "قيد المراجعة";
-      case "processing":
-        return "جارٍ التحضير";
-      case "completed":
-        return "مكتمل";
-      case "cancelled":
-        return "ملغي";
-      default:
-        return s;
-    }
-  }
-
-  Color statusColor(String s) {
-    switch (s) {
-      case "pending":
-        return Colors.orange;
-      case "processing":
-        return Colors.blue;
-      case "completed":
-        return Colors.green;
-      case "cancelled":
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
-  }
-
   Future<void> exportCSV() async {
     List<List<String>> rows = [];
-    rows.add([
-      "Order ID",
-      "Customer Name",
-      "Phone",
-      "Total",
-      "Status",
-      "Created At"
-    ]);
+
+    rows.add(["Order ID", "Customer", "Phone", "Total", "Status", "Date"]);
 
     for (var o in filteredOrders) {
       rows.add([
@@ -118,76 +83,70 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
       ]);
     }
 
-    final csv = ListToCsvConverter().convert(rows);
-    debugPrint("CSV Export:");
+    final csv = const ListToCsvConverter().convert(rows);
     debugPrint(csv);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("CSV exported to console")),
-    );
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text("CSV exported to console")));
   }
 
   @override
   Widget build(BuildContext context) {
-    return AdminLayout(
-      child: Padding(
-        padding: const EdgeInsets.all(30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // HEADER
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Orders",
-                    style: TextStyle(
-                        fontSize: 26, fontWeight: FontWeight.bold)),
+    return Padding(
+      padding: const EdgeInsets.all(30),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text("Orders",
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+              ElevatedButton.icon(
+                onPressed: exportCSV,
+                icon: const Icon(Icons.table_chart),
+                label: const Text("Export CSV"),
+              )
+            ],
+          ),
 
-                ElevatedButton.icon(
-                  onPressed: exportCSV,
-                  icon: const Icon(Icons.table_chart),
-                  label: const Text("Export CSV"),
-                )
-              ],
+          const SizedBox(height: 20),
+
+          // SEARCH BAR
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
             ),
-
-            const SizedBox(height: 20),
-
-            // SEARCH BAR
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
+            child: TextField(
+              controller: _searchCtrl,
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: "Search by name or phone",
+                border: InputBorder.none,
               ),
-              child: TextField(
-                controller: _searchCtrl,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  hintText: "Search by name or phone",
-                  border: InputBorder.none,
-                ),
-                onChanged: searchOrders,
-              ),
+              onChanged: searchOrders,
             ),
+          ),
 
-            const SizedBox(height: 20),
-            _tableHeader(),
-            const Divider(),
+          const SizedBox(height: 20),
 
-            Expanded(
-              child: paginatedOrders.isEmpty
-                  ? const Center(child: Text("No orders found"))
-                  : ListView(
-                      children: paginatedOrders.map((o) {
-                        return _orderRow(o);
-                      }).toList(),
-                    ),
-            ),
+          _tableHeader(),
+          const Divider(),
 
-            _paginationFooter()
-          ],
-        ),
+          Expanded(
+            child: paginatedOrders.isEmpty
+                ? const Center(child: Text("No orders found"))
+                : ListView(
+                    children:
+                        paginatedOrders.map((order) => _orderRow(order)).toList(),
+                  ),
+          ),
+
+          _paginationFooter(),
+        ],
       ),
     );
   }
@@ -200,7 +159,7 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
         Expanded(flex: 2, child: Text("Total", style: _headerStyle)),
         Expanded(flex: 2, child: Text("Status", style: _headerStyle)),
         Expanded(flex: 2, child: Text("Date", style: _headerStyle)),
-        Expanded(flex: 1, child: Text("Actions", style: _headerStyle)),
+        Expanded(flex: 1, child: Text("View", style: _headerStyle)),
       ],
     );
   }
@@ -214,21 +173,15 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
           Expanded(flex: 2, child: Text(o["customer_phone"])),
           Expanded(flex: 2, child: Text("${o["total"]} ر.س")),
 
-          // STATUS BADGE
           Expanded(
             flex: 2,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                  color: statusColor(o["status"]).withOpacity(.15),
-                  borderRadius: BorderRadius.circular(30)),
-              child: Text(
-                statusText(o["status"]),
-                style: TextStyle(
-                  color: statusColor(o["status"]),
-                  fontWeight: FontWeight.bold,
-                ),
+                color: Colors.blueGrey.shade100,
+                borderRadius: BorderRadius.circular(30),
               ),
+              child: Text(o["status"]),
             ),
           ),
 
