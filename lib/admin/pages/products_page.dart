@@ -14,10 +14,11 @@ class ProductsPage extends StatelessWidget {
     return AdminLayout(
       title: 'Products',
       body: StreamBuilder<List<ProductModel>>(
-        stream: service.getAllProducts(),
+        stream: service.streamProducts(),
         builder: (_, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+                child: CircularProgressIndicator());
           }
 
           final products = snapshot.data!;
@@ -26,54 +27,60 @@ class ProductsPage extends StatelessWidget {
             children: [
               Align(
                 alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => const ProductFormDialog(),
-                    );
-                  },
-                  child: const Text('Add Product'),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) =>
+                            const ProductFormDialog(),
+                      );
+                    },
+                    child: const Text('Add Product'),
+                  ),
                 ),
               ),
               Expanded(
-                child: DataTable(
-                  columns: const [
-                    DataColumn(label: Text('Name')),
-                    DataColumn(label: Text('Price')),
-                    DataColumn(label: Text('Stock')),
-                    DataColumn(label: Text('Sale')),
-                    DataColumn(label: Text('Actions')),
-                  ],
-                  rows: products.map((p) {
-                    return DataRow(cells: [
-                      DataCell(Text(p.name)),
-                      DataCell(Text(p.price.toString())),
-                      DataCell(Text(p.stock.toString())),
-                      DataCell(Icon(
-                        p.onSale ? Icons.check : Icons.close,
-                        color: p.onSale ? Colors.green : Colors.red,
-                      )),
-                      DataCell(Row(
+                child: ListView.builder(
+                  itemCount: products.length,
+                  itemBuilder: (_, i) {
+                    final p = products[i];
+                    return ListTile(
+                      title: Text(p.name),
+                      subtitle: Text(
+                          'SAR ${p.price} | Stock: ${p.stock}'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
+                          Switch(
+                            value: p.isActive,
+                            onChanged: (v) {
+                              service.update(
+                                  p.id, {'isActive': v});
+                            },
+                          ),
                           IconButton(
                             icon: const Icon(Icons.edit),
                             onPressed: () {
                               showDialog(
                                 context: context,
-                                builder: (_) => ProductFormDialog(product: p),
+                                builder: (_) =>
+                                    ProductFormDialog(
+                                        product: p),
                               );
                             },
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete),
-                            onPressed: () =>
-                                service.deleteProduct(p.id),
+                            onPressed: () {
+                              service.delete(p.id);
+                            },
                           ),
                         ],
-                      )),
-                    ]);
-                  }).toList(),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

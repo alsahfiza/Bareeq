@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'pages/login_page.dart';
 import 'admin_router.dart';
 
 class AdminApp extends StatelessWidget {
@@ -8,8 +9,11 @@ class AdminApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/dashboard',
-      onGenerateRoute: AdminRouter.generateRoute,
+      title: 'Bareeq Admin',
+      theme: ThemeData(primarySwatch: Colors.teal),
+      initialRoute: '/',
+      onGenerateRoute: AdminRouter.generate,
+      home: const AdminLoginPage(),
     );
   }
 }

@@ -1,5 +1,5 @@
 // @dart=3.9
-// Flutter web bootstrap script for package:flutter_application_1/main_admin.dart.
+// Flutter web bootstrap script for package:Bareeq_Store/main_admin.dart.
 //
 // Generated file. Do not edit.
 //
@@ -9,7 +9,7 @@
 import 'dart:ui_web' as ui_web;
 import 'dart:async';
 
-import 'package:flutter_application_1/main_admin.dart' as entrypoint;
+import 'package:Bareeq_Store/main_admin.dart' as entrypoint;
 import 'web_plugin_registrant.dart' as pluginRegistrant;
 
 typedef _UnaryFunction = dynamic Function(List<String> args);

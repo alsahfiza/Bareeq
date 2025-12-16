@@ -5,32 +5,11 @@ class ProductService {
   final CollectionReference<Map<String, dynamic>> _ref =
       FirebaseFirestore.instance.collection('products');
 
-  Stream<List<ProductModel>> getAllProducts() {
+  Stream<List<ProductModel>> streamProducts() {
     return _ref.snapshots().map(
-          (snapshot) => snapshot.docs
-              .map(
-                (d) => ProductModel.fromMap(
-                  d.id,
-                  d.data(),
-                ),
-              )
-              .toList(),
-        );
-  }
-
-  Stream<List<ProductModel>> getProductsByCategory(
-      String categoryId) {
-    return _ref
-        .where('categoryId', isEqualTo: categoryId)
-        .snapshots()
-        .map(
-          (snapshot) => snapshot.docs
-              .map(
-                (d) => ProductModel.fromMap(
-                  d.id,
-                  d.data(),
-                ),
-              )
+          (s) => s.docs
+              .map((d) =>
+                  ProductModel.fromMap(d.id, d.data()))
               .toList(),
         );
   }
@@ -38,30 +17,47 @@ class ProductService {
   Stream<List<ProductModel>> getLowStockProducts(
       int threshold) {
     return _ref
-        .where('stock', isLessThanOrEqualTo: threshold)
+        .where(
+          'stock',
+          isLessThanOrEqualTo: threshold,
+        )
         .snapshots()
         .map(
-          (snapshot) => snapshot.docs
-              .map(
-                (d) => ProductModel.fromMap(
-                  d.id,
-                  d.data(),
-                ),
-              )
+          (s) => s.docs
+              .map((d) =>
+                  ProductModel.fromMap(d.id, d.data()))
               .toList(),
         );
   }
 
-  Future<void> addProduct(ProductModel product) async {
-    await _ref.add(product.toMap());
+  Future<void> add(ProductModel product) async {
+    try {
+      await _ref.add(product.toMap());
+      print('✅ Product added');
+    } catch (e) {
+      print('❌ Add product failed: $e');
+      rethrow;
+    }
   }
 
-  Future<void> updateProduct(
+  Future<void> update(
       String id, Map<String, dynamic> data) async {
-    await _ref.doc(id).update(data);
+    try {
+      await _ref.doc(id).update(data);
+      print('✅ Product updated');
+    } catch (e) {
+      print('❌ Update product failed: $e');
+      rethrow;
+    }
   }
 
-  Future<void> deleteProduct(String id) async {
-    await _ref.doc(id).delete();
+  Future<void> delete(String id) async {
+    try {
+      await _ref.doc(id).delete();
+      print('✅ Product deleted');
+    } catch (e) {
+      print('❌ Delete product failed: $e');
+      rethrow;
+    }
   }
 }

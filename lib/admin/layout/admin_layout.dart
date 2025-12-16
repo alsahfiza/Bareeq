@@ -17,12 +17,8 @@ class AdminLayout extends StatelessWidget {
       drawer: Drawer(
         child: ListView(
           children: [
-            const DrawerHeader(
-              child: Text(
-                'Admin Panel',
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
+            const DrawerHeader(child: Text('Bareeq Admin')),
+            _item(context, 'Dashboard', '/dashboard'),
             _item(context, 'Products', '/products'),
             _item(context, 'Categories', '/categories'),
             _item(context, 'Orders', '/orders'),

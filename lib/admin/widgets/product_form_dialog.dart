@@ -12,30 +12,63 @@ class ProductFormDialog extends StatefulWidget {
       _ProductFormDialogState();
 }
 
-class _ProductFormDialogState extends State<ProductFormDialog> {
-  final _service = ProductService();
-  final _name = TextEditingController();
-  final _price = TextEditingController();
-  final _stock = TextEditingController();
-  final _discount = TextEditingController();
+class _ProductFormDialogState
+    extends State<ProductFormDialog> {
+  final ProductService _service = ProductService();
 
+  // Core
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _description =
+      TextEditingController();
+  final TextEditingController _sku = TextEditingController();
+  final TextEditingController _categoryId =
+      TextEditingController();
+
+  // Pricing
+  final TextEditingController _price =
+      TextEditingController();
+  final TextEditingController _cost =
+      TextEditingController();
+  final TextEditingController _discount =
+      TextEditingController();
+  final TextEditingController _tax =
+      TextEditingController();
+
+  // Inventory
+  final TextEditingController _stock =
+      TextEditingController();
+  final TextEditingController _lowStock =
+      TextEditingController();
+  final TextEditingController _weight =
+      TextEditingController();
+
+  // Status
   bool _onSale = false;
   bool _isActive = true;
 
   @override
   void initState() {
     super.initState();
-    if (widget.product != null) {
-      _name.text = widget.product!.name;
-      _price.text = widget.product!.price.toString();
-      _stock.text = widget.product!.stock.toString();
-      _discount.text = widget.product!.discount.toString();
-      _onSale = widget.product!.onSale;
-      _isActive = widget.product!.isActive;
+    final p = widget.product;
+    if (p != null) {
+      _name.text = p.name;
+      _description.text = p.description;
+      _sku.text = p.sku;
+      _categoryId.text = p.categoryId;
+      _price.text = p.price.toString();
+      _cost.text = p.cost.toString();
+      _discount.text = p.discount.toString();
+      _tax.text = p.taxPercent.toString();
+      _stock.text = p.stock.toString();
+      _lowStock.text = p.lowStockThreshold.toString();
+      _weight.text = p.weight.toString();
+      _onSale = p.onSale;
+      _isActive = p.isActive;
     } else {
       _discount.text = '0';
-      _onSale = false;
-      _isActive = true;
+      _tax.text = '0';
+      _lowStock.text = '5';
+      _weight.text = '0';
     }
   }
 
@@ -47,86 +80,128 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
       ),
       content: SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-              controller: _name,
-              decoration: const InputDecoration(labelText: 'Name'),
-            ),
-            TextField(
-              controller: _price,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Price'),
-            ),
-            TextField(
-              controller: _stock,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Stock'),
-            ),
-            TextField(
-              controller: _discount,
-              keyboardType: TextInputType.number,
-              decoration:
-                  const InputDecoration(labelText: 'Discount (%)'),
-            ),
-            const SizedBox(height: 12),
+            _field(_name, 'Name'),
+            _field(_description, 'Description', maxLines: 3),
+            _field(_sku, 'SKU'),
+            _field(_categoryId, 'Category ID'),
+
+            const Divider(),
+
+            _field(_price, 'Price'),
+            _field(_cost, 'Cost'),
+            _field(_discount, 'Discount %'),
+            _field(_tax, 'Tax %'),
+
+            const Divider(),
+
+            _field(_stock, 'Stock'),
+            _field(_lowStock, 'Low Stock Alert'),
+            _field(_weight, 'Weight (kg)'),
+
+            const Divider(),
+
             SwitchListTile(
               title: const Text('On Sale'),
               value: _onSale,
-              onChanged: (v) => setState(() => _onSale = v),
+              onChanged: (v) =>
+                  setState(() => _onSale = v),
             ),
             SwitchListTile(
               title: const Text('Active'),
               value: _isActive,
-              onChanged: (v) => setState(() => _isActive = v),
+              onChanged: (v) =>
+                  setState(() => _isActive = v),
             ),
           ],
         ),
       ),
       actions: [
         TextButton(
-          child: const Text('Cancel'),
           onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
         ),
         ElevatedButton(
+          onPressed: _save,
           child: const Text('Save'),
-          onPressed: () async {
-            final price = double.parse(_price.text);
-            final discount = double.parse(_discount.text);
-
-            if (widget.product == null) {
-              await _service.addProduct(
-                ProductModel(
-                  id: '',
-                  name: _name.text,
-                  price: price,
-                  stock: int.parse(_stock.text),
-                  categoryId: '',
-                  discount: discount,
-                  onSale: _onSale,
-                  isActive: _isActive,
-                ),
-              );
-            } else {
-              await _service.updateProduct(
-                widget.product!.id,
-                {
-                  'name': _name.text,
-                  'price': price,
-                  'stock': int.parse(_stock.text),
-                  'discount': discount,
-                  'onSale': _onSale,
-                  'isActive': _isActive,
-                },
-              );
-            }
-
-            if (context.mounted) {
-              Navigator.pop(context);
-            }
-          },
         ),
       ],
     );
+  }
+
+  Widget _field(
+    TextEditingController controller,
+    String label, {
+    int maxLines = 1,
+  }) {
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      decoration: InputDecoration(labelText: label),
+    );
+  }
+
+  Future<void> _save() async {
+    final String name = _name.text.trim();
+    final String description = _description.text.trim();
+    final String sku = _sku.text.trim();
+    final String categoryId = _categoryId.text.trim();
+
+    final double price = double.parse(_price.text);
+    final double cost = double.parse(_cost.text);
+    final double discount =
+        double.parse(_discount.text);
+    final double taxPercent =
+        double.parse(_tax.text);
+
+    final int stock = int.parse(_stock.text);
+    final int lowStockThreshold =
+        int.parse(_lowStock.text);
+    final double weight =
+        double.parse(_weight.text);
+
+    if (widget.product == null) {
+      await _service.add(
+        ProductModel(
+          id: '',
+          name: name,
+          description: description,
+          sku: sku,
+          categoryId: categoryId,
+          price: price,
+          cost: cost,
+          discount: discount,
+          taxPercent: taxPercent,
+          stock: stock,
+          lowStockThreshold: lowStockThreshold,
+          weight: weight,
+          onSale: _onSale,
+          isActive: _isActive,
+        ),
+      );
+    } else {
+      await _service.update(
+        widget.product!.id,
+        {
+          'name': name,
+          'description': description,
+          'sku': sku,
+          'categoryId': categoryId,
+          'price': price,
+          'cost': cost,
+          'discount': discount,
+          'taxPercent': taxPercent,
+          'stock': stock,
+          'lowStockThreshold': lowStockThreshold,
+          'weight': weight,
+          'onSale': _onSale,
+          'isActive': _isActive,
+        },
+      );
+    }
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 }
