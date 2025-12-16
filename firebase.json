@@ -16,7 +16,6 @@
     {
       "target": "bareeq-stors-admin",
       "public": "build/web-admin",
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [{ "source": "**", "destination": "/index.html" }]
     }
   ]

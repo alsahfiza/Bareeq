@@ -14,7 +14,7 @@ class ProductsPage extends StatelessWidget {
     return AdminLayout(
       title: 'Products',
       body: StreamBuilder<List<ProductModel>>(
-        stream: service.getProducts(),
+        stream: service.getAllProducts(),
         builder: (_, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());

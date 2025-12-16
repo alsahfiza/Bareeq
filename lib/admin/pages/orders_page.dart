@@ -1,53 +1,48 @@
 import 'package:flutter/material.dart';
-import '../../shared/services/order_service.dart';
-import '../../shared/models/order_model.dart';
+import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../shared/services/invoice/invoice_service.dart';
 import '../layout/admin_layout.dart';
-import 'order_details_page.dart';
 
 class OrdersPage extends StatelessWidget {
   const OrdersPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final service = OrderService();
+    final invoiceService = getInvoiceService();
 
     return AdminLayout(
       title: 'Orders',
-      body: StreamBuilder<List<OrderModel>>(
-        stream: service.getOrders(),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('orders')
+            .orderBy('createdAt', descending: true)
+            .snapshots(),
         builder: (_, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final orders = snapshot.data!;
+          return ListView(
+            children: snapshot.data!.docs.map((doc) {
+              final data =
+                  doc.data() as Map<String, dynamic>;
 
-          return DataTable(
-            columns: const [
-              DataColumn(label: Text('Order')),
-              DataColumn(label: Text('Total')),
-              DataColumn(label: Text('Status')),
-              DataColumn(label: Text('Actions')),
-            ],
-            rows: orders.map((o) {
-              return DataRow(cells: [
-                DataCell(Text(o.id)),
-                DataCell(Text(o.total.toString())),
-                DataCell(Text(o.status)),
-                DataCell(
-                  TextButton(
-                    child: const Text('View'),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => OrderDetailsPage(order: o),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ]);
+              return ListTile(
+                title: Text('Order ${doc.id.substring(0, 6)}'),
+                subtitle: Text('Total: ${data['total']}'),
+                trailing: kIsWeb
+                    ? const Text('Invoice on mobile')
+                    : IconButton(
+                        icon: const Icon(Icons.picture_as_pdf),
+                        onPressed: () async {
+                          await invoiceService.generate(
+                            orderId: doc.id,
+                            arabic: false,
+                          );
+                        },
+                      ),
+              );
             }).toList(),
           );
         },

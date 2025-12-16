@@ -1,34 +1,64 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/product_model.dart';
-import '../../core/constants.dart';
 
 class ProductService {
-  final _ref = FirebaseFirestore.instance.collection('products');
+  final CollectionReference<Map<String, dynamic>> _ref =
+      FirebaseFirestore.instance.collection('products');
 
-  Stream<List<ProductModel>> getProducts() {
-    return _ref.snapshots().map((snapshot) =>
-        snapshot.docs
-            .map((doc) => ProductModel.fromMap(doc.id, doc.data()))
-            .toList());
+  Stream<List<ProductModel>> getAllProducts() {
+    return _ref.snapshots().map(
+          (snapshot) => snapshot.docs
+              .map(
+                (d) => ProductModel.fromMap(
+                  d.id,
+                  d.data(),
+                ),
+              )
+              .toList(),
+        );
   }
 
-  Stream<List<ProductModel>> getLowStockProducts() {
+  Stream<List<ProductModel>> getProductsByCategory(
+      String categoryId) {
     return _ref
-        .where('stock', isLessThanOrEqualTo: LOW_STOCK_THRESHOLD)
+        .where('categoryId', isEqualTo: categoryId)
         .snapshots()
-        .map((snapshot) =>
-            snapshot.docs
-                .map((doc) =>
-                    ProductModel.fromMap(doc.id, doc.data()))
-                .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (d) => ProductModel.fromMap(
+                  d.id,
+                  d.data(),
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  Stream<List<ProductModel>> getLowStockProducts(
+      int threshold) {
+    return _ref
+        .where('stock', isLessThanOrEqualTo: threshold)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (d) => ProductModel.fromMap(
+                  d.id,
+                  d.data(),
+                ),
+              )
+              .toList(),
+        );
   }
 
   Future<void> addProduct(ProductModel product) async {
     await _ref.add(product.toMap());
   }
 
-  Future<void> updateProduct(ProductModel product) async {
-    await _ref.doc(product.id).update(product.toMap());
+  Future<void> updateProduct(
+      String id, Map<String, dynamic> data) async {
+    await _ref.doc(id).update(data);
   }
 
   Future<void> deleteProduct(String id) async {

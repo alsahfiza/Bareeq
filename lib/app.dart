@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'core/auth/auth_gate.dart';
-import 'shared/services/notification_service.dart';
+import 'shared/services/language_service.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -10,19 +10,28 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  final _notificationService = NotificationService();
+  bool arabic = false;
 
   @override
   void initState() {
     super.initState();
-    _notificationService.init();
+    LanguageService().isArabic().then((v) {
+      setState(() => arabic = v);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AuthGate(),
+      locale: arabic ? const Locale('ar') : const Locale('en'),
+      home: AuthGate(
+        onLanguageToggle: () async {
+          final newValue = !arabic;
+          await LanguageService().setArabic(newValue);
+          setState(() => arabic = newValue);
+        },
+      ),
     );
   }
 }

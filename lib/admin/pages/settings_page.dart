@@ -12,10 +12,10 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final _service = SettingsService();
-  final _formKey = GlobalKey<FormState>();
 
   late TextEditingController deliveryFee;
   late TextEditingController freeThreshold;
+  late TextEditingController vatNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -30,62 +30,51 @@ class _SettingsPageState extends State<SettingsPage> {
 
           final settings = snapshot.data!;
 
-          deliveryFee = TextEditingController(
-              text: settings.deliveryFee.toString());
+          deliveryFee =
+              TextEditingController(text: settings.deliveryFee.toString());
           freeThreshold = TextEditingController(
               text: settings.freeDeliveryThreshold.toString());
+          vatNumber = TextEditingController(
+              text: settings.vatRegistrationNumber);
 
           return Padding(
             padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Delivery Settings',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            child: Column(
+              children: [
+                TextField(
+                  controller: vatNumber,
+                  decoration: const InputDecoration(
+                    labelText: 'VAT Registration Number',
                   ),
-                  const SizedBox(height: 16),
-
-                  TextFormField(
-                    controller: deliveryFee,
-                    decoration:
-                        const InputDecoration(labelText: 'Delivery Fee'),
-                    keyboardType: TextInputType.number,
-                  ),
-
-                  TextFormField(
-                    controller: freeThreshold,
-                    decoration: const InputDecoration(
-                        labelText: 'Free Delivery Above'),
-                    keyboardType: TextInputType.number,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  ElevatedButton(
-                    child: const Text('Save'),
-                    onPressed: () async {
-                      final updated = AppSettings(
+                ),
+                TextField(
+                  controller: deliveryFee,
+                  decoration:
+                      const InputDecoration(labelText: 'Delivery Fee'),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: freeThreshold,
+                  decoration: const InputDecoration(
+                      labelText: 'Free Delivery Above'),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    await _service.saveSettings(
+                      AppSettings(
                         deliveryFee:
                             double.parse(deliveryFee.text),
                         freeDeliveryThreshold:
                             double.parse(freeThreshold.text),
-                      );
-
-                      await _service.saveSettings(updated);
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Settings saved'),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                        vatRegistrationNumber: vatNumber.text,
+                      ),
+                    );
+                  },
+                  child: const Text('Save'),
+                ),
+              ],
             ),
           );
         },

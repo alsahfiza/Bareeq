@@ -28,7 +28,7 @@ class DashboardPage extends StatelessWidget {
 
             Expanded(
               child: StreamBuilder<List<ProductModel>>(
-                stream: productService.getLowStockProducts(),
+                stream: productService.getLowStockProducts(5),
                 builder: (_, snapshot) {
                   if (!snapshot.hasData) {
                     return const Center(

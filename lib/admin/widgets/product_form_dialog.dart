@@ -4,71 +4,126 @@ import '../../shared/services/product_service.dart';
 
 class ProductFormDialog extends StatefulWidget {
   final ProductModel? product;
+
   const ProductFormDialog({super.key, this.product});
 
   @override
-  State<ProductFormDialog> createState() => _ProductFormDialogState();
+  State<ProductFormDialog> createState() =>
+      _ProductFormDialogState();
 }
 
 class _ProductFormDialogState extends State<ProductFormDialog> {
-  final _formKey = GlobalKey<FormState>();
   final _service = ProductService();
+  final _name = TextEditingController();
+  final _price = TextEditingController();
+  final _stock = TextEditingController();
+  final _discount = TextEditingController();
 
-  late TextEditingController name;
-  late TextEditingController price;
-  late TextEditingController stock;
-  bool onSale = false;
+  bool _onSale = false;
+  bool _isActive = true;
 
   @override
   void initState() {
     super.initState();
-    name = TextEditingController(text: widget.product?.name ?? '');
-    price = TextEditingController(text: widget.product?.price.toString() ?? '');
-    stock = TextEditingController(text: widget.product?.stock.toString() ?? '');
-    onSale = widget.product?.onSale ?? false;
+    if (widget.product != null) {
+      _name.text = widget.product!.name;
+      _price.text = widget.product!.price.toString();
+      _stock.text = widget.product!.stock.toString();
+      _discount.text = widget.product!.discount.toString();
+      _onSale = widget.product!.onSale;
+      _isActive = widget.product!.isActive;
+    } else {
+      _discount.text = '0';
+      _onSale = false;
+      _isActive = true;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.product == null ? 'Add Product' : 'Edit Product'),
-      content: Form(
-        key: _formKey,
+      title: Text(
+        widget.product == null ? 'Add Product' : 'Edit Product',
+      ),
+      content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextFormField(controller: name, decoration: const InputDecoration(labelText: 'Name')),
-            TextFormField(controller: price, decoration: const InputDecoration(labelText: 'Price')),
-            TextFormField(controller: stock, decoration: const InputDecoration(labelText: 'Stock')),
+            TextField(
+              controller: _name,
+              decoration: const InputDecoration(labelText: 'Name'),
+            ),
+            TextField(
+              controller: _price,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Price'),
+            ),
+            TextField(
+              controller: _stock,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Stock'),
+            ),
+            TextField(
+              controller: _discount,
+              keyboardType: TextInputType.number,
+              decoration:
+                  const InputDecoration(labelText: 'Discount (%)'),
+            ),
+            const SizedBox(height: 12),
             SwitchListTile(
               title: const Text('On Sale'),
-              value: onSale,
-              onChanged: (v) => setState(() => onSale = v),
+              value: _onSale,
+              onChanged: (v) => setState(() => _onSale = v),
+            ),
+            SwitchListTile(
+              title: const Text('Active'),
+              value: _isActive,
+              onChanged: (v) => setState(() => _isActive = v),
             ),
           ],
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+        TextButton(
+          child: const Text('Cancel'),
+          onPressed: () => Navigator.pop(context),
+        ),
         ElevatedButton(
           child: const Text('Save'),
           onPressed: () async {
-            final product = ProductModel(
-              id: widget.product?.id ?? '',
-              name: name.text,
-              price: double.parse(price.text),
-              discount: 0,
-              onSale: onSale,
-              stock: int.parse(stock.text),
-              categoryId: 'default',
-              isActive: true,
-            );
+            final price = double.parse(_price.text);
+            final discount = double.parse(_discount.text);
 
-            widget.product == null
-                ? await _service.addProduct(product)
-                : await _service.updateProduct(product);
+            if (widget.product == null) {
+              await _service.addProduct(
+                ProductModel(
+                  id: '',
+                  name: _name.text,
+                  price: price,
+                  stock: int.parse(_stock.text),
+                  categoryId: '',
+                  discount: discount,
+                  onSale: _onSale,
+                  isActive: _isActive,
+                ),
+              );
+            } else {
+              await _service.updateProduct(
+                widget.product!.id,
+                {
+                  'name': _name.text,
+                  'price': price,
+                  'stock': int.parse(_stock.text),
+                  'discount': discount,
+                  'onSale': _onSale,
+                  'isActive': _isActive,
+                },
+              );
+            }
 
-            Navigator.pop(context);
+            if (context.mounted) {
+              Navigator.pop(context);
+            }
           },
         ),
       ],

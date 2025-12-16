@@ -6,7 +6,12 @@ import 'login_page.dart';
 import 'role_guard.dart';
 
 class AuthGate extends StatelessWidget {
-  const AuthGate({super.key});
+  final VoidCallback onLanguageToggle;
+
+  const AuthGate({
+    super.key,
+    required this.onLanguageToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +19,12 @@ class AuthGate extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (_, snapshot) {
         if (!snapshot.hasData) {
-          return const LoginPage();
+          return LoginPage(onLanguageToggle: onLanguageToggle);
         }
-        return RoleGuard(user: snapshot.data!);
+        return RoleGuard(
+          user: snapshot.data!,
+          onLanguageToggle: onLanguageToggle,
+        );
       },
     );
   }

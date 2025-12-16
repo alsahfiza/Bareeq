@@ -1,91 +1,51 @@
 import 'package:flutter/material.dart';
-import '../../shared/models/order_model.dart';
-import '../../shared/services/customer_orders_service.dart';
+import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../shared/services/invoice/invoice_service.dart';
 
 class MyOrdersPage extends StatelessWidget {
   const MyOrdersPage({super.key});
 
-  Color _statusColor(String status) {
-    switch (status) {
-      case 'accepted':
-        return Colors.green;
-      case 'delivered':
-        return Colors.blue;
-      case 'declined':
-        return Colors.red;
-      default:
-        return Colors.orange;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final service = CustomerOrdersService();
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final invoiceService = getInvoiceService();
 
     return Scaffold(
       appBar: AppBar(title: const Text('My Orders')),
-      body: StreamBuilder<List<OrderModel>>(
-        stream: service.getMyOrders(),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('orders')
+            .where('userId', isEqualTo: uid)
+            .orderBy('createdAt', descending: true)
+            .snapshots(),
         builder: (_, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final orders = snapshot.data!;
-          if (orders.isEmpty) {
-            return const Center(child: Text('No orders yet'));
-          }
+          return ListView(
+            children: snapshot.data!.docs.map((doc) {
+              final data =
+                  doc.data() as Map<String, dynamic>;
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(12),
-            itemCount: orders.length,
-            itemBuilder: (_, i) {
-              final o = orders[i];
-
-              return Card(
-                elevation: 2,
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                child: ExpansionTile(
-                  title: Text('Order #${o.id.substring(0, 6)}'),
-                  subtitle: Text(
-                    o.status.toUpperCase(),
-                    style: TextStyle(
-                      color: _statusColor(o.status),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  children: [
-                    ...o.items.map((item) => ListTile(
-                          title: Text(item.name),
-                          trailing:
-                              Text('${item.qty} × ${item.price}'),
-                        )),
-                    const Divider(),
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Total',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            o.total.toStringAsFixed(2),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+              return ListTile(
+                title: Text('Order ${doc.id.substring(0, 6)}'),
+                subtitle: Text('Total: ${data['total']}'),
+                trailing: kIsWeb
+                    ? const Text('Invoice on mobile')
+                    : IconButton(
+                        icon: const Icon(Icons.picture_as_pdf),
+                        onPressed: () async {
+                          await invoiceService.generate(
+                            orderId: doc.id,
+                            arabic: false,
+                          );
+                        },
                       ),
-                    ),
-                  ],
-                ),
               );
-            },
+            }).toList(),
           );
         },
       ),

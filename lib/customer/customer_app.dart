@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'customer_router.dart';
+import 'pages/home_page.dart';
 
 class CustomerApp extends StatelessWidget {
-  const CustomerApp({super.key});
+  final VoidCallback onLanguageToggle;
+
+  const CustomerApp({
+    super.key,
+    required this.onLanguageToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      onGenerateRoute: CustomerRouter.generateRoute,
+    return Navigator(
+      onGenerateRoute: (_) =>
+          MaterialPageRoute(builder: (_) => const HomePage()),
     );
   }
 }

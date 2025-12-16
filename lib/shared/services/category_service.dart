@@ -12,7 +12,7 @@ class CategoryService {
     }
 
     return query.snapshots().map((s) =>
-        s.docs.map((d) => CategoryModel.fromMap(d.id, d.data())).toList());
+        s.docs.map((d) => CategoryModel.fromMap(d.id, d.data() as Map<String, dynamic>)).toList());
   }
 
   Future<void> addCategory(CategoryModel category) async {
