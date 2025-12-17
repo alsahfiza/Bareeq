@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shop_owner_app/core/models/product_model.dart';
+import '../models/product_model.dart';
 
 class Api{
   final FirebaseFirestore _db = FirebaseFirestore.instance;

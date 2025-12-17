@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_owner_app/core/view_models/auth_provider.dart';
-import 'package:shop_owner_app/ui/routes/route_name.dart';
-import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
-import 'package:shop_owner_app/ui/widgets/image_preview.dart';
-import 'package:shop_owner_app/ui/widgets/reusable_text_field.dart';
+import 'admin/core/view_models/auth_provider.dart';
+import '../routes/route_name.dart';
+import '../utils/ui_tools/my_alert_dialog.dart';
+import '../widgets/image_preview.dart';
+import '../widgets/reusable_text_field.dart';
 import '../../core/models/user_model.dart';
 
 class SignUpScreen extends StatefulWidget {

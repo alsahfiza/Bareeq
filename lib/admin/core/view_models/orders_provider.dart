@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:shop_owner_app/core/models/orders_model.dart';
+import '../models/orders_model.dart';
 import '../models/user_model.dart';
 
 class OrdersProvider with ChangeNotifier {

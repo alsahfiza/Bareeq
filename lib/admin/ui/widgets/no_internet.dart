@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shop_owner_app/ui/constants/assets_path.dart';
+import '../constants/assets_path.dart';
 
 class NetworkError extends StatelessWidget {
   const NetworkError({super.key});

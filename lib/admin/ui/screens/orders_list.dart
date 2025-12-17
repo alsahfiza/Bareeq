@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_owner_app/core/models/orders_model.dart';
-import 'package:shop_owner_app/core/models/user_model.dart';
-import 'package:shop_owner_app/core/view_models/orders_provider.dart';
-import 'package:shop_owner_app/ui/constants/app_consntants.dart';
+import '../../core/models/orders_model.dart';
+import '../../core/models/user_model.dart';
+import '../../core/view_models/orders_provider.dart';
+import '../constants/app_consntants.dart';
 import '../routes/route_name.dart';
 
 class OrdersList extends StatelessWidget {

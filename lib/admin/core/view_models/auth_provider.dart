@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
-import 'package:shop_owner_app/core/models/user_model.dart';
-import 'package:shop_owner_app/core/view_models/picture_provider.dart';
-import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
+import '../models/user_model.dart';
+import '../view_models/picture_provider.dart';
+import '../view_models/user_data_provider.dart';
 
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;

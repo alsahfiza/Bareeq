@@ -12,12 +12,6 @@
 @import cloud_firestore;
 #endif
 
-#if __has_include(<file_picker/FilePickerPlugin.h>)
-#import <file_picker/FilePickerPlugin.h>
-#else
-@import file_picker;
-#endif
-
 #if __has_include(<firebase_auth/FLTFirebaseAuthPlugin.h>)
 #import <firebase_auth/FLTFirebaseAuthPlugin.h>
 #else
@@ -30,22 +24,28 @@
 @import firebase_core;
 #endif
 
+#if __has_include(<firebase_messaging/FLTFirebaseMessagingPlugin.h>)
+#import <firebase_messaging/FLTFirebaseMessagingPlugin.h>
+#else
+@import firebase_messaging;
+#endif
+
 #if __has_include(<firebase_storage/FLTFirebaseStoragePlugin.h>)
 #import <firebase_storage/FLTFirebaseStoragePlugin.h>
 #else
 @import firebase_storage;
 #endif
 
-#if __has_include(<flutter_image_compress_common/ImageCompressPlugin.h>)
-#import <flutter_image_compress_common/ImageCompressPlugin.h>
+#if __has_include(<google_maps_flutter_ios/FLTGoogleMapsPlugin.h>)
+#import <google_maps_flutter_ios/FLTGoogleMapsPlugin.h>
 #else
-@import flutter_image_compress_common;
+@import google_maps_flutter_ios;
 #endif
 
-#if __has_include(<image_compression_flutter/ImageCompressionFlutterPlugin.h>)
-#import <image_compression_flutter/ImageCompressionFlutterPlugin.h>
+#if __has_include(<google_sign_in_ios/FLTGoogleSignInPlugin.h>)
+#import <google_sign_in_ios/FLTGoogleSignInPlugin.h>
 #else
-@import image_compression_flutter;
+@import google_sign_in_ios;
 #endif
 
 #if __has_include(<image_picker_ios/FLTImagePickerPlugin.h>)
@@ -60,46 +60,32 @@
 @import path_provider_foundation;
 #endif
 
-#if __has_include(<printing/PrintingPlugin.h>)
-#import <printing/PrintingPlugin.h>
-#else
-@import printing;
-#endif
-
 #if __has_include(<shared_preferences_foundation/SharedPreferencesPlugin.h>)
 #import <shared_preferences_foundation/SharedPreferencesPlugin.h>
 #else
 @import shared_preferences_foundation;
 #endif
 
-#if __has_include(<stripe_ios/StripeIosPlugin.h>)
-#import <stripe_ios/StripeIosPlugin.h>
+#if __has_include(<sqflite_darwin/SqflitePlugin.h>)
+#import <sqflite_darwin/SqflitePlugin.h>
 #else
-@import stripe_ios;
-#endif
-
-#if __has_include(<url_launcher_ios/URLLauncherPlugin.h>)
-#import <url_launcher_ios/URLLauncherPlugin.h>
-#else
-@import url_launcher_ios;
+@import sqflite_darwin;
 #endif
 
 @implementation GeneratedPluginRegistrant
 
 + (void)registerWithRegistry:(NSObject<FlutterPluginRegistry>*)registry {
   [FLTFirebaseFirestorePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseFirestorePlugin"]];
-  [FilePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FilePickerPlugin"]];
   [FLTFirebaseAuthPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseAuthPlugin"]];
   [FLTFirebaseCorePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseCorePlugin"]];
+  [FLTFirebaseMessagingPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseMessagingPlugin"]];
   [FLTFirebaseStoragePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseStoragePlugin"]];
-  [ImageCompressPlugin registerWithRegistrar:[registry registrarForPlugin:@"ImageCompressPlugin"]];
-  [ImageCompressionFlutterPlugin registerWithRegistrar:[registry registrarForPlugin:@"ImageCompressionFlutterPlugin"]];
+  [FLTGoogleMapsPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTGoogleMapsPlugin"]];
+  [FLTGoogleSignInPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTGoogleSignInPlugin"]];
   [FLTImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImagePickerPlugin"]];
   [PathProviderPlugin registerWithRegistrar:[registry registrarForPlugin:@"PathProviderPlugin"]];
-  [PrintingPlugin registerWithRegistrar:[registry registrarForPlugin:@"PrintingPlugin"]];
   [SharedPreferencesPlugin registerWithRegistrar:[registry registrarForPlugin:@"SharedPreferencesPlugin"]];
-  [StripeIosPlugin registerWithRegistrar:[registry registrarForPlugin:@"StripeIosPlugin"]];
-  [URLLauncherPlugin registerWithRegistrar:[registry registrarForPlugin:@"URLLauncherPlugin"]];
+  [SqflitePlugin registerWithRegistrar:[registry registrarForPlugin:@"SqflitePlugin"]];
 }
 
 @end

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_owner_app/core/view_models/search_provider.dart';
+import '../../core/view_models/search_provider.dart';
 import '../../core/models/product_model.dart';
 import '../constants/assets_path.dart';
 import '../widgets/feeds_product.dart';

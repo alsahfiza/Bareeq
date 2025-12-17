@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shop_owner_app/ui/routes/route_name.dart';
-import 'package:shop_owner_app/core/models/category_model.dart';
-import 'package:shop_owner_app/ui/screens/nav_bar.dart';
-import 'package:shop_owner_app/ui/widgets/category.dart';
+import '../routes/route_name.dart';
+import '../../core/models/category_model.dart';
+import '../screens/nav_bar.dart';
+import '../widgets/category.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:shop_owner_app/core/models/user_model.dart';
+import '../../core/models/user_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:shop_owner_app/ui/constants/assets_path.dart';
-import 'package:shop_owner_app/ui/routes/route_name.dart';
+import '../constants/assets_path.dart';
+import '../routes/route_name.dart';
 import '../constants/app_consntants.dart';
 import 'package:flutter_map/flutter_map.dart' as flutter_map;
 import 'package:latlong2/latlong.dart' as LatLon;

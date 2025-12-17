@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_owner_app/core/view_models/products_provider.dart';
-import '../../../core/models/product_model.dart';
-import '../../widgets/feeds_product.dart';
+import '../../core/view_models/products_provider.dart';
+import '../../core/models/product_model.dart';
+import '../widgets/feeds_product.dart';
 
 class CategoryScreen extends StatelessWidget {
   final String nameOfCat;

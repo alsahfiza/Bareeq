@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shop_owner_app/core/models/category_model.dart';
-import 'package:shop_owner_app/ui/routes/route_name.dart';
+import 'admin/core/models/category_model.dart';
+import '../routes/route_name.dart';
 
 class Category extends StatelessWidget {
   final CategoryModel category;

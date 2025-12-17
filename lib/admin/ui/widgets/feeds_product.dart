@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:shop_owner_app/ui/routes/route_name.dart';
+import '../routes/route_name.dart';
 import 'package:sizer/sizer.dart';
-import 'package:shop_owner_app/core/models/product_model.dart';
-import 'package:shop_owner_app/ui/widgets/feeds_dialog.dart';
-import 'package:shop_owner_app/ui/widgets/my_button.dart';
+import '../../core/models/product_model.dart';
+import '../widgets/feeds_dialog.dart';
+import '../widgets/my_button.dart';
 
 class FeedsProduct extends StatelessWidget {
   final ProductModel product;

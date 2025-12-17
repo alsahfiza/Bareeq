@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_owner_app/core/models/user_model.dart';
-import 'package:shop_owner_app/ui/routes/route_name.dart';
+import '../../core/models/user_model.dart';
+import '../routes/route_name.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
+import '../../core/view_models/user_data_provider.dart';
 import 'package:sizer/sizer.dart';
 
 class MyUsersScreen extends StatelessWidget {

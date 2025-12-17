@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:shop_owner_app/core/models/product_model.dart';
+import '../models/product_model.dart';
 
 class SearchProvider with ChangeNotifier {
   SearchProvider() {

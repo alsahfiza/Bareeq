@@ -2,10 +2,22 @@
   "configVersion": 2,
   "packages": [
     {
+      "name": "_fe_analyzer_shared",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-92.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
       "name": "_flutterfire_internals",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/_flutterfire_internals-1.3.59",
       "packageUri": "lib/",
       "languageVersion": "3.2"
+    },
+    {
+      "name": "analyzer",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/analyzer-9.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
     },
     {
       "name": "archive",
@@ -14,22 +26,22 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "args",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/args-2.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "async",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/async-2.13.0",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
-      "name": "barcode",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/barcode-2.2.9",
+      "name": "badges",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/badges-3.1.2",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "bidi",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/bidi-2.0.13",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.0"
     },
     {
       "name": "boolean_selector",
@@ -38,8 +50,56 @@
       "languageVersion": "3.1"
     },
     {
+      "name": "build",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/build-4.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "build_config",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/build_config-1.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "cached_network_image",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/cached_network_image-3.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "cached_network_image_platform_interface",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/cached_network_image_platform_interface-4.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "cached_network_image_web",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/cached_network_image_web-1.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "carousel_slider",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/carousel_slider-5.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "characters",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/characters-1.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "checked_yaml",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/checked_yaml-2.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "cli_util",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/cli_util-0.4.2",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -74,6 +134,12 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "convert",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/convert-3.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "cross_file",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/cross_file-0.3.5+1",
       "packageUri": "lib/",
@@ -86,16 +152,28 @@
       "languageVersion": "3.4"
     },
     {
-      "name": "csv",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/csv-5.1.1",
+      "name": "csslib",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/csslib-1.0.2",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.1"
     },
     {
-      "name": "equatable",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/equatable-2.0.7",
+      "name": "cupertino_icons",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/cupertino_icons-1.0.8",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "dart_earcut",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/dart_earcut-1.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "dart_style",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/dart_style-3.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
     },
     {
       "name": "fake_async",
@@ -114,12 +192,6 @@
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/file-7.0.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
-    },
-    {
-      "name": "file_picker",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/file_picker-6.2.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.19"
     },
     {
       "name": "file_selector_linux",
@@ -182,6 +254,24 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "firebase_messaging",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/firebase_messaging-15.2.10",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "firebase_messaging_platform_interface",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/firebase_messaging_platform_interface-4.6.10",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "firebase_messaging_web",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/firebase_messaging_web-3.10.10",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "firebase_storage",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/firebase_storage-12.4.10",
       "packageUri": "lib/",
@@ -200,10 +290,10 @@
       "languageVersion": "3.4"
     },
     {
-      "name": "fl_chart",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/fl_chart-0.65.0",
+      "name": "fixnum",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/fixnum-1.1.1",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.1"
     },
     {
       "name": "flutter",
@@ -212,40 +302,16 @@
       "languageVersion": "3.8"
     },
     {
-      "name": "flutter_image_compress",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/flutter_image_compress-2.4.0",
+      "name": "flutter_cache_manager",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/flutter_cache_manager-3.4.1",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.0"
     },
     {
-      "name": "flutter_image_compress_common",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/flutter_image_compress_common-1.0.6",
+      "name": "flutter_launcher_icons",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/flutter_launcher_icons-0.14.4",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "flutter_image_compress_macos",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/flutter_image_compress_macos-1.0.3",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "flutter_image_compress_ohos",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/flutter_image_compress_ohos-0.0.3",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "flutter_image_compress_platform_interface",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/flutter_image_compress_platform_interface-1.0.5",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "flutter_image_compress_web",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/flutter_image_compress_web-0.1.5",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.0"
     },
     {
       "name": "flutter_lints",
@@ -254,16 +320,28 @@
       "languageVersion": "3.5"
     },
     {
+      "name": "flutter_map",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/flutter_map-7.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "flutter_plugin_android_lifecycle",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.33",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
     {
-      "name": "flutter_stripe",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/flutter_stripe-9.6.0",
+      "name": "flutter_spinkit",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/flutter_spinkit-5.2.2",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_svg",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/flutter_svg-2.2.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
     },
     {
       "name": "flutter_test",
@@ -284,16 +362,100 @@
       "languageVersion": "3.9"
     },
     {
-      "name": "freezed_annotation",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/freezed_annotation-2.4.4",
+      "name": "gap",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/gap-3.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "get_it",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/get_it-9.2.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
-      "name": "go_router",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/go_router-14.8.1",
+      "name": "glob",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/glob-2.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "google_identity_services_web",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/google_identity_services_web-0.3.3+1",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "google_maps",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/google_maps-8.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "google_maps_flutter",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/google_maps_flutter-2.14.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "google_maps_flutter_android",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/google_maps_flutter_android-2.18.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "google_maps_flutter_ios",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/google_maps_flutter_ios-2.15.7",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "google_maps_flutter_platform_interface",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/google_maps_flutter_platform_interface-2.14.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "google_maps_flutter_web",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/google_maps_flutter_web-0.5.14+3",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "google_sign_in",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/google_sign_in-7.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "google_sign_in_android",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/google_sign_in_android-7.2.7",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "google_sign_in_ios",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/google_sign_in_ios-6.2.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "google_sign_in_platform_interface",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/google_sign_in_platform_interface-3.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "google_sign_in_web",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/google_sign_in_web-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "html",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/html-0.15.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
     },
     {
       "name": "http",
@@ -310,18 +472,6 @@
     {
       "name": "image",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/image-4.5.4",
-      "packageUri": "lib/",
-      "languageVersion": "3.0"
-    },
-    {
-      "name": "image_compression",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/image_compression-1.0.5",
-      "packageUri": "lib/",
-      "languageVersion": "3.0"
-    },
-    {
-      "name": "image_compression_flutter",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/image_compression_flutter-1.0.4",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -374,8 +524,26 @@
       "languageVersion": "3.6"
     },
     {
+      "name": "intl",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/intl-0.20.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "json_annotation",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/json_annotation-4.9.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "json_serializable",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/json_serializable-6.11.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "latlong2",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/latlong2-0.9.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -404,6 +572,18 @@
       "languageVersion": "3.6"
     },
     {
+      "name": "lists",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/lists-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "logger",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/logger-2.6.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "logging",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/logging-1.3.0",
       "packageUri": "lib/",
@@ -428,16 +608,40 @@
       "languageVersion": "3.5"
     },
     {
+      "name": "mgrs_dart",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/mgrs_dart-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "mime",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/mime-1.0.6",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
+      "name": "modal_progress_hud_nsn",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/modal_progress_hud_nsn-0.5.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
       "name": "nested",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/nested-1.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "octo_image",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/octo_image-2.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "package_config",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/package_config-2.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
     },
     {
       "name": "path",
@@ -488,18 +692,6 @@
       "languageVersion": "3.2"
     },
     {
-      "name": "pdf",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/pdf-3.11.3",
-      "packageUri": "lib/",
-      "languageVersion": "2.19"
-    },
-    {
-      "name": "pdf_widget_wrapper",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/pdf_widget_wrapper-1.0.4",
-      "packageUri": "lib/",
-      "languageVersion": "2.18"
-    },
-    {
       "name": "petitparser",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/petitparser-7.0.1",
       "packageUri": "lib/",
@@ -518,16 +710,22 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "polylabel",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/polylabel-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.13"
+    },
+    {
       "name": "posix",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/posix-6.0.3",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
-      "name": "printing",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/printing-5.14.2",
+      "name": "proj4dart",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/proj4dart-2.1.0",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "2.12"
     },
     {
       "name": "provider",
@@ -536,10 +734,34 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "qr",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/qr-3.0.2",
+      "name": "pub_semver",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/pub_semver-2.2.0",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "pubspec_parse",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/pubspec_parse-1.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
+      "name": "reorderable_grid_view",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/reorderable_grid_view-2.2.8",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "rxdart",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/rxdart-0.28.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "sanitize_html",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/sanitize_html-2.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "shared_preferences",
@@ -584,16 +806,70 @@
       "languageVersion": "3.3"
     },
     {
+      "name": "shimmer",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/shimmer-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "sizer",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/sizer-3.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "sky_engine",
       "rootUri": "file:///home/codespace/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "3.8"
     },
     {
+      "name": "source_gen",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/source_gen-4.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "source_helper",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/source_helper-1.3.9",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
       "name": "source_span",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/source_span-1.10.1",
       "packageUri": "lib/",
       "languageVersion": "3.1"
+    },
+    {
+      "name": "sqflite",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/sqflite-2.4.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "sqflite_android",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+2",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "sqflite_common",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/sqflite_common-2.5.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "sqflite_darwin",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/sqflite_darwin-2.4.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "sqflite_platform_interface",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/sqflite_platform_interface-2.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
     },
     {
       "name": "stack_trace",
@@ -608,28 +884,22 @@
       "languageVersion": "3.3"
     },
     {
+      "name": "stream_transform",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/stream_transform-2.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
       "name": "string_scanner",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/string_scanner-1.4.1",
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
     {
-      "name": "stripe_android",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/stripe_android-9.6.0+2",
+      "name": "synchronized",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/synchronized-3.4.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "stripe_ios",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/stripe_ios-9.6.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "stripe_platform_interface",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/stripe_platform_interface-9.6.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.8"
     },
     {
       "name": "term_glyph",
@@ -650,52 +920,34 @@
       "languageVersion": "3.5"
     },
     {
-      "name": "url_launcher",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/url_launcher-6.3.2",
+      "name": "unicode",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/unicode-0.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "uuid",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/uuid-4.5.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "vector_graphics",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/vector_graphics-1.1.19",
       "packageUri": "lib/",
       "languageVersion": "3.6"
     },
     {
-      "name": "url_launcher_android",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.28",
+      "name": "vector_graphics_codec",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/vector_graphics_codec-1.1.13",
       "packageUri": "lib/",
-      "languageVersion": "3.9"
+      "languageVersion": "3.4"
     },
     {
-      "name": "url_launcher_ios",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/url_launcher_ios-6.3.6",
+      "name": "vector_graphics_compiler",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/vector_graphics_compiler-1.1.19",
       "packageUri": "lib/",
-      "languageVersion": "3.9"
-    },
-    {
-      "name": "url_launcher_linux",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/url_launcher_linux-3.2.2",
-      "packageUri": "lib/",
-      "languageVersion": "3.8"
-    },
-    {
-      "name": "url_launcher_macos",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/url_launcher_macos-3.2.5",
-      "packageUri": "lib/",
-      "languageVersion": "3.9"
-    },
-    {
-      "name": "url_launcher_platform_interface",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/url_launcher_platform_interface-2.3.2",
-      "packageUri": "lib/",
-      "languageVersion": "3.1"
-    },
-    {
-      "name": "url_launcher_web",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/url_launcher_web-2.4.1",
-      "packageUri": "lib/",
-      "languageVersion": "3.6"
-    },
-    {
-      "name": "url_launcher_windows",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/url_launcher_windows-3.1.5",
-      "packageUri": "lib/",
-      "languageVersion": "3.8"
+      "languageVersion": "3.7"
     },
     {
       "name": "vector_math",
@@ -710,16 +962,22 @@
       "languageVersion": "3.5"
     },
     {
+      "name": "watcher",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/watcher-1.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "web",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/web-1.1.1",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
-      "name": "win32",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/win32-5.15.0",
+      "name": "wkt_parser",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/wkt_parser-2.0.0",
       "packageUri": "lib/",
-      "languageVersion": "3.8"
+      "languageVersion": "2.12"
     },
     {
       "name": "xdg_directories",
@@ -734,10 +992,16 @@
       "languageVersion": "3.8"
     },
     {
-      "name": "Bareeq_Store",
+      "name": "yaml",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/yaml-3.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "Bareeq",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "3.9"
+      "languageVersion": "3.5"
     }
   ],
   "generator": "pub",

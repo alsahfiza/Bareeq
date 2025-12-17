@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_owner_app/core/view_models/auth_provider.dart';
-import 'package:shop_owner_app/ui/routes/route_name.dart';
+import '../../core/view_models/auth_provider.dart';
+import '../routes/route_name.dart';
 
-import '../../../core/view_models/product_upload_image_provider.dart';
+import '../../core/view_models/product_upload_image_provider.dart';
 
 class MyAlertDialog {
   void removeItem(context, Function() func) {

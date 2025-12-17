@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
+import '../utils/ui_tools/my_border.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;

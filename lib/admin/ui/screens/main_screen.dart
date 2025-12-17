@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
- import 'package:shop_owner_app/ui/screens/bottom_bar.dart';
-import 'package:shop_owner_app/ui/screens/log_in.dart';
+ import '../screens/bottom_bar.dart';
+import '../screens/log_in.dart';
 import '../../core/view_models/auth_provider.dart';
 
 class MainScreen extends StatelessWidget {
