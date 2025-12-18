@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../constants/app_consntants.dart';
-import 'package:Bareeq/admin/core/view_models/auth_provider.dart';
+import 'package:bareeq/admin/core/view_models/auth_provider.dart';
 import '../../utils/ui_tools/my_border.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {

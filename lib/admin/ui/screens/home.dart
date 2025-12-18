@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../routes/route_name.dart';
-import 'package:Bareeq/admin/core/models/category_model.dart';
+import 'package:bareeq/admin/core/models/category_model.dart';
 import 'nav_bar.dart';
 import '../widgets/category.dart';
 

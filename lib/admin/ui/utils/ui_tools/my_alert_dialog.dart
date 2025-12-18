@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:Bareeq/admin/core/view_models/auth_provider.dart';
+import 'package:bareeq/admin/core/view_models/auth_provider.dart';
 import '../../routes/route_name.dart';
 
-import 'package:Bareeq/admin/core/view_models/product_upload_image_provider.dart';
+import 'package:bareeq/admin/core/view_models/product_upload_image_provider.dart';
 
 class MyAlertDialog {
   void removeItem(context, Function() func) {
@@ -89,7 +89,7 @@ static Future<void> signOut(BuildContext context) async {
                         listen: false,
                       );
 
-                      await authProvider.signOut(context).then((_) {
+                      await authProvider.signOut().then((_) {
                         Navigator.of(context).pushNamedAndRemoveUntil(
                           RouteName.logInScreen,
                           (Route<dynamic> route) => false,

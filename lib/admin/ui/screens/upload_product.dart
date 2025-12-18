@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:Bareeq/admin/core/view_models/product_upload_image_provider.dart';
-import 'package:Bareeq/admin/core/models/category_model.dart';
-import 'package:Bareeq/admin/core/models/product_model.dart';
-import 'package:Bareeq/admin/core/view_models/products_provider.dart';
-import 'package:Bareeq/admin/core/view_models/picture_provider.dart';
+import 'package:bareeq/admin/core/view_models/product_upload_image_provider.dart';
+import 'package:bareeq/admin/core/models/category_model.dart';
+import 'package:bareeq/admin/core/models/product_model.dart';
+import 'package:bareeq/admin/core/view_models/products_provider.dart';
+import 'package:bareeq/admin/core/view_models/picture_provider.dart';
 import '../utils/ui_tools/my_alert_dialog.dart';
 import '../utils/ui_tools/my_border.dart';
 import '../utils/ui_tools/my_snackbar.dart';

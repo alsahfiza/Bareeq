@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:Bareeq/admin/core/models/user_model.dart';
-import 'package:Bareeq/admin/core/view_models/auth_provider.dart';
+import 'package:bareeq/admin/core/models/user_model.dart';
+import 'package:bareeq/admin/core/view_models/auth_provider.dart';
 import '../constants/assets_path.dart';
 import '../routes/route_name.dart';
 import 'sign_up.dart';

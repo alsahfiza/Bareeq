@@ -13,8 +13,8 @@ import '../screens/search.dart';
 import '../screens/sign_up.dart';
 import '../screens/upload_product.dart';
 import '../screens/user_details.dart';
-import 'package:Bareeq/admin/core/models/product_model.dart';
-import 'package:Bareeq/admin/core/models/user_model.dart';
+import 'package:bareeq/admin/core/models/product_model.dart';
+import 'package:bareeq/admin/core/models/user_model.dart';
 import '../screens/update_product.dart';
 import '../screens/update_users_inofrmation.dart';
 

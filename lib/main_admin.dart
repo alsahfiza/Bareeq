@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:Bareeq/firebase_options.dart';
-
-import 'package:Bareeq/admin/core/view_models/auth_provider.dart';
-import 'package:Bareeq/admin/core/view_models/products_provider.dart';
-import 'package:Bareeq/admin/core/view_models/orders_provider.dart';
-import 'package:Bareeq/admin/core/view_models/search_provider.dart';
-import 'package:Bareeq/admin/core/view_models/picture_provider.dart';
-import 'package:Bareeq/admin/core/view_models/update_image_provider.dart';
-import 'package:Bareeq/admin/core/view_models/user_data_provider.dart';
-import 'package:Bareeq/admin/core/view_models/theme_change_provider.dart';
-import 'package:Bareeq/admin/core/view_models/product_upload_image_provider.dart';
-import 'package:Bareeq/admin/ui/constants/theme_data.dart';
-import 'package:Bareeq/admin/ui/routes/route_name.dart';
-import 'package:Bareeq/admin/ui/routes/router.dart';
+import 'package:bareeq/firebase_options.dart';
+import 'package:bareeq/admin/core/view_models/auth_provider.dart';
+import 'package:bareeq/admin/core/view_models/products_provider.dart';
+import 'package:bareeq/admin/core/view_models/orders_provider.dart';
+import 'package:bareeq/admin/core/view_models/search_provider.dart';
+import 'package:bareeq/admin/core/view_models/picture_provider.dart';
+import 'package:bareeq/admin/core/view_models/update_image_provider.dart';
+import 'package:bareeq/admin/core/view_models/user_data_provider.dart';
+import 'package:bareeq/admin/core/view_models/theme_change_provider.dart';
+import 'package:bareeq/admin/core/view_models/product_upload_image_provider.dart';
+import 'package:bareeq/admin/ui/constants/theme_data.dart';
+import 'package:bareeq/admin/ui/routes/route_name.dart';
+import 'package:bareeq/admin/ui/routes/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,137 +1,65 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
-import 'package:intl/intl.dart';
-import '../models/user_model.dart';
-import 'picture_provider.dart';
-import 'user_data_provider.dart';
+import 'package:bareeq/admin/core/models/user_model.dart';
 
-class AuthProvider with ChangeNotifier {
+class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  // final _googleSignIn = GoogleSignIn();
 
-  bool get isLoggedIn =>
-      _auth.currentUser != null && !_auth.currentUser!.isAnonymous;
+  bool _isLoggedIn = false;
+  bool _initialized = false;
+
+  bool get isLoggedIn => _isLoggedIn;
+  bool get initialized => _initialized;
+
+  StreamSubscription<User?>? _authSubscription;
+
+  AuthProvider() {
+    _listenToAuthChanges();
+  }
+
+  void _listenToAuthChanges() {
+    _authSubscription = _auth.authStateChanges().listen((user) {
+      _isLoggedIn = user != null && !user.isAnonymous;
+      _initialized = true;
+      notifyListeners();
+    });
+  }
+
+  Future<void> signIn({
+    required String email,
+    required String password,
+  }) async {
+    await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
 
   Future<void> signUp({
     required String email,
     required String password,
     required UserModel userModel,
   }) async {
-    try {
-      await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      userModel.id = _auth.currentUser?.uid ?? '';
-      if (userModel.imageUrl.isNotEmpty) {
-        final imageUploader = PicturesProvider();
-        final imageUrl = await imageUploader.uploadSinglePicture(
-          fileLocationinDevice: userModel.imageUrl,
-        );
-        userModel.imageUrl = imageUrl;
-        notifyListeners();
-      }
-
-      await UserDataProvider().uploadUserData(userModel);
-      notifyListeners();
-    } finally {
-      notifyListeners();
-    }
+    await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
   }
-
-  Future<void> signIn({required String email, required String password}) async {
-    try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      notifyListeners();
-    } catch (e) {
-      throw Exception(e.toString());
-    } finally {
-      notifyListeners();
-    }
-  }
-
-  // Google sign in
-  // Future<void> googleSignIn() async {
-  //   try {
-  //     final googleAccount = await _googleSignIn.signIn();
-  //     if (googleAccount != null) {
-  //       final googleAuth = await googleAccount.authentication;
-  //       if (googleAuth.accessToken != null && googleAuth.idToken != null) {
-  //         final credential = GoogleAuthProvider.credential(
-  //             accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-
-  //         final userCredential = await _auth.signInWithCredential(credential);
-  //         final user = userCredential.user;
-
-  //         if (user != null) {
-  //           final userDoc = await FirebaseFirestore.instance
-  //               .collection('users')
-  //               .doc(user.uid)
-  //               .get();
-
-  //           if (!userDoc.exists) {
-  //             UserModel userModel = UserModel(
-  //               id: user.uid,
-  //               email: user.email ?? '',
-  //               fullName: user.displayName ?? '',
-  //               imageUrl: user.photoURL ?? '',
-  //               phoneNumber: user.phoneNumber ?? '',
-  //               createdAt: Timestamp.now(),
-  //               joinedAt:
-  //                   DateFormat('EEEE, MMMM d, yyyy').format(DateTime.now()),
-  //             );
-
-  //             // Upload user data only if the document doesn't exist
-  //             await UserDataProvider()
-  //                 .uploadUserData(userModel)
-  //                 .then((_) => print('Done Uploading'));
-  //           } else {
-  //             print('User already exists. No need to upload data.');
-  //           }
-
-  //           notifyListeners();
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {
-  //     throw Exception(e.toString());
-  //   } finally {
-  //     notifyListeners();
-  //   }
-  // }
-
-  //Reset Password
 
   Future<void> resetPassword({required String email}) async {
-    try {
-      await _auth.sendPasswordResetEmail(email: email.trim().toLowerCase());
-    } catch (e) {
-      throw Exception(e.toString());
-    } finally {
-      notifyListeners();
-    }
+    await _auth.sendPasswordResetEmail(
+      email: email.trim().toLowerCase(),
+    );
   }
 
-  Future<void> signOut(BuildContext context) async {
-    try {
-      // Check if it's not on web app
-      // if (!kIsWeb) {
-      //   // Check if user is signed in with google sign in
-      //   if (await _googleSignIn.isSignedIn()) {
-      //     await _googleSignIn.disconnect();
-      //   }
-      // }
-      await _auth.signOut().then((_) {
-        // signInAnonymously();
-        notifyListeners();
-      });
-    } catch (e) {
-      throw Exception(e.toString());
-    } finally {
-      notifyListeners();
-    }
+  Future<void> signOut() async {
+    await _auth.signOut();
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    super.dispose();
   }
 }

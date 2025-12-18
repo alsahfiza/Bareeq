@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:Bareeq/admin/core/models/category_model.dart';
+import 'package:bareeq/admin/core/models/category_model.dart';
 import '../routes/route_name.dart';
 
 class Category extends StatelessWidget {

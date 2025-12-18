@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:Bareeq/admin/core/view_models/products_provider.dart';
+import 'package:bareeq/admin/core/view_models/products_provider.dart';
 import '../constants/app_consntants.dart';
 import '../routes/route_name.dart';
 import 'my_button.dart';
-import 'package:Bareeq/admin/core/models/product_model.dart';
+import 'package:bareeq/admin/core/models/product_model.dart';
 
 class FeedsDialog extends StatefulWidget {
   final ProductModel product;

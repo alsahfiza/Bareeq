@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:Bareeq/admin/core/models/orders_model.dart';
-import 'package:Bareeq/admin/core/models/user_model.dart';
-import 'package:Bareeq/admin/core/view_models/orders_provider.dart';
+import 'package:bareeq/admin/core/models/orders_model.dart';
+import 'package:bareeq/admin/core/models/user_model.dart';
+import 'package:bareeq/admin/core/view_models/orders_provider.dart';
 import '../constants/app_consntants.dart';
 import '../routes/route_name.dart';
 
