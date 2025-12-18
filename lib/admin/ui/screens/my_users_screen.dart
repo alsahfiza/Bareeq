@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-import '../../core/models/user_model.dart';
+import 'package:Bareeq/admin/core/models/user_model.dart';
 import '../routes/route_name.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../core/view_models/user_data_provider.dart';
+import 'package:Bareeq/admin/core/view_models/user_data_provider.dart';
 import 'package:sizer/sizer.dart';
 
 class MyUsersScreen extends StatelessWidget {

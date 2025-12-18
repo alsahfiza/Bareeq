@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
-import '../../core/view_models/products_provider.dart';
-import '../../core/models/product_model.dart';
-import '../routes/route_name.dart';
-import '../widgets/products_images_list_on_details_view.dart';
+import 'package:Bareeq/admin/core/view_models/products_provider.dart';
+import 'package:Bareeq/admin/core/models/product_model.dart';
+import '../../routes/route_name.dart';
+import '../../widgets/products_images_list_on_details_view.dart';
 import 'package:sizer/sizer.dart';
 
 class ProductDetailScreen extends StatefulWidget {

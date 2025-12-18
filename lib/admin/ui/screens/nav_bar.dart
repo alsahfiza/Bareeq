@@ -1,8 +1,8 @@
-import '../../core/models/user_model.dart';
-import '../../core/view_models/user_data_provider.dart';
+import 'package:Bareeq/admin/core/models/user_model.dart';
+import 'package:Bareeq/admin/core/view_models/user_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/view_models/theme_change_provider.dart';
+import 'package:Bareeq/admin/core/view_models/theme_change_provider.dart';
 import '../utils/ui_tools/my_alert_dialog.dart';
 import '../widgets/profile_picture.dart';
 import '../widgets/user_full_name_user_email.dart';

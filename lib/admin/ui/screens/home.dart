@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../routes/route_name.dart';
-import '../../core/models/category_model.dart';
-import '../screens/nav_bar.dart';
+import 'package:Bareeq/admin/core/models/category_model.dart';
+import 'nav_bar.dart';
 import '../widgets/category.dart';
 
 class HomeScreen extends StatefulWidget {

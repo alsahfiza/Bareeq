@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../../core/models/user_model.dart';
+import 'package:Bareeq/admin/core/models/user_model.dart';
 import 'package:shimmer/shimmer.dart';
 import '../constants/assets_path.dart';
 import '../routes/route_name.dart';

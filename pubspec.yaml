@@ -18,7 +18,7 @@ dependencies:
   image_picker:
   firebase_auth:
   firebase_core:
-  google_sign_in:
+  # google_sign_in:
   cloud_firestore:
   firebase_storage:
   json_serializable:
@@ -36,6 +36,7 @@ dependencies:
   flutter_map: ^7.0.2
   reorderable_grid_view: ^2.2.8
   collection: ^1.18.0
+
 dev_dependencies:
   flutter_launcher_icons:
   flutter_test:
@@ -49,7 +50,6 @@ flutter_icons:
   min_sdk_android: 23 #android min sdk min:16, default 21
 
 flutter:
-
   uses-material-design: true
 
   assets:

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/view_models/products_provider.dart';
-import '../../core/models/product_model.dart';
+import 'package:Bareeq/admin/core/view_models/products_provider.dart';
+import 'package:Bareeq/admin/core/models/product_model.dart';
 import '../widgets/feeds_product.dart';
 
 class FeedsScreen extends StatelessWidget {

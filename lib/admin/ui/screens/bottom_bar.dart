@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../constants/app_consntants.dart';
 import '../routes/route_name.dart';
-import '../screens/feeds.dart';
-import '../screens/home.dart';
-import '../screens/my_users_screen.dart';
-import '../screens/orders_list.dart';
+import 'feeds.dart';
+import 'home.dart';
+import 'my_users_screen.dart';
+import 'orders_list.dart';
 
 class BottomBarScreen extends StatefulWidget {
   const BottomBarScreen({super.key});

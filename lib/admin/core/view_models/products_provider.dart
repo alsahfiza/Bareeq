@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../models/product_model.dart';
 import '../services/api.dart';
-import '../view_models/picture_provider.dart';
+import 'picture_provider.dart';
 
 class ProductsProvider extends ChangeNotifier {
   final Api _api = Api(path: 'products');

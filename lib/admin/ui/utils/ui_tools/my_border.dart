@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/view_models/theme_change_provider.dart';
+import 'package:Bareeq/admin/core/view_models/theme_change_provider.dart';
 
 class MyBorder {
   static OutlineInputBorder outlineInputBorder(BuildContext context) {

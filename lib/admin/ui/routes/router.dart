@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../routes/route_name.dart';
+import 'route_name.dart';
 import '../screens/bottom_bar.dart';
 import '../screens/feeds.dart';
 import '../screens/inner_screens/category_screen.dart';
@@ -13,8 +13,8 @@ import '../screens/search.dart';
 import '../screens/sign_up.dart';
 import '../screens/upload_product.dart';
 import '../screens/user_details.dart';
-import '../../core/models/product_model.dart';
-import '../../core/models/user_model.dart';
+import 'package:Bareeq/admin/core/models/product_model.dart';
+import 'package:Bareeq/admin/core/models/user_model.dart';
 import '../screens/update_product.dart';
 import '../screens/update_users_inofrmation.dart';
 

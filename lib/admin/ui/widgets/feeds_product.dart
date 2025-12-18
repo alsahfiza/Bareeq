@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../routes/route_name.dart';
 import 'package:sizer/sizer.dart';
-import '../../core/models/product_model.dart';
-import '../widgets/feeds_dialog.dart';
-import '../widgets/my_button.dart';
+import 'package:Bareeq/admin/core/models/product_model.dart';
+import 'feeds_dialog.dart';
+import 'my_button.dart';
 
 class FeedsProduct extends StatelessWidget {
   final ProductModel product;

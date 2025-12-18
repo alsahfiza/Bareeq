@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/models/user_model.dart';
-import '../../core/view_models/auth_provider.dart';
+import 'package:Bareeq/admin/core/models/user_model.dart';
+import 'package:Bareeq/admin/core/view_models/auth_provider.dart';
 import '../constants/assets_path.dart';
 import '../routes/route_name.dart';
-import '../screens/sign_up.dart';
+import 'sign_up.dart';
 import '../utils/ui_tools/my_alert_dialog.dart';
 import '../widgets/reusable_text_field.dart';
  
@@ -70,13 +70,13 @@ class _LogInScreenState extends State<LogInScreen> {
     }
   }
 
-  void _googleSignIn() async {
-    setState(() => _isLoading = true);
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-  await  authProvider.googleSignIn().then((_) {
-      Navigator.of(context).pushNamedAndRemoveUntil(RouteName.bottomBarScreen,  (Route<dynamic> route) => false, );
-    }).whenComplete(() => setState(() => _isLoading = false));
-  }
+  // void _googleSignIn() async {
+  //   setState(() => _isLoading = true);
+  //   final authProvider = Provider.of<AuthProvider>(context, listen: false);
+  // await  authProvider.googleSignIn().then((_) {
+  //     Navigator.of(context).pushNamedAndRemoveUntil(RouteName.bottomBarScreen,  (Route<dynamic> route) => false, );
+  //   }).whenComplete(() => setState(() => _isLoading = false));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -208,11 +208,11 @@ class _LogInScreenState extends State<LogInScreen> {
                 ),
 
                 // Buttom Log In with Google
-                _loginWithButton(
-                  onPressed: _googleSignIn,
-                  appLogoUrl: ImagePath.googleLogo,
-                  title: 'Log in with Google',
-                ),
+                // _loginWithButton(
+                //  appLogoUrl: ImagePath.googleLogo,
+                //    onPressed: _googleSignIn,
+                //   title: 'Log in with Google',
+                // ),
                 const SizedBox(height: 16),
                 _loginWithButton(
                   onPressed: () {},
