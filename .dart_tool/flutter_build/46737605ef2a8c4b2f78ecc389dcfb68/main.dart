@@ -1,4 +1,4 @@
-// @dart=3.5
+// @dart=3.0
 // Flutter web bootstrap script for package:bareeq/main_admin.dart.
 //
 // Generated file. Do not edit.
