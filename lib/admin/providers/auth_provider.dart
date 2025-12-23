@@ -1,100 +1,123 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_model.dart';
 import '../services/firebase_service.dart';
-
-
 
 // ==================== AUTH PROVIDER ====================
 class AuthProvider extends ChangeNotifier {
   final FirebaseService _firebaseService = FirebaseService();
-  
+
   User? _currentUser;
   UserModel? _currentUserData;
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Getters
+  // 🔹 ADDED (does not remove anything)
+  bool _isInitialized = false;
+
+  // ====================
+  // Getters (UNCHANGED)
+  // ====================
   User? get currentUser => _currentUser;
   UserModel? get currentUserData => _currentUserData;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
-  bool get isAuthenticated => _currentUser != null;
-  bool get isAdmin => _currentUserData?.role == UserRole.admin || 
-                      _currentUserData?.role == UserRole.superAdmin;
 
+  bool get isAuthenticated => _currentUser != null;
+
+  bool get isAdmin =>
+      _currentUserData?.role == UserRole.admin ||
+      _currentUserData?.role == UserRole.superAdmin;
+
+  // 🔹 ADDED (non-breaking)
+  bool get isInitialized => _isInitialized;
+
+  // ====================
+  // Constructor (UNCHANGED)
+  // ====================
   AuthProvider() {
     _initAuth();
   }
 
+  // ====================
   // Initialize authentication listener
+  // ====================
   void _initAuth() {
-    _firebaseService.auth.authStateChanges().listen((User? user) {
+    _firebaseService.auth.authStateChanges().listen((User? user) async {
       _currentUser = user;
+      _currentUserData = null;
+
       if (user != null) {
-        _loadUserData(user.uid);
-      } else {
-        _currentUserData = null;
+        try {
+          _currentUserData = await _loadUserData(user.uid);
+        } catch (e) {
+          _errorMessage = 'Failed to load user data: $e';
+        }
       }
+
+      _isInitialized = true;
       notifyListeners();
     });
   }
 
+  // ====================
   // Load user data from Firestore
-  Future<void> _loadUserData(String userId) async {
-    try {
-      final doc = await _firebaseService.getDocument(
-        collection: 'users',
-        docId: userId,
-      );
-      
-      if (doc.exists) {
-        _currentUserData = UserModel.fromFirestore(doc);
-        notifyListeners();
-      }
-    } catch (e) {
-      _errorMessage = 'Failed to load user data: $e';
-      notifyListeners();
+  // ====================
+  Future<UserModel?> _loadUserData(String userId) async {
+    final doc = await _firebaseService.getDocument(
+      collection: 'users',
+      docId: userId,
+    );
+
+    if (!doc.exists) {
+      return null;
     }
+
+    return UserModel.fromFirestore(doc);
   }
 
+  // ====================
   // Sign in
+  // ====================
   Future<bool> signIn(String email, String password) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final userCredential = await _firebaseService.signInWithEmailPassword(
+      final userCredential =
+          await _firebaseService.signInWithEmailPassword(
         email,
         password,
       );
-      
-      // Load user data
-      await _loadUserData(userCredential.user!.uid);
-      
-      // Check if user is admin
-      if (!isAdmin) {
+
+      final userData =
+          await _loadUserData(userCredential.user!.uid);
+
+      // 🔧 FIX: admin check AFTER data is loaded
+      if (userData == null ||
+          (userData.role != UserRole.admin &&
+              userData.role != UserRole.superAdmin)) {
         await signOut();
         _errorMessage = 'Access denied. Admin privileges required.';
-        _isLoading = false;
-        notifyListeners();
         return false;
       }
-      
-      _isLoading = false;
-      notifyListeners();
+
+      _currentUser = userCredential.user;
+      _currentUserData = userData;
       return true;
     } catch (e) {
       _errorMessage = e.toString();
+      return false;
+    } finally {
       _isLoading = false;
       notifyListeners();
-      return false;
     }
   }
 
+  // ====================
   // Sign up (for creating new admin users)
+  // ====================
   Future<bool> signUp({
     required String email,
     required String password,
@@ -106,40 +129,42 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final userCredential = await _firebaseService.signUpWithEmailPassword(
+      final userCredential =
+          await _firebaseService.signUpWithEmailPassword(
         email,
         password,
       );
-      
-      // Create user document in Firestore
+
       final userData = UserModel(
         id: userCredential.user!.uid,
         email: email,
         name: name,
         phoneNumber: phoneNumber,
         createdAt: DateTime.now(),
-        role: UserRole.admin, // New users are admins by default
+        role: UserRole.admin,
       );
-      
+
       await _firebaseService.createDocument(
         collection: 'users',
         docId: userCredential.user!.uid,
         data: userData.toJson(),
       );
-      
+
+      _currentUser = userCredential.user;
       _currentUserData = userData;
-      _isLoading = false;
-      notifyListeners();
       return true;
     } catch (e) {
       _errorMessage = e.toString();
+      return false;
+    } finally {
       _isLoading = false;
       notifyListeners();
-      return false;
     }
   }
 
+  // ====================
   // Sign out
+  // ====================
   Future<void> signOut() async {
     _isLoading = true;
     notifyListeners();
@@ -157,7 +182,9 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // ====================
   // Reset password
+  // ====================
   Future<bool> resetPassword(String email) async {
     _isLoading = true;
     _errorMessage = null;
@@ -165,18 +192,19 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       await _firebaseService.resetPassword(email);
-      _isLoading = false;
-      notifyListeners();
       return true;
     } catch (e) {
       _errorMessage = e.toString();
+      return false;
+    } finally {
       _isLoading = false;
       notifyListeners();
-      return false;
     }
   }
 
+  // ====================
   // Clear error message
+  // ====================
   void clearError() {
     _errorMessage = null;
     notifyListeners();

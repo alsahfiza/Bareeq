@@ -38,8 +38,8 @@ const RESOURCES = {"assets/assets/images/connection_error.svg": "8f728f51195f90a
 "canvaskit/skwasm.js": "8060d46e9a4901ca9991edd3a26be4f0",
 "index.html": "b09814d2427b2439afe55c483c3c1f0d",
 "/": "b09814d2427b2439afe55c483c3c1f0d",
-"main.dart.js": "083233166c932018d1e5a3d3b1d599e6",
-"flutter_bootstrap.js": "88456e2094eb5c993b1337ddafdd1c40",
+"main.dart.js": "c7b24d66e81ba8e13f4cf01a791ac526",
+"flutter_bootstrap.js": "4c3dfe5c7a6471465e51a6a0377e4343",
 "version.json": "4c977ec05375a9ff8421f05934049eb1",
 "manifest.json": "bf24c84c3bf99672a631c4f84464e793",
 "flutter.js": "24bc71911b75b5f8135c949e27a2984e"};

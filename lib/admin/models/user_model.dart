@@ -27,9 +27,33 @@ class UserModel {
     this.role = UserRole.customer,
   });
 
+  // ============================
+  // INTERNAL SAFE ROLE PARSER (ADDED – DOES NOT REMOVE ANYTHING)
+  // ============================
+  static UserRole _safeParseRole(dynamic value) {
+    if (value == null) return UserRole.customer;
+
+    final normalized = value.toString().toLowerCase().trim();
+
+    switch (normalized) {
+      case 'admin':
+        return UserRole.admin;
+      case 'superadmin':
+      case 'super_admin':
+        return UserRole.superAdmin;
+      case 'customer':
+        return UserRole.customer;
+      default:
+        return UserRole.customer;
+    }
+  }
+
+  // ============================
+  // ORIGINAL toJson (UNCHANGED STRUCTURE)
+  // ============================
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'id': id, // kept (even though redundant)
       'email': email,
       'name': name,
       'phoneNumber': phoneNumber,
@@ -43,6 +67,9 @@ class UserModel {
     };
   }
 
+  // ============================
+  // ORIGINAL fromJson (PRESERVED, BUT SAFER)
+  // ============================
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'] ?? '',
@@ -50,7 +77,7 @@ class UserModel {
       name: json['name'],
       phoneNumber: json['phoneNumber'],
       profileImageUrl: json['profileImageUrl'],
-      address: json['address'] != null 
+      address: json['address'] != null
           ? AddressModel.fromJson(json['address'] as Map<String, dynamic>)
           : null,
       location: json['location'] != null
@@ -58,25 +85,42 @@ class UserModel {
           : null,
       createdAt: json['createdAt'] is Timestamp
           ? (json['createdAt'] as Timestamp).toDate()
-          : DateTime.now(),
-      updatedAt: json['updatedAt'] != null
-          ? (json['updatedAt'] is Timestamp
-              ? (json['updatedAt'] as Timestamp).toDate()
-              : null)
+          : DateTime.fromMillisecondsSinceEpoch(0), // safer fallback
+      updatedAt: json['updatedAt'] != null &&
+              json['updatedAt'] is Timestamp
+          ? (json['updatedAt'] as Timestamp).toDate()
           : null,
       isActive: json['isActive'] ?? true,
-      role: UserRole.values.firstWhere(
-        (e) => e.name == json['role'],
-        orElse: () => UserRole.customer,
-      ),
+      role: _safeParseRole(json['role']), // 🔧 FIXED (no removal)
     );
   }
 
+  // ============================
+  // ORIGINAL fromFirestore (PRESERVED, BUT DEFENSIVE)
+  // ============================
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return UserModel.fromJson({...data, 'id': doc.id});
+    final raw = doc.data();
+
+    if (raw == null) {
+      // keeps API intact, avoids crash
+      return UserModel(
+        id: doc.id,
+        email: '',
+        createdAt: DateTime.fromMillisecondsSinceEpoch(0),
+      );
+    }
+
+    final data = raw as Map<String, dynamic>;
+
+    return UserModel.fromJson({
+      ...data,
+      'id': doc.id,
+    });
   }
 
+  // ============================
+  // ORIGINAL copyWith (UNCHANGED)
+  // ============================
   UserModel copyWith({
     String? id,
     String? email,
@@ -106,6 +150,9 @@ class UserModel {
   }
 }
 
+// ============================
+// AddressModel (UNCHANGED)
+// ============================
 class AddressModel {
   final String? street;
   final String? city;
@@ -146,6 +193,9 @@ class AddressModel {
   }
 }
 
+// ============================
+// LocationModel (UNCHANGED)
+// ============================
 class LocationModel {
   final double latitude;
   final double longitude;
@@ -170,6 +220,9 @@ class LocationModel {
   }
 }
 
+// ============================
+// UserRole enum (UNCHANGED)
+// ============================
 enum UserRole {
   customer,
   admin,
