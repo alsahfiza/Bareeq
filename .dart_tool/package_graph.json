@@ -15,6 +15,7 @@
         "firebase_core",
         "firebase_storage",
         "flutter",
+        "flutter_riverpod",
         "image_picker",
         "intl",
         "mobile_scanner",
@@ -176,6 +177,17 @@
         "collection",
         "flutter",
         "nested"
+      ]
+    },
+    {
+      "name": "flutter_riverpod",
+      "version": "2.6.1",
+      "dependencies": [
+        "collection",
+        "flutter",
+        "meta",
+        "riverpod",
+        "state_notifier"
       ]
     },
     {
@@ -643,6 +655,23 @@
       "version": "1.0.0",
       "dependencies": [
         "flutter"
+      ]
+    },
+    {
+      "name": "state_notifier",
+      "version": "1.0.0",
+      "dependencies": [
+        "meta"
+      ]
+    },
+    {
+      "name": "riverpod",
+      "version": "2.6.1",
+      "dependencies": [
+        "collection",
+        "meta",
+        "stack_trace",
+        "state_notifier"
       ]
     },
     {
