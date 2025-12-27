@@ -1,19 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../domain/entities/user_entity.dart';
 import '../../../core/config/usecase_providers.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../../core/config/repository_providers.dart';
+import '../../../domain/entities/user_entity.dart';
 import 'auth_state_provider.dart';
 
 sealed class CurrentUserState {}
+
 class CurrentUserLoading extends CurrentUserState {}
+
 class CurrentUserReady extends CurrentUserState {
   final UserEntity user;
   CurrentUserReady(this.user);
-}
+  }
+
 class CurrentUserError extends CurrentUserState {}
 
-final currentUserProvider =
-    StateNotifierProvider<CurrentUserNotifier, CurrentUserState>((ref) {
-  return CurrentUserNotifier(ref);
+final currentUserProvider = FutureProvider<UserEntity>((ref) async {
+  final repo = ref.read(userRepositoryProvider);
+  return repo.getCurrentUser();
 });
 
 class CurrentUserNotifier extends StateNotifier<CurrentUserState> {

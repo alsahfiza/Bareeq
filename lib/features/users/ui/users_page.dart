@@ -38,7 +38,7 @@ class UsersPage extends ConsumerWidget {
                   DataRow(
                     cells: [
                       DataCell(Text(u.email)),
-                      DataCell(Text(u.role)),
+                      DataCell(Text(u.role.name)),
                       DataCell(Text(u.isActive ? 'Active' : 'Inactive')),
                       DataCell(
                         IconButton(

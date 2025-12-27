@@ -1,37 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../domain/entities/user_role.dart';
 
-import '../../auth/providers/current_user_provider.dart';
-import '../navigation/sidebar_items.dart';
-import 'sidebar_header.dart';
-import 'sidebar_item.dart';
+class AdminSidebar extends StatelessWidget {
+  final UserRole role;
+  final ValueChanged<String> onNavigate;
 
-class AdminSidebar extends ConsumerWidget {
-  const AdminSidebar({super.key});
+  const AdminSidebar({
+    super.key,
+    required this.role,
+    required this.onNavigate,
+  });
+
+  bool _canManageProducts() =>
+      role == UserRole.admin || role == UserRole.superAdmin;
+
+  bool _canViewAudit() =>
+      role == UserRole.auditor || role == UserRole.superAdmin;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final userState = ref.watch(currentUserProvider);
-
-    if (userState is! CurrentUserReady) {
-      return const SizedBox.shrink();
-    }
-
-    final role = userState.user.role;
-
-    return Container(
-      width: 260,
-      color: const Color(0xFF1E1E2D),
-      child: Column(
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
         children: [
-          SidebarHeader(),
-          for (final item in sidebarItems)
-            if (item.isAllowed(role))
-              SidebarItem(
-                title: item.title,
-                route: item.route,
-                icon: item.icon,
-              ),
+          const DrawerHeader(child: Text('Bareeq Admin')),
+
+          ListTile(
+            title: const Text('Dashboard'),
+            onTap: () => onNavigate('/dashboard'),
+          ),
+
+          if (_canManageProducts())
+            ListTile(
+              title: const Text('Products'),
+              onTap: () => onNavigate('/products'),
+            ),
+
+          if (_canViewAudit())
+            ListTile(
+              title: const Text('Audit Logs'),
+              onTap: () => onNavigate('/audit'),
+            ),
         ],
       ),
     );

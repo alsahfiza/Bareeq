@@ -27,9 +27,9 @@ class BareeqAdminApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AdminTheme.light,
       home: AuthGate(
-        child: AdminShell(child: DashboardPage()),
+        child: AdminShell(),
       ),
-      routes: adminRoutes,
+      // routes: adminRoutes,
     );
   }
 }

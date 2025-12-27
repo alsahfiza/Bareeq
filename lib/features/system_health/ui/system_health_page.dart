@@ -58,7 +58,7 @@ class SystemHealthPage extends ConsumerWidget {
               const SizedBox(height: 24),
               _section(
                 'Environment',
-                const [
+                [
                   _staticRow('App Type', 'Admin Dashboard'),
                   _staticRow('Deployment', 'Web'),
                   _staticRow('Architecture', 'Clean Architecture'),
