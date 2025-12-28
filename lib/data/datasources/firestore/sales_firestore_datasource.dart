@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/sale_model.dart';
 
-class SalesFirestoreDatasource {
-  final FirebaseFirestore _firestore;
+class SaleFirestoreDatasource {
+  final FirebaseFirestore firestore;
 
-  SalesFirestoreDatasource(this._firestore);
+  SaleFirestoreDatasource(this.firestore);
 
-  Future<List<SaleModel>> getSales({
+  Future<List<SaleModel>> getAll({
     DateTime? from,
     DateTime? to,
   }) async {
-    Query query = _firestore.collection('sales');
+    Query query = firestore.collection('sales');
 
     if (from != null) {
       query = query.where(
@@ -26,12 +26,7 @@ class SalesFirestoreDatasource {
       );
     }
 
-    final snapshot = await query
-        .orderBy('createdAt', descending: true)
-        .get();
-
-    return snapshot.docs
-        .map((doc) => SaleModel.fromFirestore(doc))
-        .toList();
+    final snap = await query.orderBy('createdAt', descending: true).get();
+    return snap.docs.map(SaleModel.fromFirestore).toList();
   }
 }

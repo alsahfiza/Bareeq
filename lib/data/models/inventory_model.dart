@@ -3,40 +3,27 @@ import '../../domain/entities/inventory_entity.dart';
 
 class InventoryModel {
   final String productId;
-  final String storeId;
   final int quantity;
-  final DateTime updatedAt;
+  final Timestamp updatedAt;
 
   InventoryModel({
     required this.productId,
-    required this.storeId,
     required this.quantity,
     required this.updatedAt,
   });
 
   factory InventoryModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+    final d = doc.data() as Map<String, dynamic>;
     return InventoryModel(
-      productId: data['productId'],
-      storeId: data['storeId'],
-      quantity: data['quantity'],
-      updatedAt: (data['updatedAt'] as Timestamp).toDate(),
+      productId: doc.id,
+      quantity: d['quantity'] ?? 0,
+      updatedAt: d['updatedAt'] ?? Timestamp.now(),
     );
-  }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      'productId': productId,
-      'storeId': storeId,
-      'quantity': quantity,
-      'updatedAt': Timestamp.fromDate(updatedAt),
-    };
   }
 
   InventoryEntity toEntity() => InventoryEntity(
         productId: productId,
-        storeId: storeId,
         quantity: quantity,
-        updatedAt: updatedAt,
+        updatedAt: updatedAt.toDate(),
       );
 }

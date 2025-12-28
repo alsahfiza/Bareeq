@@ -2,11 +2,8 @@ import '../../entities/inventory_entity.dart';
 import '../../repositories/inventory_repository.dart';
 
 class GetInventory {
-  final InventoryRepository repository;
+  final InventoryRepository repo;
+  GetInventory(this.repo);
 
-  GetInventory(this.repository);
-
-  Future<List<InventoryEntity>> call() {
-    return repository.getInventory();
-  }
+  Future<List<InventoryEntity>> call() => repo.getInventory();
 }

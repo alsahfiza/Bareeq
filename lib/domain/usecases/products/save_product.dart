@@ -1,9 +1,9 @@
 import '../../entities/product_entity.dart';
 import '../../repositories/product_repository.dart';
 
-class GetProducts {
+class SaveProduct {
   final ProductRepository repo;
-  GetProducts(this.repo);
+  SaveProduct(this.repo);
 
-  Future<List<ProductEntity>> call() => repo.getProducts();
+  Future<void> call(ProductEntity product) => repo.saveProduct(product);
 }

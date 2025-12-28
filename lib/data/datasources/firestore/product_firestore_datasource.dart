@@ -2,29 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/product_model.dart';
 
 class ProductFirestoreDatasource {
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore firestore;
 
-  ProductFirestoreDatasource(this._firestore);
+  ProductFirestoreDatasource(this.firestore);
 
-  Future<List<ProductModel>> getProducts() async {
-    final snapshot = await _firestore
-        .collection('products')
-        .orderBy('createdAt', descending: true)
-        .get();
-
-    return snapshot.docs
-        .map((doc) => ProductModel.fromFirestore(doc))
-        .toList();
+  Future<List<ProductModel>> getAll() async {
+    final snap = await firestore.collection('products').orderBy('name').get();
+    return snap.docs.map(ProductModel.fromFirestore).toList();
   }
 
-  Future<void> createProduct(ProductModel product) async {
-    await _firestore.collection('products').add(product.toFirestore());
-  }
-
-  Future<void> updateProduct(String productId, ProductModel product) async {
-    await _firestore
-        .collection('products')
-        .doc(productId)
-        .update(product.toFirestore());
+  Future<void> save(ProductModel model) async {
+    await firestore.collection('products').doc(model.id).set(
+          model.data,
+          SetOptions(merge: true),
+        );
   }
 }

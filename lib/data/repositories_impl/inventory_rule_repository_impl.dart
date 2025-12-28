@@ -2,12 +2,28 @@ import '../../domain/entities/inventory_rule_entity.dart';
 import '../../domain/repositories/inventory_rule_repository.dart';
 import '../datasources/firestore/inventory_rule_firestore_datasource.dart';
 import '../models/inventory_rule_model.dart';
+import '../../domain/entities/inventory_entity.dart';
+import '../../domain/repositories/inventory_repository.dart';
+import '../datasources/firestore/inventory_firestore_datasource.dart';
+
 
 class InventoryRuleRepositoryImpl
     implements InventoryRuleRepository {
   final InventoryRuleFirestoreDatasource datasource;
 
   InventoryRuleRepositoryImpl(this.datasource);
+
+
+  @override
+  Future<List<InventoryEntity>> getInventory() async {
+    final models = await datasource.getAll();
+    return models.map((m) => m.toEntity()).toList();
+  }
+
+  @override
+  Future<void> adjustStock(String productId, int delta) {
+    return datasource.adjustStock(productId: productId, delta: delta);
+  }
 
   @override
   Future<int> getDefaultMinimumStock() {

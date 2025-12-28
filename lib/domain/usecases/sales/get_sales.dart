@@ -1,15 +1,15 @@
 import '../../entities/sale_entity.dart';
-import '../../repositories/sales_repository.dart';
+import '../../repositories/sale_repository.dart';
 
 class GetSales {
-  final SalesRepository repository;
+  final SaleRepository repo;
 
-  GetSales(this.repository);
+  GetSales(this.repo);
 
   Future<List<SaleEntity>> call({
     DateTime? from,
     DateTime? to,
   }) {
-    return repository.getSales(from: from, to: to);
+    return repo.getSales(from: from, to: to);
   }
 }

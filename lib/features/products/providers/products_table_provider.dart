@@ -1,10 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../domain/entities/product_entity.dart';
+import '../../../core/config/product_providers.dart';
 
 final productsTableProvider =
-    StateNotifierProvider<ProductsTableNotifier, ProductsTableState>(
-  (ref) => ProductsTableNotifier(),
-);
+    FutureProvider<List<ProductEntity>>((ref) async {
+  return ref.read(getProductsProvider).call();
+});
+
 
 class ProductsTableNotifier extends StateNotifier<ProductsTableState> {
   ProductsTableNotifier() : super(ProductsTableState.empty());

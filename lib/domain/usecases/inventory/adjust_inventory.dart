@@ -1,28 +1,17 @@
-import '../../entities/inventory_entity.dart';
 import '../../repositories/inventory_repository.dart';
 
 class AdjustInventory {
-  final InventoryRepository repository;
+  final InventoryRepository repo;
+  AdjustInventory(this.repo);
 
-  AdjustInventory(this.repository);
-
-  Future<void> call({
-    required InventoryEntity current,
-    required int adjustment,
-  }) async {
-    final newQuantity = current.quantity + adjustment;
-
-    if (newQuantity < 0) {
-      throw Exception('Inventory cannot go below zero');
-    }
-
-    final updated = InventoryEntity(
-      productId: current.productId,
-      storeId: current.storeId,
-      quantity: newQuantity,
-      updatedAt: DateTime.now(),
-    );
-
-    await repository.adjustInventory(updated);
+  Future<void> call(String productId, int delta) {
+    return repo.adjustStock(productId, delta);
   }
 }
+  final InventoryRepository repository; --- IGNORE ---
+ --- IGNORE ---
+  AdjustInventory(this.repository); --- IGNORE ---
+ --- IGNORE ---
+  Future<void> call(InventoryEntity inventory) {
+    return repository.adjustInventory(inventory);
+  } --- IGNORE ---

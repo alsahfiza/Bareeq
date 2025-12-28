@@ -1,64 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../domain/entities/dashboard_kpi_entity.dart';
-import '../../../core/config/dashboard_providers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../data/dashboard_firestore_datasource.dart';
+import '../domain/entities/dashboard_kpi.dart';
 
-class DashboardKpiState {
-  final DashboardKpiEntity? data;
-  final DateTime from;
-  final DateTime to;
-  final bool loading;
+final dashboardDatasourceProvider =
+    Provider<DashboardFirestoreDatasource>(
+  (ref) => DashboardFirestoreDatasource(FirebaseFirestore.instance),
+);
 
-  const DashboardKpiState({
-    required this.data,
-    required this.from,
-    required this.to,
-    required this.loading,
-  });
-
-  DashboardKpiState copyWith({
-    DashboardKpiEntity? data,
-    DateTime? from,
-    DateTime? to,
-    bool? loading,
-  }) {
-    return DashboardKpiState(
-      data: data ?? this.data,
-      from: from ?? this.from,
-      to: to ?? this.to,
-      loading: loading ?? this.loading,
-    );
-  }
-}
-
-final dashboardKpiProvider =
-    StateNotifierProvider<DashboardKpiNotifier, DashboardKpiState>((ref) {
-  return DashboardKpiNotifier(ref);
+final dashboardKpiProvider = FutureProvider<DashboardKpi>((ref) async {
+  return ref.read(dashboardDatasourceProvider).loadKpis();
 });
-
-class DashboardKpiNotifier extends StateNotifier<DashboardKpiState> {
-  final Ref ref;
-
-  DashboardKpiNotifier(this.ref)
-      : super(DashboardKpiState(
-          data: null,
-          from: DateTime.now().subtract(const Duration(days: 7)),
-          to: DateTime.now(),
-          loading: true,
-        )) {
-    _load();
-  }
-
-  Future<void> _load() async {
-    state = state.copyWith(loading: true);
-    final data = await ref.read(getDashboardKpisProvider).call(
-          from: state.from,
-          to: state.to,
-        );
-    state = state.copyWith(data: data, loading: false);
-  }
-
-  void updateRange(DateTime from, DateTime to) {
-    state = state.copyWith(from: from, to: to);
-    _load();
-  }
-}

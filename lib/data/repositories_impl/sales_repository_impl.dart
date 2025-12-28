@@ -1,18 +1,18 @@
 import '../../domain/entities/sale_entity.dart';
-import '../../domain/repositories/sales_repository.dart';
-import '../datasources/firestore/sales_firestore_datasource.dart';
+import '../../domain/repositories/sale_repository.dart';
+import '../datasources/firestore/sale_firestore_datasource.dart';
 
-class SalesRepositoryImpl implements SalesRepository {
-  final SalesFirestoreDatasource datasource;
+class SaleRepositoryImpl implements SaleRepository {
+  final SaleFirestoreDatasource datasource;
 
-  SalesRepositoryImpl(this.datasource);
+  SaleRepositoryImpl(this.datasource);
 
   @override
   Future<List<SaleEntity>> getSales({
     DateTime? from,
     DateTime? to,
   }) async {
-    final models = await datasource.getSales(from: from, to: to);
+    final models = await datasource.getAll(from: from, to: to);
     return models.map((m) => m.toEntity()).toList();
   }
 }

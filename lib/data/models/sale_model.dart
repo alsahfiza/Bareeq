@@ -1,43 +1,22 @@
-import '../../domain/entities/sale_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../domain/entities/sale_entity.dart';
 
 class SaleModel {
   final String id;
-  final String productId;
-  final int quantity;
-  final double total;
-  final double profit;
-  final DateTime createdAt;
+  final Map<String, dynamic> data;
 
-  SaleModel({
-    required this.id,
-    required this.productId,
-    required this.quantity,
-    required this.total,
-    required this.profit,
-    required this.createdAt,
-  });
+  SaleModel(this.id, this.data);
 
   factory SaleModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return SaleModel(
-      id: doc.id,
-      productId: data['productId'],
-      quantity: data['quantity'],
-      total: data['total'],
-      profit: data['profit'],
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-    );
+    return SaleModel(doc.id, doc.data() as Map<String, dynamic>);
   }
 
   SaleEntity toEntity() {
     return SaleEntity(
       id: id,
-      productId: productId,
-      quantity: quantity,
-      total: total,
-      profit: profit,
-      createdAt: createdAt,
+      total: (data['total'] ?? 0).toDouble(),
+      profit: (data['profit'] ?? 0).toDouble(),
+      createdAt: (data['createdAt'] as Timestamp).toDate(),
     );
   }
 }

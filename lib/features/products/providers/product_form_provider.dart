@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../domain/entities/product_entity.dart';
+import 'package:uuid/uuid.dart';
+import '../../../core/config/product_providers.dart';
 
 final productFormProvider =
     StateNotifierProvider<ProductFormNotifier, ProductFormState>(
@@ -46,16 +48,31 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     state = state.copyWith(submitting: true, error: null);
 
     try {
-      // persistence later
-      state = state.copyWith(submitting: false);
-    } catch (e) {
-      state = state.copyWith(
-        submitting: false,
-        error: e.toString(),
+      final now = DateTime.now();
+      final product = ProductEntity(
+        id: const Uuid().v4(),
+        name: state.name,
+        sku: state.sku,
+        barcode: state.barcode,
+        category: state.category,
+        price: state.price,
+        cost: state.cost,
+        isActive: state.isActive,
+        createdAt: now,
+        updatedAt: now,
       );
+
+      await ref.read(saveProductProvider).call(product);
+
+      state = ProductFormState.initial();
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    } finally {
+      state = state.copyWith(submitting: false);
     }
   }
-}
+
+  }
 
 class ProductFormState {
   final String name;

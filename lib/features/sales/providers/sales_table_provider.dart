@@ -1,33 +1,53 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../domain/entities/sale_entity.dart';
-
-final salesTableProvider =
-    StateNotifierProvider<SalesTableNotifier, SalesTableState>(
-  (ref) => SalesTableNotifier(),
-);
-
-class SalesTableNotifier extends StateNotifier<SalesTableState> {
-  SalesTableNotifier() : super(SalesTableState.empty());
-
-  void setFrom(DateTime _) {}
-  void setTo(DateTime _) {}
-
-  void prevPage() {}
-  void nextPage() {}
-
-  double get totalRevenue => 0;
-  double get totalProfit => 0;
-}
+import '../../../core/config/sales_providers.dart';
 
 class SalesTableState {
   final List<SaleEntity> all;
-  final List<SaleEntity> visible;
+  final DateTime? from;
+  final DateTime? to;
 
-  const SalesTableState({
+  SalesTableState({
     required this.all,
-    required this.visible,
+    this.from,
+    this.to,
   });
 
-  factory SalesTableState.empty() =>
-      const SalesTableState(all: [], visible: []);
+  double get totalRevenue =>
+      all.fold(0, (s, e) => s + e.total);
+
+  double get totalProfit =>
+      all.fold(0, (s, e) => s + e.profit);
 }
+
+class SalesTableNotifier extends StateNotifier<SalesTableState> {
+  final Ref ref;
+
+  SalesTableNotifier(this.ref)
+      : super(SalesTableState(all: [])) {
+    load();
+  }
+
+  Future<void> load() async {
+    final data = await ref.read(getSalesProvider).call(
+          from: state.from,
+          to: state.to,
+        );
+    state = SalesTableState(all: data, from: state.from, to: state.to);
+  }
+
+  void setFrom(DateTime? d) {
+    state = SalesTableState(all: state.all, from: d, to: state.to);
+    load();
+  }
+
+  void setTo(DateTime? d) {
+    state = SalesTableState(all: state.all, from: state.from, to: d);
+    load();
+  }
+}
+
+final salesTableProvider =
+    StateNotifierProvider<SalesTableNotifier, SalesTableState>(
+  (ref) => SalesTableNotifier(ref),
+);

@@ -1,9 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../domain/entities/inventory_entity.dart';
+import '../../../core/config/inventory_providers.dart';
+
 
 final inventoryTableProvider =
-    StateNotifierProvider<InventoryTableNotifier, InventoryTableState>(
-  (ref) => InventoryTableNotifier(),
-);
+    FutureProvider<List<InventoryEntity>>((ref) async {
+  return ref.read(getInventoryProvider).call();
+});
 
 class InventoryTableNotifier
     extends StateNotifier<InventoryTableState> {

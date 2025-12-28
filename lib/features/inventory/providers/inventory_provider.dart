@@ -1,23 +1,19 @@
-Future<void> adjustStock({
-  required InventoryEntity current,
-  required int adjustment,
-}) async {
-  try {
-    await ref.read(adjustInventoryProvider).call(
-          current: current,
-          adjustment: adjustment,
-        );
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-    await ref.read(auditLogServiceProvider).log(
-      action: 'ADJUST',
-      entity: 'inventory',
-      entityId: '${current.storeId}_${current.productId}',
-      before: {'quantity': current.quantity},
-      after: {'quantity': current.quantity + adjustment},
-    );
+import '../../data/datasources/firestore/inventory_firestore_datasource.dart';
+import '../../data/repositories_impl/inventory_repository_impl.dart';
+import '../../domain/usecases/inventory/get_inventory.dart';
+import '../../domain/usecases/inventory/adjust_inventory.dart';
 
-    await load();
-  } catch (e) {
-    state = InventoryError(e.toString());
-  }
-}
+final inventoryRepositoryProvider = Provider(
+  (ref) => InventoryRepositoryImpl(
+    InventoryFirestoreDatasource(FirebaseFirestore.instance),
+  ),
+);
+
+final getInventoryProvider =
+    Provider((ref) => GetInventory(ref.read(inventoryRepositoryProvider)));
+
+final adjustInventoryProvider =
+    Provider((ref) => AdjustInventory(ref.read(inventoryRepositoryProvider)));
