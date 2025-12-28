@@ -3,25 +3,28 @@ import 'user_role.dart';
 class UserEntity {
   final String id;
   final String email;
-  final bool isActive;
   final UserRole role;
+  final bool isActive;
+  final DateTime createdAt;
 
   const UserEntity({
     required this.id,
     required this.email,
-    required this.isActive,
     required this.role,
+    required this.isActive,
+    required this.createdAt,
   });
 
   UserEntity copyWith({
-    bool? isActive,
     UserRole? role,
+    bool? isActive,
   }) {
     return UserEntity(
       id: id,
       email: email,
-      isActive: isActive ?? this.isActive,
       role: role ?? this.role,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt,
     );
   }
 }

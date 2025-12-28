@@ -1,52 +1,70 @@
 import 'package:flutter/material.dart';
-import '../../../domain/entities/user_role.dart';
-
-enum SidebarMode { expanded, rail, drawer }
+import 'sidebar_item.dart';
 
 class AdminSidebar extends StatelessWidget {
-  final UserRole role;
-  final SidebarMode mode;
-  final ValueChanged<String> onNavigate;
+  final VoidCallback? onNavigate;
 
   const AdminSidebar({
     super.key,
-    required this.role,
-    required this.mode,
-    required this.onNavigate,
+    this.onNavigate,
   });
-
-  bool get canManageProducts =>
-      role == UserRole.admin || role == UserRole.superAdmin;
-
-  bool get canViewAudit =>
-      role == UserRole.auditor || role == UserRole.superAdmin;
 
   @override
   Widget build(BuildContext context) {
-    final tiles = <Widget>[
-      ListTile(
-        title: const Text('Dashboard'),
-        onTap: () => onNavigate('/dashboard'),
+    return Material(
+      color: Colors.grey.shade100,
+      child: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(12),
+          children: [
+            const Text(
+              'Bareeq Admin',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            SidebarItem(
+              icon: Icons.dashboard,
+              title: 'Dashboard',
+              route: '/dashboard',
+              onNavigate: onNavigate,
+            ),
+            SidebarItem(
+              icon: Icons.inventory_2,
+              title: 'Products',
+              route: '/products',
+              onNavigate: onNavigate,
+            ),
+            SidebarItem(
+              icon: Icons.store,
+              title: 'Inventory',
+              route: '/inventory',
+              onNavigate: onNavigate,
+            ),
+            SidebarItem(
+              icon: Icons.receipt_long,
+              title: 'Sales',
+              route: '/sales',
+              onNavigate: onNavigate,
+            ),
+            SidebarItem(
+              icon: Icons.people,
+              title: 'Users',
+              route: '/users',
+              onNavigate: onNavigate,
+            ),
+            SidebarItem(
+              icon: Icons.settings,
+              title: 'Settings',
+              route: '/settings',
+              onNavigate: onNavigate,
+            ),
+          ],
+        ),
       ),
-      if (canManageProducts)
-        ListTile(
-          title: const Text('Products'),
-          onTap: () => onNavigate('/products'),
-        ),
-      if (canViewAudit)
-        ListTile(
-          title: const Text('Audit'),
-          onTap: () => onNavigate('/audit'),
-        ),
-    ];
-
-    if (mode == SidebarMode.drawer) {
-      return Drawer(child: ListView(children: tiles));
-    }
-
-    return Container(
-      width: mode == SidebarMode.expanded ? 240 : 72,
-      child: ListView(children: tiles),
     );
   }
 }

@@ -1,17 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../data/datasources/firestore/user_firestore_datasource.dart';
+import '../../data/repositories_impl/user_repository_impl.dart';
 import '../../domain/usecases/users/get_users.dart';
 import '../../domain/usecases/users/create_user.dart';
 import '../../domain/usecases/users/update_user.dart';
-import 'repository_providers.dart';
 
-final getUsersProvider = Provider<GetUsers>((ref) {
-  return GetUsers(ref.read(userRepositoryProvider));
+final userRepositoryProvider = Provider<UserRepositoryImpl>((ref) {
+  return UserRepositoryImpl(); // NO args
 });
 
-final createUserProvider = Provider<CreateUser>((ref) {
-  return CreateUser(ref.read(userRepositoryProvider));
-});
 
-final updateUserProvider = Provider<UpdateUser>((ref) {
-  return UpdateUser(ref.read(userRepositoryProvider));
-});
+final getUsersProvider =
+    Provider((ref) => GetUsers(ref.read(userRepositoryProvider)));
+
+final createUserProvider =
+    Provider((ref) => CreateUser(ref.read(userRepositoryProvider)));
+
+final updateUserProvider =
+    Provider((ref) => UpdateUser(ref.read(userRepositoryProvider)));

@@ -1,36 +1,27 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../domain/entities/product_entity.dart';
 import 'package:uuid/uuid.dart';
+import '../../../domain/entities/product_entity.dart';
 import '../../../core/config/product_providers.dart';
+import '../../../domain/usecases/products/save_product.dart';
+import '../../../domain/usecases/products/get_products.dart';
 
 final productFormProvider =
     StateNotifierProvider<ProductFormNotifier, ProductFormState>(
-  (ref) => ProductFormNotifier(),
+  (ref) => ProductFormNotifier(ref),
 );
 
 class ProductFormNotifier extends StateNotifier<ProductFormState> {
-  ProductFormNotifier() : super(ProductFormState.initial());
+  final Ref ref;
 
-  void updateName(String v) =>
-      state = state.copyWith(name: v);
+  ProductFormNotifier(this.ref) : super(ProductFormState.initial());
 
-  void updateSku(String v) =>
-      state = state.copyWith(sku: v);
-
-  void updateBarcode(String v) =>
-      state = state.copyWith(barcode: v);
-
-  void updateCategory(String v) =>
-      state = state.copyWith(category: v);
-
-  void updatePrice(double v) =>
-      state = state.copyWith(price: v);
-
-  void updateCost(double v) =>
-      state = state.copyWith(cost: v);
-
-  void toggleActive(bool v) =>
-      state = state.copyWith(isActive: v);
+  void updateName(String v) => state = state.copyWith(name: v);
+  void updateSku(String v) => state = state.copyWith(sku: v);
+  void updateBarcode(String v) => state = state.copyWith(barcode: v);
+  void updateCategory(String v) => state = state.copyWith(category: v);
+  void updatePrice(double v) => state = state.copyWith(price: v);
+  void updateCost(double v) => state = state.copyWith(cost: v);
+  void toggleActive(bool v) => state = state.copyWith(isActive: v);
 
   void loadForEdit(ProductEntity p) {
     state = state.copyWith(
@@ -49,6 +40,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
     try {
       final now = DateTime.now();
+
       final product = ProductEntity(
         id: const Uuid().v4(),
         name: state.name,
@@ -63,7 +55,6 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
       );
 
       await ref.read(saveProductProvider).call(product);
-
       state = ProductFormState.initial();
     } catch (e) {
       state = state.copyWith(error: e.toString());
@@ -71,66 +62,14 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
       state = state.copyWith(submitting: false);
     }
   }
-
-  }
+}
 
 class ProductFormState {
-  final String name;
-  final String sku;
-  final String barcode;
-  final String category;
-  final double price;
-  final double cost;
-  final bool isActive;
-  final bool submitting;
-  final String? error;
+  final ProductEntity? product;
 
-  const ProductFormState({
-    required this.name,
-    required this.sku,
-    required this.barcode,
-    required this.category,
-    required this.price,
-    required this.cost,
-    required this.isActive,
-    required this.submitting,
-    required this.error,
-  });
+  const ProductFormState._(this.product);
 
-  factory ProductFormState.initial() => const ProductFormState(
-        name: '',
-        sku: '',
-        barcode: '',
-        category: '',
-        price: 0,
-        cost: 0,
-        isActive: true,
-        submitting: false,
-        error: null,
-      );
-  factory ProductFormState.empty() => ProductFormState.initial();
-  
-  ProductFormState copyWith({
-    String? name,
-    String? sku,
-    String? barcode,
-    String? category,
-    double? price,
-    double? cost,
-    bool? isActive,
-    bool? submitting,
-    String? error,
-  }) {
-    return ProductFormState(
-      name: name ?? this.name,
-      sku: sku ?? this.sku,
-      barcode: barcode ?? this.barcode,
-      category: category ?? this.category,
-      price: price ?? this.price,
-      cost: cost ?? this.cost,
-      isActive: isActive ?? this.isActive,
-      submitting: submitting ?? this.submitting,
-      error: error,
-    );
-  }
+  factory ProductFormState.empty() => const ProductFormState._(null);
+  factory ProductFormState.edit(ProductEntity product) =>
+      ProductFormState._(product);
 }

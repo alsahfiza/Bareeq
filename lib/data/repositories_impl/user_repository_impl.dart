@@ -6,13 +6,24 @@ import '../models/user_model.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final UserFirestoreDatasource datasource;
-
-  UserRepositoryImpl(this.datasource);
+  
+  @override
+  Future<List<SaleEntity>> getSales() async {
+    final models = await datasource.getSales();
+    return models.map((m) => m.toEntity()).toList();
+  }
 
   @override
   Future<List<UserEntity>> getUsers() async {
     final models = await datasource.getAllUsers();
     return models.map((m) => m.toEntity()).toList();
+  }
+
+  @override
+  Future<void> saveUser(UserEntity user) {
+    return datasource.save(
+      UserModel(user.id, UserModel.fromEntity(user)),
+    );
   }
 
   @override

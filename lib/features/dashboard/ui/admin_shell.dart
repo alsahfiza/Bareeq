@@ -1,44 +1,70 @@
 import 'package:flutter/material.dart';
-import '../../../domain/entities/user_role.dart';
 import 'admin_sidebar.dart';
 
 class AdminShell extends StatefulWidget {
   final Widget child;
 
-  const AdminShell({super.key, required this.child});
+  const AdminShell({
+    super.key,
+    required this.child,
+  });
 
   @override
   State<AdminShell> createState() => _AdminShellState();
 }
 
 class _AdminShellState extends State<AdminShell> {
-  final UserRole role = UserRole.admin;
+  bool sidebarOpen = false;
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    final mode = width < 600
-        ? SidebarMode.drawer
-        : width < 1000
-            ? SidebarMode.rail
-            : SidebarMode.expanded;
+    final isDesktop = width >= 1200;
+    final isTablet = width >= 800 && width < 1200;
+    final isMobile = width < 800;
 
+    if (isDesktop) {
+      return _desktop();
+    }
+
+    if (isTablet) {
+      return _tablet();
+    }
+
+    return _mobile();
+  }
+
+  Widget _desktop() {
     return Scaffold(
-      drawer: mode == SidebarMode.drawer
-          ? AdminSidebar(
-              role: role,
-              mode: mode,
-              onNavigate: _go,
-            )
-          : null,
       body: Row(
         children: [
-          if (mode != SidebarMode.drawer)
-            AdminSidebar(
-              role: role,
-              mode: mode,
-              onNavigate: _go,
+          const SizedBox(
+            width: 260,
+            child: AdminSidebar(),
+          ),
+          Expanded(child: widget.child),
+        ],
+      ),
+    );
+  }
+
+  Widget _tablet() {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () => setState(() => sidebarOpen = !sidebarOpen),
+        ),
+      ),
+      body: Row(
+        children: [
+          if (sidebarOpen)
+            SizedBox(
+              width: 240,
+              child: AdminSidebar(
+                onNavigate: () => setState(() => sidebarOpen = false),
+              ),
             ),
           Expanded(child: widget.child),
         ],
@@ -46,7 +72,22 @@ class _AdminShellState extends State<AdminShell> {
     );
   }
 
-  void _go(String route) {
-    Navigator.of(context).pushNamed(route);
+  Widget _mobile() {
+    return Scaffold(
+      appBar: AppBar(
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
+      ),
+      drawer: Drawer(
+        child: AdminSidebar(
+          onNavigate: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: widget.child,
+    );
   }
 }

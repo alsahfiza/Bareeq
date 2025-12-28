@@ -1,65 +1,33 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/entities/user_role.dart';
 
 class UserModel {
   final String id;
-  final String email;
-  final bool isActive;
-  final UserRole role;
+  final Map<String, dynamic> data;
 
-  const UserModel({
-    required this.id,
-    required this.email,
-    required this.isActive,
-    required this.role,
-  });
+  UserModel(this.id, this.data);
 
-  factory UserModel.fromFirestore(
-    Map<String, dynamic> json,
-    String id,
-  ) {
-    return UserModel(
-      id: id,
-      email: json['email'] as String,
-      isActive: json['isActive'] as bool? ?? true,
-      role: _parseRole(json['role']),
-    );
-  }
-
-  // ✅ ADD THIS
-  factory UserModel.fromEntity(UserEntity entity) {
-    return UserModel(
-      id: entity.id,
-      email: entity.email,
-      isActive: entity.isActive,
-      role: entity.role,
-    );
+  factory UserModel.fromFirestore(DocumentSnapshot doc) {
+    return UserModel(doc.id, doc.data() as Map<String, dynamic>);
   }
 
   UserEntity toEntity() {
     return UserEntity(
       id: id,
-      email: email,
-      isActive: isActive,
-      role: role,
+      email: data['email'],
+      role: userRoleFromString(data['role']),
+      isActive: data['isActive'] ?? true,
+      createdAt: (data['createdAt'] as Timestamp).toDate(),
     );
   }
 
-  Map<String, dynamic> toFirestore() {
+  static Map<String, dynamic> fromEntity(UserEntity u) {
     return {
-      'email': email,
-      'isActive': isActive,
-      'role': role.name,
+      'email': u.email,
+      'role': userRoleToString(u.role),
+      'isActive': u.isActive,
+      'createdAt': Timestamp.fromDate(u.createdAt),
     };
-  }
-
-  static UserRole _parseRole(dynamic value) {
-    if (value is String) {
-      return UserRole.values.firstWhere(
-        (r) => r.name == value,
-        orElse: () => UserRole.viewer,
-      );
-    }
-    return UserRole.viewer;
   }
 }

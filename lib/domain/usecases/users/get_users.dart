@@ -2,11 +2,8 @@ import '../../entities/user_entity.dart';
 import '../../repositories/user_repository.dart';
 
 class GetUsers {
-  final UserRepository repository;
+  final UserRepository repo;
+  GetUsers(this.repo);
 
-  GetUsers(this.repository);
-
-  Future<List<UserEntity>> call() {
-    return repository.getUsers();
-  }
+  Future<List<UserEntity>> call() => repo.getUsers();
 }

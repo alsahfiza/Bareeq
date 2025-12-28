@@ -1,5 +1,6 @@
 import '../../entities/sale_entity.dart';
-import '../../repositories/sale_repository.dart';
+import '../../repositories/sales_repository.dart';
+
 
 class GetSales {
   final SaleRepository repo;

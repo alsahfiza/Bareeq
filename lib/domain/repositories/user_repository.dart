@@ -5,4 +5,5 @@ abstract class UserRepository {
   Future<UserEntity> getCurrentUser();
   Future<void> createUser(UserEntity user);
   Future<void> updateUser(UserEntity user);
+  Future<void> saveUser(UserEntity user);
 }

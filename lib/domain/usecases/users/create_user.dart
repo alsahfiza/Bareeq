@@ -2,11 +2,8 @@ import '../../entities/user_entity.dart';
 import '../../repositories/user_repository.dart';
 
 class CreateUser {
-  final UserRepository repository;
+  final UserRepository repo;
+  CreateUser(this.repo);
 
-  CreateUser(this.repository);
-
-  Future<void> call(UserEntity user) {
-    return repository.createUser(user);
-  }
+  Future<void> call(UserEntity user) => repo.saveUser(user);
 }

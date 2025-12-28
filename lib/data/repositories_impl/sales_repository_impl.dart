@@ -1,9 +1,9 @@
 import '../../domain/entities/sale_entity.dart';
-import '../../domain/repositories/sale_repository.dart';
-import '../datasources/firestore/sale_firestore_datasource.dart';
+import '../../domain/repositories/sales_repository.dart';
+import '../datasources/firestore/sales_firestore_datasource.dart';
 
-class SaleRepositoryImpl implements SaleRepository {
-  final SaleFirestoreDatasource datasource;
+class SaleRepositoryImpl implements SalesRepository {
+  final SalesFirestoreDatasource datasource;
 
   SaleRepositoryImpl(this.datasource);
 

@@ -4,24 +4,36 @@ class SidebarItem extends StatelessWidget {
   final String title;
   final String route;
   final IconData icon;
+  final VoidCallback? onNavigate;
 
   const SidebarItem({
+    super.key,
     required this.title,
     required this.route,
     required this.icon,
-    super.key,
+    this.onNavigate,
   });
 
   @override
   Widget build(BuildContext context) {
+    final current = ModalRoute.of(context)?.settings.name;
+    final selected = current == route;
+
     return ListTile(
-      leading: Icon(icon, color: Colors.white70),
+      leading: Icon(icon, color: selected ? Colors.blue : Colors.black54),
       title: Text(
         title,
-        style: const TextStyle(color: Colors.white70),
+        style: TextStyle(
+          fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+          color: selected ? Colors.blue : Colors.black,
+        ),
       ),
+      selected: selected,
       onTap: () {
-        Navigator.of(context).pushReplacementNamed(route);
+        if (!selected) {
+          Navigator.of(context).pushReplacementNamed(route);
+        }
+        onNavigate?.call();
       },
     );
   }

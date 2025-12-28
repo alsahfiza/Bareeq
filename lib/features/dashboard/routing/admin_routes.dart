@@ -11,13 +11,14 @@ import '../../snapshots/ui/snapshot_browser_page.dart';
 import '../../system_health/ui/system_health_page.dart';
 
 final Map<String, WidgetBuilder> adminRoutes = {
-  '/': (_) => DashboardPage(),
-  '/products': (_) => ProductsPage(),
-  '/inventory': (_) => InventoryPage(),
-  '/sales': (_) => SalesPage(),
-  '/audit': (_) => AuditLogsPage(),
-  '/snapshots': (_) => SnapshotBrowserPage(),
-  '/system-health': (_) => SystemHealthPage(),
-  '/users': (_) => UsersPage(),
-  '/settings': (_) => SettingsPage(),
+  '/dashboard': (_) => const DashboardPage(),
+
+  // TEMP DISABLED
+  // '/products': (_) => const ProductsPage(),
+  // '/inventory': (_) => const InventoryPage(),
+  // '/sales': (_) => const SalesPage(),
+  // '/users': (_) => const UsersPage(),
+  // '/audit': (_) => const AuditLogsPage(),
+  // '/snapshots': (_) => const SnapshotBrowserPage(),
+  // '/system-health': (_) => const SystemHealthPage(),
 };
