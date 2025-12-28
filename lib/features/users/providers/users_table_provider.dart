@@ -1,21 +1,26 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/config/audit_providers.dart';
 import '../../../domain/entities/user_entity.dart';
 
-class UsersTableNotifier extends StateNotifier<void> {
-  final Ref ref;
+final usersTableProvider =
+    StateNotifierProvider<UsersTableNotifier, UsersTableState>(
+  (ref) => UsersTableNotifier(),
+);
 
-  UsersTableNotifier(this.ref) : super(null);
+class UsersTableNotifier extends StateNotifier<UsersTableState> {
+  UsersTableNotifier() : super(UsersTableState.empty());
 
-  Future<void> toggleActive(UserEntity user) async {
-    final updated = user.copyWith(isActive: !user.isActive);
+  void toggleActive(UserEntity u) {}
+}
 
-    // existing save logic stays untouched
+class UsersTableState {
+  final bool loading;
+  final List<UserEntity> users;
 
-    await ref.read(auditLogServiceProvider).log(
-      action: 'toggle_user_active',
-      before: {'isActive': user.isActive},
-      after: {'isActive': updated.isActive},
-    );
-  }
+  const UsersTableState({
+    required this.loading,
+    required this.users,
+  });
+
+  factory UsersTableState.empty() =>
+      const UsersTableState(loading: false, users: []);
 }

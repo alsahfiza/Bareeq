@@ -34,7 +34,7 @@ class SalesPage extends ConsumerWidget {
                     firstDate: DateTime(2020),
                     lastDate: DateTime.now(),
                   );
-                  notifier.setFrom(d);
+                  if (d != null) notifier.setFrom(d);
                 },
                 child: const Text('From'),
               ),
@@ -46,7 +46,7 @@ class SalesPage extends ConsumerWidget {
                     firstDate: DateTime(2020),
                     lastDate: DateTime.now(),
                   );
-                  notifier.setTo(d);
+                  if (d != null) notifier.setTo(d);
                 },
                 child: const Text('To'),
               ),

@@ -1,21 +1,26 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/config/audit_providers.dart';
 
-class InventoryTableNotifier extends StateNotifier<void> {
-  final Ref ref;
+final inventoryTableProvider =
+    StateNotifierProvider<InventoryTableNotifier, InventoryTableState>(
+  (ref) => InventoryTableNotifier(),
+);
 
-  InventoryTableNotifier(this.ref) : super(null);
+class InventoryTableNotifier
+    extends StateNotifier<InventoryTableState> {
+  InventoryTableNotifier() : super(InventoryTableState.empty());
 
-  Future<void> adjustQuantity({
-    required int oldQty,
-    required int newQty,
-  }) async {
-    // existing inventory logic stays untouched
+  void adjust({required dynamic current, required int delta}) {}
 
-    await ref.read(auditLogServiceProvider).log(
-      action: 'adjust_inventory',
-      before: {'quantity': oldQty},
-      after: {'quantity': newQty},
-    );
-  }
+  void prevPage() {}
+
+  void nextPage() {}
+}
+
+class InventoryTableState {
+  final List<dynamic> visible;
+
+  const InventoryTableState({required this.visible});
+
+  factory InventoryTableState.empty() =>
+      const InventoryTableState(visible: []);
 }

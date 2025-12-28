@@ -1,25 +1,39 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final systemHealthProvider =
+    FutureProvider<SystemHealth>((ref) async {
+  return SystemHealth.empty();
+});
+
 class SystemHealth {
-  final int products;
-  final int inventory;
-  final int sales;
-  final int audits;
+  final int productsCount;
+  final int inventoryCount;
+  final int salesCount;
+  final int usersCount;
+  final int auditLogsCount;
+
+  final DateTime? lastProductUpdate;
+  final DateTime? lastInventoryUpdate;
+  final DateTime? lastSale;
+  final DateTime? lastAuditLog;
 
   const SystemHealth({
-    required this.products,
-    required this.inventory,
-    required this.sales,
-    required this.audits,
+    required this.productsCount,
+    required this.inventoryCount,
+    required this.salesCount,
+    required this.usersCount,
+    required this.auditLogsCount,
+    this.lastProductUpdate,
+    this.lastInventoryUpdate,
+    this.lastSale,
+    this.lastAuditLog,
   });
-}
 
-final systemHealthProvider = FutureProvider<SystemHealth>((ref) async {
-  // TEMP static values until real usecases exist
-  return const SystemHealth(
-    products: 0,
-    inventory: 0,
-    sales: 0,
-    audits: 0,
-  );
-});
+  factory SystemHealth.empty() => const SystemHealth(
+        productsCount: 0,
+        inventoryCount: 0,
+        salesCount: 0,
+        usersCount: 0,
+        auditLogsCount: 0,
+      );
+}
