@@ -1,12 +1,12 @@
-import '../../entities/data_snapshot_entity.dart';
-import '../../repositories/data_snapshot_repository.dart';
+// import '../../entities/data_snapshot_entity.dart';
+// import '../../repositories/data_snapshot_repository.dart';
 
-class GetSnapshotsByType {
-  final DataSnapshotRepository repository;
+// class GetSnapshotsByType {
+//   final DataSnapshotRepository repository;
 
-  GetSnapshotsByType(this.repository);
+//   GetSnapshotsByType(this.repository);
 
-  Future<List<DataSnapshotEntity>> call(SnapshotType type) {
-    return repository.getByType(type);
-  }
-}
+//   Future<List<DataSnapshotEntity>> call(SnapshotType type) {
+//     return repository.getByType(type);
+//   }
+// }

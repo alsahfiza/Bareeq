@@ -1,11 +1,15 @@
 class InventoryEntity {
-  final String productId;
+  final String id;
+  final String productName;
   final int quantity;
-  final DateTime updatedAt;
+  final int minStock;
+  final bool inStock;
 
   const InventoryEntity({
-    required this.productId,
+    required this.id,
+    required this.productName,
     required this.quantity,
-    required this.updatedAt,
+    required this.minStock,
+    required this.inStock,
   });
 }

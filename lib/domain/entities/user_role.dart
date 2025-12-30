@@ -1,10 +1,18 @@
-enum UserRole { admin, manager, viewer }
-
-UserRole userRoleFromString(String v) {
-  return UserRole.values.firstWhere(
-    (e) => e.name == v,
-    orElse: () => UserRole.viewer,
-  );
+enum UserRole {
+  admin,
+  manager,
+  staff,
 }
 
-String userRoleToString(UserRole r) => r.name;
+extension UserRoleX on UserRole {
+  String get label {
+    switch (this) {
+      case UserRole.admin:
+        return 'Admin';
+      case UserRole.manager:
+        return 'Manager';
+      case UserRole.staff:
+        return 'Staff';
+    }
+  }
+}

@@ -1,13 +1,20 @@
 class SaleEntity {
   final String id;
-  final double total;
-  final double profit;
-  final DateTime createdAt;
+  final String productName;
+  final int quantity;
+  final double price;
+  final double cost;
+  final DateTime date;
 
   const SaleEntity({
     required this.id,
-    required this.total,
-    required this.profit,
-    required this.createdAt,
+    required this.productName,
+    required this.quantity,
+    required this.price,
+    required this.cost,
+    required this.date,
   });
+
+  double get revenue => quantity * price;
+  double get profit => quantity * (price - cost);
 }

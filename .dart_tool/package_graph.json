@@ -14,6 +14,7 @@
         "firebase_auth",
         "firebase_core",
         "firebase_storage",
+        "fl_chart",
         "flutter",
         "flutter_riverpod",
         "image_picker",
@@ -177,6 +178,14 @@
         "collection",
         "flutter",
         "nested"
+      ]
+    },
+    {
+      "name": "fl_chart",
+      "version": "0.68.0",
+      "dependencies": [
+        "equatable",
+        "flutter"
       ]
     },
     {
@@ -655,6 +664,14 @@
       "version": "1.0.0",
       "dependencies": [
         "flutter"
+      ]
+    },
+    {
+      "name": "equatable",
+      "version": "2.0.7",
+      "dependencies": [
+        "collection",
+        "meta"
       ]
     },
     {

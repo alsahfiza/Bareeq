@@ -1,112 +1,140 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/system_health_provider.dart';
 
-class SystemHealthPage extends ConsumerWidget {
+class SystemHealthPage extends StatelessWidget {
   const SystemHealthPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(systemHealthProvider);
-
+  Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24),
-      child: async.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Text(e.toString()),
-        data: (s) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'System Health & Metadata',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-              _section(
-                'Record Counts',
-                [
-                  _row('Products', s.productsCount),
-                  _row('Inventory Records', s.inventoryCount),
-                  _row('Sales Records', s.salesCount),
-                  _row('Users', s.usersCount),
-                  _row('Audit Logs', s.auditLogsCount),
-                ],
-              ),
-              const SizedBox(height: 24),
-              _section(
-                'Latest Activity',
-                [
-                  _row(
-                    'Last Product Update',
-                    _fmt(s.lastProductUpdate),
-                  ),
-                  _row(
-                    'Last Inventory Update',
-                    _fmt(s.lastInventoryUpdate),
-                  ),
-                  _row(
-                    'Last Sale',
-                    _fmt(s.lastSale),
-                  ),
-                  _row(
-                    'Last Audit Log',
-                    _fmt(s.lastAuditLog),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              _section(
-                'Environment',
-                [
-                  _staticRow('App Type', 'Admin Dashboard'),
-                  _staticRow('Deployment', 'Web'),
-                  _staticRow('Architecture', 'Clean Architecture'),
-                ],
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  static Widget _section(
-    String title,
-    List<Widget> rows,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style:
-              const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        ...rows,
-      ],
-    );
-  }
-
-  static Widget _row(String label, Object? value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(width: 200, child: Text(label)),
-          Text(value.toString()),
+          const Text(
+            'System Health',
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: _columns(context),
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              children: const [
+                _HealthCard(
+                  title: 'Products',
+                  value: '120',
+                  status: HealthStatus.ok,
+                  lastUpdate: '2025-01-14',
+                ),
+                _HealthCard(
+                  title: 'Inventory Records',
+                  value: '340',
+                  status: HealthStatus.ok,
+                  lastUpdate: '2025-01-14',
+                ),
+                _HealthCard(
+                  title: 'Sales Records',
+                  value: '87',
+                  status: HealthStatus.warning,
+                  lastUpdate: '2025-01-12',
+                ),
+                _HealthCard(
+                  title: 'Users',
+                  value: '12',
+                  status: HealthStatus.ok,
+                  lastUpdate: '2025-01-10',
+                ),
+                _HealthCard(
+                  title: 'Audit Logs',
+                  value: '1,204',
+                  status: HealthStatus.ok,
+                  lastUpdate: '2025-01-14',
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
-  static Widget _staticRow(String label, String value) {
-    return _row(label, value);
+  static int _columns(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+    if (w < 600) return 1;
+    if (w < 900) return 2;
+    return 3;
   }
+}
 
-  static String _fmt(DateTime? d) {
-    if (d == null) return '—';
-    return d.toIso8601String();
+enum HealthStatus { ok, warning, error }
+
+class _HealthCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final HealthStatus status;
+  final String lastUpdate;
+
+  const _HealthCard({
+    required this.title,
+    required this.value,
+    required this.status,
+    required this.lastUpdate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = switch (status) {
+      HealthStatus.ok => Colors.green,
+      HealthStatus.warning => Colors.orange,
+      HealthStatus.error => Colors.red,
+    };
+
+    final icon = switch (status) {
+      HealthStatus.ok => Icons.check_circle,
+      HealthStatus.warning => Icons.warning,
+      HealthStatus.error => Icons.error,
+    };
+
+    return Card(
+      elevation: 1,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, color: color),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            const Spacer(),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Last update: $lastUpdate',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

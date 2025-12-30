@@ -1,84 +1,178 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../domain/entities/data_snapshot_entity.dart';
-import '../../../core/config/data_snapshot_providers.dart';
 
-class SnapshotBrowserPage extends ConsumerStatefulWidget {
+class SnapshotBrowserPage extends StatefulWidget {
   const SnapshotBrowserPage({super.key});
 
   @override
-  ConsumerState<SnapshotBrowserPage> createState() =>
-      _SnapshotBrowserPageState();
+  State<SnapshotBrowserPage> createState() => _SnapshotBrowserPageState();
 }
 
-class _SnapshotBrowserPageState
-    extends ConsumerState<SnapshotBrowserPage> {
-  SnapshotType _type = SnapshotType.products;
+class _SnapshotBrowserPageState extends State<SnapshotBrowserPage> {
+  String _selectedType = 'All';
+
+  final List<Map<String, dynamic>> _snapshots = [
+    {
+      'type': 'Products',
+      'count': 120,
+      'createdAt': DateTime.now().subtract(const Duration(hours: 2)),
+    },
+    {
+      'type': 'Inventory',
+      'count': 340,
+      'createdAt': DateTime.now().subtract(const Duration(days: 1)),
+    },
+    {
+      'type': 'Sales',
+      'count': 87,
+      'createdAt': DateTime.now().subtract(const Duration(days: 3)),
+    },
+    {
+      'type': 'Users',
+      'count': 12,
+      'createdAt': DateTime.now().subtract(const Duration(days: 7)),
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final async = ref.watch(
-      FutureProvider((ref) {
-        return ref.read(getSnapshotsByTypeProvider).call(_type);
-      }),
-    );
+    final filtered = _selectedType == 'All'
+        ? _snapshots
+        : _snapshots.where((s) => s['type'] == _selectedType).toList();
 
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Data Snapshots',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+          _header(),
           const SizedBox(height: 16),
-          DropdownButton<SnapshotType>(
-            value: _type,
-            items: SnapshotType.values
-                .map(
-                  (t) => DropdownMenuItem(
-                    value: t,
-                    child: Text(t.name),
-                  ),
-                )
-                .toList(),
-            onChanged: (v) => setState(() => _type = v!),
-          ),
+          _filters(),
           const SizedBox(height: 16),
-          Expanded(
-            child: async.when(
-              loading: () =>
-                  const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Text(e.toString()),
-              data: (items) {
-                if (items.isEmpty) {
-                  return const Text('No snapshots found.');
-                }
+          Expanded(child: _table(filtered)),
+        ],
+      ),
+    );
+  }
 
-                return ListView.separated(
-                  itemCount: items.length,
-                  separatorBuilder: (_, __) =>
-                      const Divider(height: 24),
-                  itemBuilder: (_, i) {
-                    final s = items[i];
-                    return ListTile(
-                      title: Text(
-                        '${s.type.name} snapshot',
-                      ),
-                      subtitle: Text(
-                        'Created ${s.createdAt.toIso8601String()} '
-                        'by ${s.createdBy}',
-                      ),
-                      trailing: Text(s.data.toString()),
-                    );
-                  },
-                );
-              },
-            ),
+  Widget _header() {
+    return const Text(
+      'Snapshots',
+      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+    );
+  }
+
+  Widget _filters() {
+    return Row(
+      children: [
+        const Text('Type:'),
+        const SizedBox(width: 8),
+        DropdownButton<String>(
+          value: _selectedType,
+          items: const [
+            DropdownMenuItem(value: 'All', child: Text('All')),
+            DropdownMenuItem(value: 'Products', child: Text('Products')),
+            DropdownMenuItem(value: 'Inventory', child: Text('Inventory')),
+            DropdownMenuItem(value: 'Sales', child: Text('Sales')),
+            DropdownMenuItem(value: 'Users', child: Text('Users')),
+          ],
+          onChanged: (v) {
+            if (v != null) {
+              setState(() => _selectedType = v);
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _table(List<Map<String, dynamic>> data) {
+    return Card(
+      elevation: 1,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: DataTable(
+          columns: const [
+            DataColumn(label: Text('Type')),
+            DataColumn(label: Text('Records')),
+            DataColumn(label: Text('Created At')),
+            DataColumn(label: Text('Actions')),
+          ],
+          rows: data.map((s) {
+            return DataRow(cells: [
+              DataCell(Text(s['type'])),
+              DataCell(Text(s['count'].toString())),
+              DataCell(Text(_fmt(s['createdAt']))),
+              DataCell(
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.visibility),
+                      onPressed: () {
+                        _showViewDialog(s);
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        _showDeleteDialog(s);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ]);
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  void _showViewDialog(Map<String, dynamic> snapshot) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Snapshot Details'),
+        content: Text(
+          'Type: ${snapshot['type']}\n'
+          'Records: ${snapshot['count']}\n'
+          'Created: ${_fmt(snapshot['createdAt'])}',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
           ),
         ],
       ),
     );
+  }
+
+  void _showDeleteDialog(Map<String, dynamic> snapshot) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Delete Snapshot'),
+        content: const Text(
+          'This action cannot be undone.\nAre you sure?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _fmt(DateTime d) {
+    return '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
   }
 }

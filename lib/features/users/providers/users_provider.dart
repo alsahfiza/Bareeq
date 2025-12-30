@@ -1,21 +1,8 @@
-Future<void> createUser(UserEntity user) async {
-  try {
-    await ref.read(createUserProvider).call(user);
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'users_notifier.dart';
+import 'users_state.dart';
 
-    await ref.read(auditLogServiceProvider).log(
-      action: 'CREATE',
-      entity: 'user',
-      entityId: user.id,
-      before: {},
-      after: {
-        'role': user.role,
-        'storeIds': user.storeIds,
-        'isActive': user.isActive,
-      },
-    );
-
-    await loadUsers();
-  } catch (e) {
-    state = UsersError(e.toString());
-  }
-}
+final usersProvider =
+    StateNotifierProvider<UsersNotifier, UsersState>(
+  (ref) => UsersNotifier(),
+);

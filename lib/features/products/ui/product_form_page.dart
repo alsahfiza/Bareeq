@@ -1,79 +1,133 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/product_form_provider.dart';
 
-class ProductFormPage extends ConsumerWidget {
+class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(productFormProvider);
-    final notifier = ref.read(productFormProvider.notifier);
+  State<ProductFormPage> createState() => _ProductFormPageState();
+}
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Product')),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
+class _ProductFormPageState extends State<ProductFormPage> {
+  final _formKey = GlobalKey<FormState>();
+
+  final _nameController = TextEditingController();
+  final _skuController = TextEditingController();
+  final _barcodeController = TextEditingController();
+  final _categoryController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _costController = TextEditingController();
+
+  bool _isActive = true;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _skuController.dispose();
+    _barcodeController.dispose();
+    _categoryController.dispose();
+    _priceController.dispose();
+    _costController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Form(
+        key: _formKey,
         child: ListView(
           children: [
-            TextField(
-              decoration: const InputDecoration(labelText: 'Name'),
-              onChanged: notifier.updateName,
-              controller: TextEditingController(text: state.name),
+            const Text(
+              'Product Form',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'SKU'),
-              onChanged: notifier.updateSku,
-              controller: TextEditingController(text: state.sku),
+            const SizedBox(height: 24),
+
+            _field('Product Name', _nameController),
+            _field('SKU', _skuController),
+            _field('Barcode', _barcodeController),
+            _field('Category', _categoryController),
+
+            Row(
+              children: [
+                Expanded(
+                  child: _numberField('Price', _priceController),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _numberField('Cost', _costController),
+                ),
+              ],
             ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Barcode'),
-              onChanged: notifier.updateBarcode,
-              controller: TextEditingController(text: state.barcode),
-            ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Category'),
-              onChanged: notifier.updateCategory,
-              controller: TextEditingController(text: state.category),
-            ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Price'),
-              keyboardType: TextInputType.number,
-              onChanged: (v) =>
-                  notifier.updatePrice(double.tryParse(v) ?? 0),
-              controller:
-                  TextEditingController(text: state.price.toString()),
-            ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Cost'),
-              keyboardType: TextInputType.number,
-              onChanged: (v) =>
-                  notifier.updateCost(double.tryParse(v) ?? 0),
-              controller:
-                  TextEditingController(text: state.cost.toString()),
-            ),
+
+            const SizedBox(height: 16),
+
             SwitchListTile(
+              contentPadding: EdgeInsets.zero,
               title: const Text('Active'),
-              value: state.isActive,
-              onChanged: notifier.toggleActive,
+              value: _isActive,
+              onChanged: (v) => setState(() => _isActive = v),
             ),
-            const SizedBox(height: 16),
-            if (state.error != null)
-              Text(
-                state.error!,
-                style: const TextStyle(color: Colors.red),
-              ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed:
-                  state.submitting ? null : () => notifier.submit(),
-              child: state.submitting
-                  ? const CircularProgressIndicator()
-                  : const Text('Save'),
+
+            const SizedBox(height: 32),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                const SizedBox(width: 12),
+                ElevatedButton(
+                  onPressed: _submit,
+                  child: const Text('Save Product'),
+                ),
+              ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _field(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+        ),
+        validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+      ),
+    );
+  }
+
+  Widget _numberField(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+        ),
+        validator: (v) =>
+            v == null || double.tryParse(v) == null ? 'Invalid number' : null,
+      ),
+    );
+  }
+
+  void _submit() {
+    if (!_formKey.currentState!.validate()) return;
+
+    // UI only — no persistence
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Product saved (UI only)')),
     );
   }
 }

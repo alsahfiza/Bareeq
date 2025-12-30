@@ -16,6 +16,8 @@ dependencies:
   cloud_firestore: ^5.5.2
   firebase_storage: ^12.3.6
   flutter_riverpod: ^2.5.1
+
+  fl_chart: ^0.68.0
   
   # State Management
   provider: ^6.1.2
