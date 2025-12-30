@@ -2150,7 +2150,6 @@ file:///home/codespace/flutter/packages/flutter_web_plugins/lib/src/plugin_regis
 file:///workspaces/Bareeq/.dart_tool/flutter_build/6fc40151ef2546cbb10b6a00761c8ac2/main.dart
 file:///workspaces/Bareeq/.dart_tool/flutter_build/6fc40151ef2546cbb10b6a00761c8ac2/web_plugin_registrant.dart
 file:///workspaces/Bareeq/.dart_tool/package_config.json
-file:///workspaces/Bareeq/lib/core/layout/admin_card.dart
 file:///workspaces/Bareeq/lib/core/layout/admin_shell.dart
 file:///workspaces/Bareeq/lib/core/layout/admin_sidebar.dart
 file:///workspaces/Bareeq/lib/core/layout/admin_topbar.dart
@@ -2166,6 +2165,19 @@ file:///workspaces/Bareeq/lib/domain/entities/user_role.dart
 file:///workspaces/Bareeq/lib/features/auth/ui/forgot_password_page.dart
 file:///workspaces/Bareeq/lib/features/auth/ui/login_page.dart
 file:///workspaces/Bareeq/lib/features/dashboard/ui/dashboard_page.dart
+file:///workspaces/Bareeq/lib/features/dashboard/ui/widgets/category_donut.dart
+file:///workspaces/Bareeq/lib/features/dashboard/ui/widgets/customer_donut.dart
+file:///workspaces/Bareeq/lib/features/dashboard/ui/widgets/dashboard_kpi_card.dart
+file:///workspaces/Bareeq/lib/features/dashboard/ui/widgets/dashboard_kpi_grid.dart
+file:///workspaces/Bareeq/lib/features/dashboard/ui/widgets/low_stock_products.dart
+file:///workspaces/Bareeq/lib/features/dashboard/ui/widgets/order_heatmap.dart
+file:///workspaces/Bareeq/lib/features/dashboard/ui/widgets/profit_chart.dart
+file:///workspaces/Bareeq/lib/features/dashboard/ui/widgets/recent_sales.dart
+file:///workspaces/Bareeq/lib/features/dashboard/ui/widgets/recent_transactions_table.dart
+file:///workspaces/Bareeq/lib/features/dashboard/ui/widgets/sales_purchase_chart.dart
+file:///workspaces/Bareeq/lib/features/dashboard/ui/widgets/sales_statistics_chart.dart
+file:///workspaces/Bareeq/lib/features/dashboard/ui/widgets/top_products.dart
+file:///workspaces/Bareeq/lib/features/dashboard/ui/widgets/top_selling_products.dart
 file:///workspaces/Bareeq/lib/features/inventory/providers/inventory_notifier.dart
 file:///workspaces/Bareeq/lib/features/inventory/providers/inventory_provider.dart
 file:///workspaces/Bareeq/lib/features/inventory/providers/inventory_state.dart

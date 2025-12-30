@@ -1,100 +1,54 @@
 import 'package:flutter/material.dart';
-import '../../../../core/layout/admin_card.dart';
 
 class OrderHeatmap extends StatelessWidget {
   const OrderHeatmap({super.key});
 
-  static const int rows = 7;   // days
-  static const int cols = 24;  // hours
-
   @override
   Widget build(BuildContext context) {
-    return AdminCard(
-      title: 'Order Activity Heatmap',
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final cellWidth = constraints.maxWidth / cols;
-          final cellHeight = constraints.maxHeight / rows;
-
-          final cellSize = cellWidth < cellHeight
-              ? cellWidth
-              : cellHeight;
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _daysHeader(cellSize),
-              const SizedBox(height: 8),
-              Expanded(child: _grid(cellSize)),
-            ],
-          );
-        },
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: _decoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _header(),
+          const SizedBox(height: 12),
+          _weekLabels(),
+          const SizedBox(height: 8),
+          _grid(),
+        ],
       ),
     );
   }
 
-  Widget _daysHeader(double cellSize) {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
+  Widget _header() {
     return Row(
-      children: [
-        const SizedBox(width: 40),
-        Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(
-              6,
-              (i) => Text(
-                '${i * 4}:00',
-                style: const TextStyle(fontSize: 11),
-              ),
-            ),
-          ),
+      children: const [
+        Icon(Icons.grid_view, size: 18),
+        SizedBox(width: 8),
+        Text(
+          'Order Statistics',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
         ),
       ],
     );
   }
 
-  Widget _grid(double cellSize) {
+  Widget _weekLabels() {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
     return Row(
-      children: [
-        _dayLabels(),
-        Expanded(
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: cols,
-              childAspectRatio: 1,
-            ),
-            itemCount: rows * cols,
-            itemBuilder: (context, index) {
-              final intensity = _fakeIntensity(index);
-              return Container(
-                margin: const EdgeInsets.all(1),
-                decoration: BoxDecoration(
-                  color: _colorFor(intensity),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _dayLabels() {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: days
           .map(
-            (d) => SizedBox(
-              height: 22,
-              child: Text(
-                d,
-                style: const TextStyle(fontSize: 11),
+            (d) => Expanded(
+              child: Center(
+                child: Text(
+                  d,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey,
+                  ),
+                ),
               ),
             ),
           )
@@ -102,23 +56,55 @@ class OrderHeatmap extends StatelessWidget {
     );
   }
 
-  int _fakeIntensity(int index) {
-    final hour = index % cols;
-    if (hour >= 9 && hour <= 18) return 3;
-    if (hour >= 6 && hour <= 21) return 2;
-    return 1;
+  Widget _grid() {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 49,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 7,
+        mainAxisSpacing: 6,
+        crossAxisSpacing: 6,
+        childAspectRatio: 1.8,
+      ),
+      itemBuilder: (context, index) {
+        final intensity = (index % 5) + 1;
+        return Container(
+          decoration: BoxDecoration(
+            color: _colorForIntensity(intensity),
+            borderRadius: BorderRadius.circular(4),
+          ),
+        );
+      },
+    );
   }
 
-  Color _colorFor(int value) {
-    switch (value) {
-      case 3:
-        return Colors.orange.shade700;
-      case 2:
-        return Colors.orange.shade400;
+  Color _colorForIntensity(int level) {
+    switch (level) {
       case 1:
-        return Colors.orange.shade200;
+        return const Color(0xFFFFF7EC);
+      case 2:
+        return const Color(0xFFFFE8CC);
+      case 3:
+        return const Color(0xFFFFD7A6);
+      case 4:
+        return const Color(0xFFFFC480);
       default:
-        return Colors.grey.shade200;
+        return const Color(0xFFFFA44C);
     }
+  }
+
+  BoxDecoration _decoration() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(14),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x11000000),
+          blurRadius: 12,
+          offset: Offset(0, 6),
+        ),
+      ],
+    );
   }
 }

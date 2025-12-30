@@ -1,37 +1,46 @@
 import 'package:flutter/material.dart';
 
-enum ChartRange { day, week, month }
-
 class ChartTimeFilter extends StatelessWidget {
-  final ChartRange active;
-  final ValueChanged<ChartRange> onChanged;
+  const ChartTimeFilter({super.key});
 
-  const ChartTimeFilter({
-    super.key,
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      children: const [
+        _FilterChip(label: 'Today', active: false),
+        _FilterChip(label: 'Week', active: false),
+        _FilterChip(label: 'Month', active: true),
+        _FilterChip(label: 'Year', active: false),
+      ],
+    );
+  }
+}
+
+class _FilterChip extends StatelessWidget {
+  final String label;
+  final bool active;
+
+  const _FilterChip({
+    required this.label,
     required this.active,
-    required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _item(context, ChartRange.day, '1D'),
-        _item(context, ChartRange.week, '1W'),
-        _item(context, ChartRange.month, '1M'),
-      ],
-    );
-  }
-
-  Widget _item(BuildContext context, ChartRange value, String label) {
-    final selected = value == active;
-
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: ChoiceChip(
-        label: Text(label),
-        selected: selected,
-        onSelected: (_) => onChanged(value),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: active ? const Color(0xFFFFA44C) : const Color(0xFFF4F6F8),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: active ? Colors.white : Colors.black87,
+        ),
       ),
     );
   }

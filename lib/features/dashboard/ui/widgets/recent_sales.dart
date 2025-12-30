@@ -1,157 +1,152 @@
 import 'package:flutter/material.dart';
-import '../../../../core/layout/admin_card.dart';
 
-class RecentSalesTable extends StatelessWidget {
-  const RecentSalesTable({super.key});
+class RecentSales extends StatelessWidget {
+  const RecentSales({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AdminCard(
-      title: 'Recent Sales',
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final compact = constraints.maxWidth < 600;
-
-          return Column(
-            children: [
-              _header(compact),
-              const Divider(height: 16),
-
-              _row(
-                compact: compact,
-                id: 'INV-10021',
-                customer: 'Ahmed Ali',
-                amount: 420.00,
-                status: 'Paid',
-                time: '10 min ago',
-              ),
-              _row(
-                compact: compact,
-                id: 'INV-10020',
-                customer: 'Sara Khaled',
-                amount: 315.50,
-                status: 'Pending',
-                time: '32 min ago',
-              ),
-              _row(
-                compact: compact,
-                id: 'INV-10019',
-                customer: 'Mohammed Saeed',
-                amount: 1280.00,
-                status: 'Paid',
-                time: '1 hr ago',
-              ),
-              _row(
-                compact: compact,
-                id: 'INV-10018',
-                customer: 'Faisal Noor',
-                amount: 210.75,
-                status: 'Cancelled',
-                time: '2 hr ago',
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _header(bool compact) {
-    return Row(
-      children: [
-        _cell('Invoice', flex: 2, bold: true),
-        if (!compact) _cell('Customer', flex: 3, bold: true),
-        _cell('Amount', flex: 2, bold: true, alignRight: true),
-        _cell('Status', flex: 2, bold: true),
-        if (!compact) _cell('Time', flex: 2, bold: true),
-      ],
-    );
-  }
-
-  Widget _row({
-    required bool compact,
-    required String id,
-    required String customer,
-    required double amount,
-    required String status,
-    required String time,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          _cell(id, flex: 2),
-          if (!compact) _cell(customer, flex: 3),
-          _cell(
-            '\$${amount.toStringAsFixed(2)}',
-            flex: 2,
-            alignRight: true,
-            bold: true,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: _decoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          _Header(),
+          SizedBox(height: 12),
+          _SaleRow(
+            name: 'John Smith',
+            time: '2 min ago',
+            amount: '\$1,240',
           ),
-          _statusCell(status, flex: 2),
-          if (!compact) _cell(time, flex: 2, muted: true),
+          Divider(),
+          _SaleRow(
+            name: 'Sarah Johnson',
+            time: '10 min ago',
+            amount: '\$980',
+          ),
+          Divider(),
+          _SaleRow(
+            name: 'Michael Brown',
+            time: '25 min ago',
+            amount: '\$2,540',
+          ),
+          Divider(),
+          _SaleRow(
+            name: 'Emily Davis',
+            time: '1 hour ago',
+            amount: '\$760',
+          ),
         ],
       ),
     );
   }
 
-  Widget _cell(
-    String text, {
-    required int flex,
-    bool bold = false,
-    bool muted = false,
-    bool alignRight = false,
-  }) {
-    return Expanded(
-      flex: flex,
+  BoxDecoration _decoration() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(14),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x11000000),
+          blurRadius: 12,
+          offset: Offset(0, 6),
+        ),
+      ],
+    );
+  }
+}
+
+/* ---------------- HEADER ---------------- */
+
+class _Header extends StatelessWidget {
+  const _Header();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: const [
+        Icon(Icons.receipt_long, size: 18),
+        SizedBox(width: 8),
+        Text(
+          'Recent Sales',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+}
+
+/* ---------------- ROW ---------------- */
+
+class _SaleRow extends StatelessWidget {
+  final String name;
+  final String time;
+  final String amount;
+
+  const _SaleRow({
+    required this.name,
+    required this.time,
+    required this.amount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: [
+          _avatar(),
+          const SizedBox(width: 12),
+          Expanded(child: _info()),
+          const SizedBox(width: 12),
+          Text(
+            amount,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _avatar() {
+    return CircleAvatar(
+      radius: 20,
+      backgroundColor: const Color(0xFFF4F6F8),
       child: Text(
-        text,
-        textAlign: alignRight ? TextAlign.right : TextAlign.left,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          fontWeight: bold ? FontWeight.w600 : FontWeight.normal,
-          color: muted ? Colors.grey : null,
+        name.isNotEmpty ? name[0] : '',
+        style: const TextStyle(
+          color: Colors.black87,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
   }
 
-  Widget _statusCell(String status, {required int flex}) {
-    Color bg;
-    Color fg;
-
-    switch (status) {
-      case 'Paid':
-        bg = Colors.green.shade100;
-        fg = Colors.green.shade800;
-        break;
-      case 'Pending':
-        bg = Colors.orange.shade100;
-        fg = Colors.orange.shade800;
-        break;
-      default:
-        bg = Colors.red.shade100;
-        fg = Colors.red.shade800;
-    }
-
-    return Expanded(
-      flex: flex,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Text(
-          status,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 12,
+  Widget _info() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: fg,
           ),
         ),
-      ),
+        const SizedBox(height: 2),
+        Text(
+          time,
+          style: const TextStyle(
+            fontSize: 11,
+            color: Colors.grey,
+          ),
+        ),
+      ],
     );
   }
 }
