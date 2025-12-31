@@ -17,6 +17,7 @@
         "fl_chart",
         "flutter",
         "flutter_riverpod",
+        "google_fonts",
         "image_picker",
         "intl",
         "mobile_scanner",
@@ -178,6 +179,16 @@
         "collection",
         "flutter",
         "nested"
+      ]
+    },
+    {
+      "name": "google_fonts",
+      "version": "6.3.3",
+      "dependencies": [
+        "crypto",
+        "flutter",
+        "http",
+        "path_provider"
       ]
     },
     {
