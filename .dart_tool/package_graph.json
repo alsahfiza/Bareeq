@@ -91,7 +91,7 @@
     },
     {
       "name": "mobile_scanner",
-      "version": "3.5.7",
+      "version": "4.0.1",
       "dependencies": [
         "flutter",
         "flutter_web_plugins",

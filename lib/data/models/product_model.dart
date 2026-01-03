@@ -1,42 +1,38 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../domain/entities/product_entity.dart';
-
 class ProductModel {
   final String id;
-  final Map<String, dynamic> data;
+  String name;
+  String sku;
+  String barcode;
+  String category;
+  String brand;
+  double costPrice;
+  double sellingPrice;
+  int quantity;
+  int lowStock;
+  bool active;
+  String description;
 
-  ProductModel(this.id, this.data);
+  ProductModel({
+    required this.id,
+    required this.name,
+    required this.sku,
+    required this.barcode,
+    required this.category,
+    required this.brand,
+    required this.costPrice,
+    required this.sellingPrice,
+    required this.quantity,
+    required this.lowStock,
+    required this.active,
+    required this.description,
+  });
+}
 
-  factory ProductModel.fromFirestore(DocumentSnapshot doc) {
-    return ProductModel(doc.id, doc.data() as Map<String, dynamic>);
-  }
 
-  ProductEntity toEntity() {
-    return ProductEntity(
-      id: id,
-      name: data['name'] ?? '',
-      sku: data['sku'] ?? '',
-      barcode: data['barcode'] ?? '',
-      category: data['category'] ?? '',
-      price: (data['price'] ?? 0).toDouble(),
-      cost: (data['cost'] ?? 0).toDouble(),
-      isActive: data['isActive'] ?? true,
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      updatedAt: (data['updatedAt'] as Timestamp).toDate(),
-    );
-  }
+class ProductInventory {
+  static final List<ProductModel> products = [];
 
-  static Map<String, dynamic> fromEntity(ProductEntity e) {
-    return {
-      'name': e.name,
-      'sku': e.sku,
-      'barcode': e.barcode,
-      'category': e.category,
-      'price': e.price,
-      'cost': e.cost,
-      'isActive': e.isActive,
-      'createdAt': Timestamp.fromDate(e.createdAt),
-      'updatedAt': Timestamp.fromDate(e.updatedAt),
-    };
+  static void addProduct(ProductModel product) {
+    products.insert(0, product);
   }
 }

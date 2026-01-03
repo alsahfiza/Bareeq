@@ -5,7 +5,7 @@ import 'app_routes.dart';
 // pages
 import '../../features/dashboard/ui/dashboard_page.dart';
 import '../../features/products/ui/products_page.dart';
-import '../../features/products/ui/product_form_page.dart';
+// import '../../features/products/ui/product_form_page.dart';
 import '../../features/inventory/ui/inventory_page.dart';
 import '../../features/inventory/ui/inventory_adjust_page.dart';
 import '../../features/sales/ui/sales_page.dart';
@@ -27,8 +27,8 @@ class AppRouter {
       case AppRoutes.products:
         return _page(const ProductsPage());
 
-      case AppRoutes.productForm:
-        return _page(const ProductFormPage());
+      // case AppRoutes.productForm:
+      //   return _page(const ProductFormPage());
 
       case AppRoutes.inventory:
         return _page(const InventoryPage());
