@@ -2281,11 +2281,13 @@ file:///workspaces/Bareeq/lib/features/products/ui/delete_confirmation_dialog.da
 file:///workspaces/Bareeq/lib/features/products/ui/edit_product_page.dart
 file:///workspaces/Bareeq/lib/features/products/ui/products_page.dart
 file:///workspaces/Bareeq/lib/features/products/ui/view_product_page.dart
-file:///workspaces/Bareeq/lib/features/products/widgets/action_icon.dart
 file:///workspaces/Bareeq/lib/features/products/widgets/adjust_stock_dialog.dart
+file:///workspaces/Bareeq/lib/features/products/widgets/empty_state.dart
+file:///workspaces/Bareeq/lib/features/products/widgets/pagination_footer.dart
 file:///workspaces/Bareeq/lib/features/products/widgets/product_row.dart
-file:///workspaces/Bareeq/lib/features/products/widgets/products_table.dart
-file:///workspaces/Bareeq/lib/features/products/widgets/status_pill.dart
+file:///workspaces/Bareeq/lib/features/products/widgets/products_controls.dart
+file:///workspaces/Bareeq/lib/features/products/widgets/products_header.dart
+file:///workspaces/Bareeq/lib/features/products/widgets/products_table_header.dart
 file:///workspaces/Bareeq/lib/features/sales/ui/sales_page.dart
 file:///workspaces/Bareeq/lib/features/snapshots/ui/snapshot_browser_page.dart
 file:///workspaces/Bareeq/lib/features/system_health/ui/system_health_page.dart

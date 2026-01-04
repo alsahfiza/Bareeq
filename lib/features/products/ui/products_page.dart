@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
+
 import '../../../data/models/product_model.dart';
 import 'add_product_page.dart';
-import '../widgets/products_table.dart';
+import 'view_product_page.dart';
+import 'edit_product_page.dart';
+import 'delete_confirmation_dialog.dart';
 
+import '../widgets/products_header.dart';
+import '../widgets/products_controls.dart';
+import '../widgets/products_table_header.dart';
+import '../widgets/product_row.dart';
+import '../widgets/pagination_footer.dart';
+import '../widgets/empty_state.dart';
+
+enum SortColumn { product, code, category, price, brand, cost, qty }
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({super.key});
@@ -12,401 +23,344 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
-  final List<ProductModel> _allProducts = [
-    ProductModel(
-      id: '1',
-      name: 'Apple Watch Series 9',
-      sku: 'AW-00921',
-      barcode: '978020137962',
-      category: 'Wearables',
-      brand: 'Apple',
-      costPrice: 500,
-      sellingPrice: 640,
-      quantity: 12,
-      lowStock: 5,
-      active: true,
-      description: 'Apple Watch Series 9',
-    ),
-    ProductModel(
-      id: '2',
-      name: 'iPhone 15 Pro',
-      sku: 'IP-15P',
-      barcode: '978020137963',
-      category: 'Mobiles',
-      brand: 'Apple',
-      costPrice: 900,
-      sellingPrice: 1200,
-      quantity: 2,
-      lowStock: 5,
-      active: true,
-      description: 'iPhone 15 Pro',
-    ),
-  ];
+  // ================= DATA =================
+  late List<ProductModel> _all;
+  late List<ProductModel> _filtered;
 
-  String _search = '';
-  String _category = 'All';
-  String _stock = 'All';
-  String _status = 'All';
-
-  String _sortBy = 'name';
-  bool _sortAsc = true;
-
+  // ================= UI STATE =================
   final Set<String> _selectedIds = {};
+  SortColumn _sortColumn = SortColumn.product;
+  bool _ascending = true;
 
+  // ================= PAGINATION =================
+  int _rowsPerPage = 10;
   int _page = 1;
-  final int _pageSize = 5;
+  String _search = '';
 
-  final Map<String, bool> _visibleColumns = {
-    'category': true,
-    'price': true,
-    'stock': true,
-    'status': true,
-  };
+  // ================= SCROLL =================
+  final ScrollController _horizontal = ScrollController();
+  final ScrollController _vertical = ScrollController();
+
+  static const double _tableWidth = 1300;
 
   @override
-  Widget build(BuildContext context) {
-    final filtered = _applyFilters();
-    final paged = _paginate(filtered);
-
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          // ================= HEADER =================
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Products',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const AddProductPage(),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Product'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // ================= STICKY FILTERS =================
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _FiltersDelegate(
-              child: _FiltersBar(
-                search: _search,
-                category: _category,
-                stock: _stock,
-                status: _status,
-                onSearch: (v) => setState(() {
-                  _search = v;
-                  _page = 1;
-                }),
-                onClearSearch: () => setState(() {
-                  _search = '';
-                  _page = 1;
-                }),
-                onCategory: (v) => setState(() {
-                  _category = v!;
-                  _page = 1;
-                }),
-                onStock: (v) => setState(() {
-                  _stock = v!;
-                  _page = 1;
-                }),
-                onStatus: (v) => setState(() {
-                  _status = v!;
-                  _page = 1;
-                }),
-              ),
-            ),
-          ),
-
-          // ================= TABLE =================
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: ProductsTable(
-                products: paged,
-                total: filtered.length,
-                page: _page,
-                pageSize: _pageSize,
-                selectedIds: _selectedIds,
-                visibleColumns: _visibleColumns,
-                sortBy: _sortBy,
-                sortAsc: _sortAsc,
-                onSelectAll: (v) {
-                  setState(() {
-                    v
-                        ? _selectedIds.addAll(paged.map((e) => e.id))
-                        : _selectedIds.clear();
-                  });
-                },
-                onToggleSelect: (id, v) {
-                  setState(() {
-                    v ? _selectedIds.add(id) : _selectedIds.remove(id);
-                  });
-                },
-                onSort: (key) {
-                  setState(() {
-                    if (_sortBy == key) {
-                      _sortAsc = !_sortAsc;
-                    } else {
-                      _sortBy = key;
-                      _sortAsc = true;
-                    }
-                  });
-                },
-                onPrev: _page > 1 ? () => setState(() => _page--) : null,
-                onNext: _page * _pageSize < filtered.length
-                    ? () => setState(() => _page++)
-                    : null,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  void initState() {
+    super.initState();
+    _all = _mockProducts();
+    _filtered = List.from(_all);
   }
 
-  // ================= LOGIC =================
+  @override
+  void dispose() {
+    _horizontal.dispose();
+    _vertical.dispose();
+    super.dispose();
+  }
 
-  List<ProductModel> _applyFilters() {
-    final list = _allProducts.where((p) {
-      if (_search.isNotEmpty &&
-          !p.name.toLowerCase().contains(_search.toLowerCase()) &&
-          !p.sku.toLowerCase().contains(_search.toLowerCase())) {
-        return false;
+  // ================= DERIVED =================
+  int get _total => _filtered.length;
+
+  int get _maxPage => (_total / _rowsPerPage).ceil().clamp(1, 999);
+
+  List<ProductModel> get _paged {
+    final start = (_page - 1) * _rowsPerPage;
+    final end = (start + _rowsPerPage).clamp(0, _total);
+    if (start >= _total) return [];
+    return _filtered.sublist(start, end);
+  }
+
+  bool get _allSelected =>
+      _paged.isNotEmpty &&
+      _paged.every((p) => _selectedIds.contains(p.id));
+
+  // ================= ACTIONS =================
+  void _toggleSelectAll(bool value) {
+    setState(() {
+      if (value) {
+        _selectedIds.addAll(_paged.map((e) => e.id));
+      } else {
+        _selectedIds.removeAll(_paged.map((e) => e.id));
       }
-
-      if (_category != 'All' && p.category != _category) return false;
-
-      if (_stock != 'All') {
-        if (_stock == 'Out' && p.quantity != 0) return false;
-        if (_stock == 'Low' &&
-            !(p.quantity > 0 && p.quantity <= p.lowStock)) return false;
-        if (_stock == 'In Stock' && p.quantity <= p.lowStock) return false;
-      }
-
-      if (_status != 'All') {
-        if (_status == 'Active' && !p.active) return false;
-        if (_status == 'Inactive' && p.active) return false;
-      }
-
-      return true;
-    }).toList();
-
-    list.sort((a, b) {
-      int r;
-      switch (_sortBy) {
-        case 'price':
-          r = a.sellingPrice.compareTo(b.sellingPrice);
-          break;
-        case 'stock':
-          r = a.quantity.compareTo(b.quantity);
-          break;
-        default:
-          r = a.name.compareTo(b.name);
-      }
-      return _sortAsc ? r : -r;
     });
-
-    return list;
   }
 
-  List<ProductModel> _paginate(List<ProductModel> list) {
-    final start = (_page - 1) * _pageSize;
-    final end = start + _pageSize;
-    if (start >= list.length) return [];
-    return list.sublist(start, end > list.length ? list.length : end);
-  }
-}
-
-
-// ============================================================================
-// ============================= WIDGETS ======================================
-// ============================================================================
-
-class _FiltersDelegate extends SliverPersistentHeaderDelegate {
-  final Widget child;
-
-  _FiltersDelegate({required this.child});
-
-  @override
-  double get minExtent => 88;
-
-  @override
-  double get maxExtent => 88;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return child;
+  void _toggleSelectOne(String id, bool value) {
+    setState(() {
+      value ? _selectedIds.add(id) : _selectedIds.remove(id);
+    });
   }
 
-  @override
-  bool shouldRebuild(_) => false;
-}
+  void _sort(SortColumn column) {
+    setState(() {
+      if (_sortColumn == column) {
+        _ascending = !_ascending;
+      } else {
+        _sortColumn = column;
+        _ascending = true;
+      }
 
-class _FiltersBar extends StatelessWidget {
-  final String search, category, stock, status;
-  final ValueChanged<String> onSearch;
-  final VoidCallback onClearSearch;
-  final ValueChanged<String?> onCategory, onStock, onStatus;
+      _filtered.sort((a, b) {
+        int r;
+        switch (column) {
+          case SortColumn.code:
+            r = a.sku.compareTo(b.sku);
+            break;
+          case SortColumn.category:
+            r = a.category.compareTo(b.category);
+            break;
+          case SortColumn.price:
+            r = a.sellingPrice.compareTo(b.sellingPrice);
+            break;
+          case SortColumn.brand:
+            r = a.brand.compareTo(b.brand);
+            break;
+          case SortColumn.cost:
+            r = a.costPrice.compareTo(b.costPrice);
+            break;
+          case SortColumn.qty:
+            r = a.quantity.compareTo(b.quantity);
+            break;
+          case SortColumn.product:
+          default:
+            r = a.name.compareTo(b.name);
+        }
+        return _ascending ? r : -r;
+      });
 
-  const _FiltersBar({
-    required this.search,
-    required this.category,
-    required this.stock,
-    required this.status,
-    required this.onSearch,
-    required this.onClearSearch,
-    required this.onCategory,
-    required this.onStock,
-    required this.onStatus,
-  });
+      _page = 1;
+    });
+  }
 
+  // ================= UI =================
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-      child: LayoutBuilder(
-        builder: (context, c) {
-          final isDesktop = c.maxWidth >= 900;
-          final isTablet = c.maxWidth >= 600;
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            // ===== PAGE HEADER =====
+            ProductsHeader(
+              onAdd: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const AddProductPage(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
 
-          return Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: [
-              SizedBox(
-                width: isDesktop ? 320 : c.maxWidth,
-                child: _searchField(),
+            // ===== TABLE CARD =====
+            Expanded(
+              child: Center(
+                child: SizedBox(
+                  width: _tableWidth,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x14000000),
+                          blurRadius: 12,
+                          offset: Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        // ===== CONTROLS (ALIGNED TO TABLE EDGES) =====
+                        Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                          child: ProductsControls(
+                            rowsPerPage: _rowsPerPage,
+                            searchText: _search,
+                            onRowsPerPageChanged: (v) {
+                              setState(() {
+                                _rowsPerPage = v;
+                                _page = 1;
+                              });
+                            },
+                            onSearchChanged: (q) {
+                              setState(() {
+                                _search = q;
+                                final s = q.toLowerCase();
+                                _filtered = _all.where((p) {
+                                  return p.name
+                                          .toLowerCase()
+                                          .contains(s) ||
+                                      p.sku
+                                          .toLowerCase()
+                                          .contains(s);
+                                }).toList();
+                                _page = 1;
+                              });
+                            },
+                            onClearSearch: () {
+                              setState(() {
+                                _search = '';
+                                _filtered = List.from(_all);
+                                _page = 1;
+                              });
+                            },
+                          ),
+                        ),
+
+                        const Divider(height: 1),
+
+                        // ===== TABLE HEADER (HORIZONTAL SCROLL) =====
+                        SingleChildScrollView(
+                          controller: _horizontal,
+                          scrollDirection: Axis.horizontal,
+                          child: SizedBox(
+                            width: _tableWidth,
+                            child: ProductsTableHeader(
+                              allSelected: _allSelected,
+                              onSelectAll: _toggleSelectAll,
+                              sortColumn: _sortColumn,
+                              ascending: _ascending,
+                              onSort: _sort,
+                            ),
+                          ),
+                        ),
+
+                        const Divider(height: 1),
+
+                        // ===== ROWS =====
+                        Expanded(
+                          child: _paged.isEmpty
+                              ? const EmptyState()
+                              : Scrollbar(
+                                  controller: _vertical,
+                                  thumbVisibility: true,
+                                  child: SingleChildScrollView(
+                                    controller: _horizontal,
+                                    scrollDirection:
+                                        Axis.horizontal,
+                                    child: SizedBox(
+                                      width: _tableWidth,
+                                      child: ListView.separated(
+                                        controller: _vertical,
+                                        itemCount: _paged.length,
+                                        separatorBuilder:
+                                            (_, __) =>
+                                                const Divider(
+                                                    height: 1),
+                                        itemBuilder: (_, i) {
+                                          final p = _paged[i];
+                                          return ProductRow(
+                                            product: p,
+                                            selected:
+                                                _selectedIds
+                                                    .contains(p.id),
+                                            onSelect:
+                                                _toggleSelectOne,
+                                            onView: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      ViewProductPage(
+                                                          product:
+                                                              p),
+                                                ),
+                                              );
+                                            },
+                                            onEdit: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      EditProductPage(
+                                                          product:
+                                                              p),
+                                                ),
+                                              );
+                                            },
+                                            onDelete: () async {
+                                              final ok =
+                                                  await showDialog<
+                                                      bool>(
+                                                context: context,
+                                                builder: (_) =>
+                                                    DeleteConfirmationDialog(
+                                                        itemName:
+                                                            p.name),
+                                              );
+                                              if (ok ==
+                                                  true) {
+                                                setState(() {
+                                                  _all.removeWhere(
+                                                      (e) =>
+                                                          e.id ==
+                                                          p.id);
+                                                  _filtered
+                                                      .removeWhere(
+                                                          (e) =>
+                                                              e.id ==
+                                                              p.id);
+                                                  _selectedIds
+                                                      .remove(
+                                                          p.id);
+                                                });
+                                              }
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                        ),
+
+                        // ===== PAGINATION =====
+                        PaginationFooter(
+                          from: (_page - 1) * _rowsPerPage + 1,
+                          to: ((_page - 1) *
+                                      _rowsPerPage +
+                                  _paged.length)
+                              .clamp(0, _total),
+                          total: _total,
+                          onPrev: _page > 1
+                              ? () => setState(() => _page--)
+                              : null,
+                          onNext: _page < _maxPage
+                              ? () => setState(() => _page++)
+                              : null,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              SizedBox(
-                width: isDesktop ? 180 : isTablet ? 240 : c.maxWidth,
-                child: _dropdown(
-                    category, ['All', 'Wearables', 'Mobiles'], onCategory),
-              ),
-              SizedBox(
-                width: isDesktop ? 160 : isTablet ? 240 : c.maxWidth,
-                child: _dropdown(
-                    stock, ['All', 'In Stock', 'Low', 'Out'], onStock),
-              ),
-              SizedBox(
-                width: isDesktop ? 160 : isTablet ? 240 : c.maxWidth,
-                child: _dropdown(
-                    status, ['All', 'Active', 'Inactive'], onStatus),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _searchField() {
-    return TextField(
-      onChanged: onSearch,
-      controller: TextEditingController(text: search),
-      decoration: InputDecoration(
-        hintText: 'Search product or SKU',
-        prefixIcon: const Icon(Icons.search),
-        suffixIcon: search.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: onClearSearch,
-              )
-            : null,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
-  }
-
-  Widget _dropdown(
-      String value, List<String> items, ValueChanged<String?> onChanged) {
-    return DropdownButtonFormField<String>(
-      value: value,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      items:
-          items.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-      onChanged: onChanged,
-    );
-  }
-}
-
-class _BulkBar extends StatelessWidget {
-  final int count;
-  final VoidCallback onClear, onDelete;
-
-  const _BulkBar({required this.count, required this.onClear, required this.onDelete});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.orange.shade50,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Text('$count selected'),
-          const Spacer(),
-          TextButton(onPressed: onClear, child: const Text('Clear')),
-          const SizedBox(width: 8),
-          ElevatedButton.icon(
-            onPressed: onDelete,
-            icon: const Icon(Icons.delete),
-            label: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ColumnVisibilityDialog extends StatelessWidget {
-  final Map<String, bool> visible;
-  final VoidCallback onChanged;
-
-  const _ColumnVisibilityDialog({required this.visible, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Visible Columns'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: visible.keys.map((k) {
-          return CheckboxListTile(
-            title: Text(k[0].toUpperCase() + k.substring(1)),
-            value: visible[k],
-            onChanged: (v) {
-              visible[k] = v!;
-              onChanged();
-            },
-          );
-        }).toList(),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Close'),
+            ),
+          ],
         ),
-      ],
+      ),
+    );
+  }
+
+  // ================= MOCK DATA =================
+  List<ProductModel> _mockProducts() {
+    return List.generate(
+      50,
+      (i) => ProductModel(
+        id: '$i',
+        name: 'Product $i',
+        sku: 'SKU-$i',
+        barcode: '97802013796$i',
+        category: i.isEven ? 'Electronics' : 'Grocery',
+        brand: 'Brand $i',
+        costPrice: 40.0 + i,
+        sellingPrice: 80.0 + i,
+        quantity: 5 + i,
+        lowStock: 5,
+        active: true,
+        description: 'Sample product',
+      ),
     );
   }
 }

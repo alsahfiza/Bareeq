@@ -40,8 +40,12 @@ class ProductsTable extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final tableWidth = constraints.maxWidth;
+        // Minimum width needed for table to look correct
+        const minTableWidth = 900.0;
+        final tableWidth =
+            constraints.maxWidth < minTableWidth ? minTableWidth : constraints.maxWidth;
 
+        // Column widths (shared with rows)
         const checkboxW = 48.0;
         const actionsW = 140.0;
         const smallColW = 90.0;
@@ -54,10 +58,9 @@ class ProductsTable extends StatelessWidget {
             (visibleColumns['status']! ? statusW : 0) +
             (visibleColumns['category']! ? smallColW : 0);
 
-        final productW = (tableWidth - usedWidth).clamp(200.0, 1000.0);
+        final productW = (tableWidth - usedWidth).clamp(220.0, 1000.0);
 
         return Container(
-          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
@@ -67,53 +70,70 @@ class ProductsTable extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _Header(
-                checkboxW: checkboxW,
-                productW: productW,
-                categoryW: smallColW,
-                priceW: smallColW,
-                stockW: smallColW,
-                statusW: statusW,
-                actionsW: actionsW,
-                visibleColumns: visibleColumns,
-                allSelected:
-                    products.isNotEmpty &&
-                    selectedIds.length == products.length,
-                onSelectAll: onSelectAll,
-                sortBy: sortBy,
-                sortAsc: sortAsc,
-                onSort: onSort,
-              ),
-              const Divider(height: 24),
-              ...products.map(
-                (p) => ProductRow(
-                  product: p,
-                  selected: selectedIds.contains(p.id),
-                  onSelect: (v) => onToggleSelect(p.id, v),
-                  checkboxW: checkboxW,
-                  productW: productW,
-                  categoryW: smallColW,
-                  priceW: smallColW,
-                  stockW: smallColW,
-                  statusW: statusW,
-                  actionsW: actionsW,
-                  visibleColumns: visibleColumns,
+              // ================= HORIZONTAL SCROLL =================
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: tableWidth,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        _Header(
+                          checkboxW: checkboxW,
+                          productW: productW,
+                          categoryW: smallColW,
+                          priceW: smallColW,
+                          stockW: smallColW,
+                          statusW: statusW,
+                          actionsW: actionsW,
+                          visibleColumns: visibleColumns,
+                          allSelected: products.isNotEmpty &&
+                              selectedIds.length == products.length,
+                          onSelectAll: onSelectAll,
+                          sortBy: sortBy,
+                          sortAsc: sortAsc,
+                          onSort: onSort,
+                        ),
+                        const Divider(height: 24),
+                        ...products.map(
+                          (p) => ProductRow(
+                            product: p,
+                            selected: selectedIds.contains(p.id),
+                            onSelect: (v) => onToggleSelect(p.id, v),
+                            checkboxW: checkboxW,
+                            productW: productW,
+                            categoryW: smallColW,
+                            priceW: smallColW,
+                            stockW: smallColW,
+                            statusW: statusW,
+                            actionsW: actionsW,
+                            visibleColumns: visibleColumns,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text('Page $page of $maxPage'),
-                  IconButton(
-                    icon: const Icon(Icons.chevron_left),
-                    onPressed: onPrev,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.chevron_right),
-                    onPressed: onNext,
-                  ),
-                ],
+
+              // ================= PAGINATION =================
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text('Page $page of $maxPage'),
+                    IconButton(
+                      icon: const Icon(Icons.chevron_left),
+                      onPressed: onPrev,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.chevron_right),
+                      onPressed: onNext,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -160,7 +180,12 @@ class _Header extends StatelessWidget {
       children: [
         SizedBox(
           width: checkboxW,
-          child: Checkbox(value: allSelected, onChanged: (v) => onSelectAll(v!)),
+          child: Checkbox(
+            value: allSelected,
+            visualDensity: VisualDensity.compact,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            onChanged: (v) => onSelectAll(v!),
+          ),
         ),
         _sortCell('Product', 'name', productW),
         if (visibleColumns['category']!)

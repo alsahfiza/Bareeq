@@ -11,13 +11,13 @@ class ProductsHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
-          "Products",
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          'Products',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         ElevatedButton.icon(
-          onPressed: onAdd,
           icon: const Icon(Icons.add),
-          label: const Text("Add Product"),
+          label: const Text('Add Product'),
+          onPressed: onAdd,
         ),
       ],
     );

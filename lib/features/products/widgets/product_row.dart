@@ -1,159 +1,95 @@
 import 'package:flutter/material.dart';
 import '../../../../data/models/product_model.dart';
-import '../ui/view_product_page.dart';
-import '../ui/edit_product_page.dart';
-import '../ui/delete_confirmation_dialog.dart';
-import 'status_pill.dart';
-import 'action_icon.dart';
 
 class ProductRow extends StatelessWidget {
   final ProductModel product;
   final bool selected;
-  final ValueChanged<bool> onSelect;
-
-  final double checkboxW,
-      productW,
-      categoryW,
-      priceW,
-      stockW,
-      statusW,
-      actionsW;
-
-  final Map<String, bool> visibleColumns;
+  final void Function(String id, bool value) onSelect;
+  final VoidCallback onView;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
   const ProductRow({
     super.key,
     required this.product,
     required this.selected,
     required this.onSelect,
-    required this.checkboxW,
-    required this.productW,
-    required this.categoryW,
-    required this.priceW,
-    required this.stockW,
-    required this.statusW,
-    required this.actionsW,
-    required this.visibleColumns,
+    required this.onView,
+    required this.onEdit,
+    required this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
-    final stock = product.quantity;
-    final status = stock == 0
-        ? 'Out'
-        : stock <= product.lowStock
-            ? 'Low'
-            : 'Active';
-
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       child: Row(
         children: [
-          SizedBox(
-            width: checkboxW,
-            child:
-                Checkbox(value: selected, onChanged: (v) => onSelect(v!)),
+          Checkbox(
+            value: selected,
+            onChanged: (v) => onSelect(product.id, v ?? false),
           ),
-          SizedBox(
-            width: productW,
-            child: Row(
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    'https://via.placeholder.com/48',
-                    width: 40,
-                    height: 40,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style:
-                            const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        product.sku,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                Text(product.name,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text(product.sku,
+                    style:
+                        const TextStyle(fontSize: 12, color: Colors.black54)),
               ],
             ),
           ),
-          if (visibleColumns['category']!)
-            SizedBox(width: categoryW, child: Text(product.category)),
-          if (visibleColumns['price']!)
-            SizedBox(
-              width: priceW,
-              child: Text('\$${product.sellingPrice}'),
-            ),
-          if (visibleColumns['stock']!)
-            SizedBox(width: stockW, child: Text('$stock')),
-          if (visibleColumns['status']!)
-            SizedBox(width: statusW, child: StatusPill(status: status)),
+          Expanded(flex: 2, child: Text(product.sku)),
+          Expanded(flex: 2, child: Text(product.category)),
+          Expanded(flex: 1, child: Text('\$${product.sellingPrice}')),
+          Expanded(flex: 2, child: Text(product.brand)),
+          Expanded(flex: 1, child: Text('\$${product.costPrice}')),
+          Expanded(flex: 1, child: Text('${product.quantity}')),
           SizedBox(
-            width: actionsW,
+            width: 120,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ActionIcon(
-                  icon: Icons.visibility,
-                  color: Colors.blue,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ViewProductPage(product: product),
-                      ),
-                    );
-                  },
-                ),
-                ActionIcon(
-                  icon: Icons.edit,
-                  color: Colors.orange,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => EditProductPage(product: product),
-                      ),
-                    );
-                  },
-                ),
-                ActionIcon(
-                  icon: Icons.delete,
-                  color: Colors.red,
-                  onTap: () async {
-                    final ok = await showDialog<bool>(
-                      context: context,
-                      builder: (_) =>
-                          DeleteConfirmationDialog(itemName: product.name),
-                    );
-                    if (ok == true) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Product deleted')),
-                      );
-                    }
-                  },
-                ),
+                _Action(icon: Icons.visibility, color: Colors.blue, onTap: onView),
+                _Action(icon: Icons.edit, color: Colors.orange, onTap: onEdit),
+                _Action(icon: Icons.delete, color: Colors.red, onTap: onDelete),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _Action extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _Action({
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 6),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: color.withOpacity(.12),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 18, color: color),
+        ),
       ),
     );
   }
