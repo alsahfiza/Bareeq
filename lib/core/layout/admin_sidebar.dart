@@ -41,15 +41,6 @@ class AdminSidebar extends ConsumerWidget {
           _navItem(
             context,
             ref,
-            Icons.inventory,
-            'Inventory',
-            AppRoutes.inventory,
-            active,
-            collapsed,
-          ),
-          _navItem(
-            context,
-            ref,
             Icons.receipt_long,
             'Sales',
             AppRoutes.sales,
@@ -65,25 +56,6 @@ class AdminSidebar extends ConsumerWidget {
             active,
             collapsed,
           ),
-          _navItem(
-            context,
-            ref,
-            Icons.camera_alt,
-            'Snapshots',
-            AppRoutes.snapshots,
-            active,
-            collapsed,
-          ),
-          _navItem(
-            context,
-            ref,
-            Icons.health_and_safety,
-            'System Health',
-            AppRoutes.systemHealth,
-            active,
-            collapsed,
-          ),
-
           const Spacer(),
 
           _logoutItem(context, ref, collapsed),
@@ -139,12 +111,6 @@ class AdminSidebar extends ConsumerWidget {
   ) {
     return ListTile(
       leading: const Icon(Icons.logout, color: Colors.redAccent),
-      title: collapsed
-          ? null
-          : const Text(
-              'Logout',
-              style: TextStyle(color: Colors.redAccent),
-            ),
       onTap: () => NavigationNotifier.logout(context, ref),
     );
   }

@@ -5,14 +5,14 @@ import 'app_routes.dart';
 // pages
 import '../../features/dashboard/ui/dashboard_page.dart';
 import '../../features/products/ui/products_page.dart';
-// import '../../features/products/ui/product_form_page.dart';
-import '../../features/inventory/ui/inventory_page.dart';
-import '../../features/inventory/ui/inventory_adjust_page.dart';
+import '../../features/products/ui/add_product_page.dart';
+import '../../features/products/ui/edit_product_page.dart';
+import '../../features/products/ui/view_product_page.dart';
 import '../../features/sales/ui/sales_page.dart';
 import '../../features/users/ui/users_page.dart';
-import '../../features/snapshots/ui/snapshot_browser_page.dart';
-import '../../features/system_health/ui/system_health_page.dart';
 import '../../features/auth/ui/login_page.dart';
+import '../../data/models/product_model.dart';
+
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -26,34 +26,23 @@ class AppRouter {
 
       case AppRoutes.products:
         return _page(const ProductsPage());
+      
+      case AppRoutes.addProduct:
+        return _page(const AddProductPage());
 
-      // case AppRoutes.productForm:
-      //   return _page(const ProductFormPage());
+      case AppRoutes.viewProduct:
+        final product = settings.arguments as ProductModel;
+        return _page(ViewProductPage(product: product));
 
-      case AppRoutes.inventory:
-        return _page(const InventoryPage());
-
-      case AppRoutes.inventoryAdjust:
-        final args = settings.arguments as Map<String, dynamic>;
-        return _page(
-          InventoryAdjustPage(
-            productId: args['productId'] as String,
-            productName: args['productName'] as String,
-          ),
-        );
-
+      case AppRoutes.editProduct:
+        final product = settings.arguments as ProductModel;
+        return _page(EditProductPage(product: product));
       
       case AppRoutes.sales:
         return _page(const SalesPage());
 
       case AppRoutes.users:
         return _page(const UsersPage());
-
-      case AppRoutes.snapshots:
-        return _page(const SnapshotBrowserPage());
-
-      case AppRoutes.systemHealth:
-        return _page(const SystemHealthPage());
 
       default:
         return _page(const DashboardPage());

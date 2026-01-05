@@ -30,7 +30,6 @@ class AdminTopBar extends ConsumerWidget {
               collapsed ? Icons.menu : Icons.menu_open,
             ),
             onPressed: () {
-              // ref.read(sidebarCollapsedProvider.notifier).toggle();
               ref.read(sidebarCollapsedProvider.notifier).state = !collapsed;
             },
           ),
@@ -51,15 +50,6 @@ class AdminTopBar extends ConsumerWidget {
           const Icon(Icons.account_circle, size: 28),
 
           const SizedBox(width: 12),
-
-          TextButton(
-            onPressed: () =>
-                NavigationNotifier.logout(context, ref),
-            child: const Text(
-              'Logout',
-              style: TextStyle(color: Colors.red),
-            ),
-          ),
         ],
       ),
     );
@@ -71,16 +61,10 @@ class AdminTopBar extends ConsumerWidget {
         return 'Dashboard';
       case AppRoutes.products:
         return 'Products';
-      case AppRoutes.inventory:
-        return 'Inventory';
       case AppRoutes.sales:
         return 'Sales';
       case AppRoutes.users:
         return 'Users';
-      case AppRoutes.snapshots:
-        return 'Snapshots';
-      case AppRoutes.systemHealth:
-        return 'System Health';
       default:
         return '';
     }

@@ -3,13 +3,26 @@ import '../../../data/models/product_model.dart';
 import 'edit_product_page.dart';
 import '../widgets/adjust_stock_dialog.dart';
 
-class ViewProductPage extends StatelessWidget {
+class ViewProductPage extends StatefulWidget {
   final ProductModel product;
 
   const ViewProductPage({
     super.key,
     required this.product,
   });
+
+  @override
+  State<ViewProductPage> createState() => _ViewProductPageState();
+}
+
+class _ViewProductPageState extends State<ViewProductPage> {
+  late ProductModel _product;
+
+  @override
+  void initState() {
+    super.initState();
+    _product = widget.product;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +39,10 @@ class ViewProductPage extends StatelessWidget {
               children: [
                 IconButton(
                   icon: const Icon(Icons.arrow_back),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    // ✅ return updated product if changed
+                    Navigator.pop(context, _product);
+                  },
                 ),
                 const SizedBox(width: 8),
                 const Text(
@@ -37,13 +53,20 @@ class ViewProductPage extends StatelessWidget {
                 ElevatedButton.icon(
                   icon: const Icon(Icons.edit),
                   label: const Text("Edit"),
-                  onPressed: () {
-                    Navigator.push(
+                  onPressed: () async {
+                    final updated =
+                        await Navigator.push<ProductModel>(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => EditProductPage(product: product),
+                        builder: (_) => EditProductPage(product: _product),
                       ),
                     );
+
+                    if (updated != null) {
+                      setState(() {
+                        _product = updated;
+                      });
+                    }
                   },
                 ),
               ],
@@ -79,12 +102,12 @@ class ViewProductPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _row("Name", product.name),
-          _row("SKU", product.sku),
-          _row("Barcode", product.barcode),
-          _row("Category", product.category),
-          _row("Brand", product.brand),
-          _row("Price", "\$${product.sellingPrice}"),
+          _row("Name", _product.name),
+          _row("SKU", _product.sku),
+          _row("Barcode", _product.barcode),
+          _row("Category", _product.category),
+          _row("Brand", _product.brand),
+          _row("Price", "\$${_product.sellingPrice}"),
         ],
       ),
     );
@@ -96,7 +119,7 @@ class ViewProductPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _row("Quantity", product.quantity.toString()),
+          _row("Quantity", _product.quantity.toString()),
           const SizedBox(height: 16),
           ElevatedButton.icon(
             icon: const Icon(Icons.sync),
@@ -105,12 +128,14 @@ class ViewProductPage extends StatelessWidget {
               final delta = await showDialog<int>(
                 context: context,
                 builder: (_) => AdjustStockDialog(
-                  currentStock: product.quantity,
+                  currentStock: _product.quantity,
                 ),
               );
-
               if (delta != null) {
-                product.quantity += delta;
+                final updated = _product.copyWith(
+                  quantity: _product.quantity + delta,
+                );
+                Navigator.pop(context, updated);
               }
             },
           ),

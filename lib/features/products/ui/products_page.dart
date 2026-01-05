@@ -12,6 +12,8 @@ import '../widgets/products_table_header.dart';
 import '../widgets/product_row.dart';
 import '../widgets/pagination_footer.dart';
 import '../widgets/empty_state.dart';
+import '../../../core/routing/app_routes.dart';
+
 
 enum SortColumn { product, code, category, price, brand, cost, qty }
 
@@ -141,13 +143,19 @@ class _ProductsPageState extends State<ProductsPage> {
           children: [
             // ===== PAGE HEADER =====
             ProductsHeader(
-              onAdd: () {
-                Navigator.push(
+              onAdd: () async {
+                final created = await Navigator.pushNamed<ProductModel>(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const AddProductPage(),
-                  ),
+                  AppRoutes.addProduct,
                 );
+
+                if (created != null) {
+                  setState(() {
+                    _all.insert(0, created);
+                    _filtered = List.from(_all);
+                    _page = 1;
+                  });
+                }
               },
             ),
             const SizedBox(height: 12),
@@ -246,9 +254,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                         controller: _vertical,
                                         itemCount: _paged.length,
                                         separatorBuilder:
-                                            (_, __) =>
-                                                const Divider(
-                                                    height: 1),
+                                            (_, __) => const Divider(height: 1),
                                         itemBuilder: (_, i) {
                                           final p = _paged[i];
                                           return ProductRow(
@@ -258,27 +264,34 @@ class _ProductsPageState extends State<ProductsPage> {
                                                     .contains(p.id),
                                             onSelect:
                                                 _toggleSelectOne,
-                                            onView: () {
-                                              Navigator.push(
+                                            onView: () async {
+                                              final updated = await Navigator.pushNamed<ProductModel>(
                                                 context,
-                                                MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      ViewProductPage(
-                                                          product:
-                                                              p),
-                                                ),
+                                                AppRoutes.viewProduct,
+                                                arguments: p,
                                               );
+                                              if (updated != null) {
+                                                setState(() {
+                                                  final i = _all.indexWhere((e) => e.id == updated.id);
+                                                  if (i != -1) _all[i] = updated;
+                                                });
+                                              }
                                             },
-                                            onEdit: () {
-                                              Navigator.push(
+                                            onEdit: () async {
+                                              final updated = await Navigator.pushNamed<ProductModel>(
                                                 context,
-                                                MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      EditProductPage(
-                                                          product:
-                                                              p),
-                                                ),
+                                                AppRoutes.editProduct,
+                                                arguments: p,
                                               );
+                                              if (updated != null) {
+                                                setState(() {
+                                                  final i = _all.indexWhere((e) => e.id == updated.id);
+                                                  if (i != -1) _all[i] = updated;
+
+                                                  final j = _filtered.indexWhere((e) => e.id == updated.id);
+                                                  if (j != -1) _filtered[j] = updated;
+                                                });
+                                              }
                                             },
                                             onDelete: () async {
                                               final ok =
@@ -286,25 +299,17 @@ class _ProductsPageState extends State<ProductsPage> {
                                                       bool>(
                                                 context: context,
                                                 builder: (_) =>
-                                                    DeleteConfirmationDialog(
-                                                        itemName:
-                                                            p.name),
+                                                    DeleteConfirmationDialog(itemName: p.name),
                                               );
-                                              if (ok ==
-                                                  true) {
+                                              if (ok == true) {
                                                 setState(() {
                                                   _all.removeWhere(
-                                                      (e) =>
-                                                          e.id ==
-                                                          p.id);
+                                                      (e) => e.id == p.id);
                                                   _filtered
                                                       .removeWhere(
-                                                          (e) =>
-                                                              e.id ==
-                                                              p.id);
+                                                          (e) => e.id == p.id);
                                                   _selectedIds
-                                                      .remove(
-                                                          p.id);
+                                                      .remove(p.id);
                                                 });
                                               }
                                             },
@@ -314,7 +319,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                     ),
                                   ),
                                 ),
-                        ),
+                                ),
 
                         // ===== PAGINATION =====
                         PaginationFooter(
