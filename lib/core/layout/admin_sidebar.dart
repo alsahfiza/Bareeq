@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../routing/app_routes.dart';
 import '../state/active_route_provider.dart';
 import '../state/navigation_notifier.dart';
 import '../state/sidebar_collapsed_provider.dart';
-import '../routing/app_routes.dart';
 
 class AdminSidebar extends ConsumerWidget {
   const AdminSidebar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final active = ref.watch(activeRouteProvider);
     final collapsed = ref.watch(sidebarCollapsedProvider);
+    final active = ref.watch(activeRouteProvider);
 
     return Container(
-      width: collapsed ? 72 : 260,
-      color: Colors.grey.shade900,
+      color: const Color(0xFF111827),
       child: Column(
         children: [
-          _collapseButton(ref, collapsed),
+          const SizedBox(height: 12),
 
           _navItem(
             context,
@@ -56,23 +56,16 @@ class AdminSidebar extends ConsumerWidget {
             active,
             collapsed,
           ),
+
           const Spacer(),
 
+          Divider(color: Colors.grey.shade700),
+
           _logoutItem(context, ref, collapsed),
+
+          const SizedBox(height: 12),
         ],
       ),
-    );
-  }
-
-  Widget _collapseButton(WidgetRef ref, bool collapsed) {
-    return IconButton(
-      icon: Icon(
-        collapsed ? Icons.chevron_right : Icons.chevron_left,
-        color: Colors.white,
-      ),
-      onPressed: () {
-        ref.read(sidebarCollapsedProvider.notifier).state = !collapsed;
-      },
     );
   }
 
@@ -82,25 +75,34 @@ class AdminSidebar extends ConsumerWidget {
     IconData icon,
     String title,
     String route,
-    String active,
+    String activeRoute,
     bool collapsed,
   ) {
-    final isActive = active == route;
+    final isActive = activeRoute == route;
 
-    return ListTile(
-      leading: Icon(icon, color: isActive ? Colors.white : Colors.grey),
-      title: collapsed
-          ? null
-          : Text(
-              title,
-              style: TextStyle(
-                color: isActive ? Colors.white : Colors.grey,
-                fontWeight:
-                    isActive ? FontWeight.bold : FontWeight.normal,
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: isActive ? Colors.blueGrey.shade800 : Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        leading: Icon(
+          icon,
+          color: isActive ? Colors.white : Colors.grey.shade400,
+        ),
+        title: collapsed
+            ? null
+            : Text(
+                title,
+                style: TextStyle(
+                  color:
+                      isActive ? Colors.white : Colors.grey.shade300,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-      tileColor: isActive ? Colors.blueGrey : Colors.transparent,
-      onTap: () => NavigationNotifier.go(context, ref, route),
+        onTap: () => NavigationNotifier.go(context, ref, route),
+      ),
     );
   }
 
@@ -111,6 +113,15 @@ class AdminSidebar extends ConsumerWidget {
   ) {
     return ListTile(
       leading: const Icon(Icons.logout, color: Colors.redAccent),
+      title: collapsed
+          ? null
+          : const Text(
+              'Logout',
+              style: TextStyle(
+                color: Colors.redAccent,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
       onTap: () => NavigationNotifier.logout(context, ref),
     );
   }

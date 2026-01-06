@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../state/active_route_provider.dart';
-import '../state/sidebar_collapsed_provider.dart';
-import '../routing/app_routes.dart';
-import '../state/navigation_notifier.dart';
 
-class AdminTopBar extends ConsumerWidget {
-  const AdminTopBar({super.key});
+class AdminTopBar extends StatelessWidget {
+  final VoidCallback onToggleSidebar;
+
+  const AdminTopBar({
+    super.key,
+    required this.onToggleSidebar,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final route = ref.watch(activeRouteProvider);
-    final collapsed = ref.watch(sidebarCollapsedProvider);
-
+  Widget build(BuildContext context) {
     return Container(
       height: 56,
-      color: Colors.grey.shade800,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF111827),
         border: Border(
           bottom: BorderSide(color: Colors.grey.shade800),
         ),
@@ -26,47 +22,23 @@ class AdminTopBar extends ConsumerWidget {
       child: Row(
         children: [
           IconButton(
-            icon: Icon(
-              collapsed ? Icons.menu : Icons.menu_open,
-            ),
-            onPressed: () {
-              ref.read(sidebarCollapsedProvider.notifier).state = !collapsed;
-            },
+            icon: const Icon(Icons.menu, color: Colors.white),
+            onPressed: onToggleSidebar,
           ),
-
           const SizedBox(width: 12),
-
-          Text(
-            _title(route),
-            style: const TextStyle(
+          const Text(
+            'Admin',
+            style: TextStyle(
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.w600,
             ),
           ),
-
           const Spacer(),
-
-          const Icon(Icons.account_circle, size: 28),
-
-          const SizedBox(width: 12),
+          const Icon(Icons.account_circle,
+              color: Colors.white, size: 28),
         ],
       ),
     );
-  }
-
-  String _title(String route) {
-    switch (route) {
-      case AppRoutes.dashboard:
-        return 'Dashboard';
-      case AppRoutes.products:
-        return 'Products';
-      case AppRoutes.sales:
-        return 'Sales';
-      case AppRoutes.users:
-        return 'Users';
-      default:
-        return '';
-    }
   }
 }

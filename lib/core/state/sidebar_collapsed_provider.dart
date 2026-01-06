@@ -3,10 +3,12 @@ import 'dart:html' as html;
 
 const _key = 'sidebar_collapsed';
 
-final sidebarCollapsedProvider =
-    StateNotifierProvider<SidebarCollapsedNotifier, bool>(
-  (ref) => SidebarCollapsedNotifier(),
-);
+// final sidebarCollapsedProvider =
+//     StateNotifierProvider<SidebarCollapsedNotifier, bool>(
+//   (ref) => SidebarCollapsedNotifier(),
+// );
+final sidebarCollapsedProvider = StateProvider<bool>((ref) => false);
+
 
 class SidebarCollapsedNotifier extends StateNotifier<bool> {
   SidebarCollapsedNotifier() : super(_load());
