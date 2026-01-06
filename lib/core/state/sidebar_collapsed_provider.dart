@@ -2,13 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:html' as html;
 
 const _key = 'sidebar_collapsed';
-
-// final sidebarCollapsedProvider =
-//     StateNotifierProvider<SidebarCollapsedNotifier, bool>(
-//   (ref) => SidebarCollapsedNotifier(),
-// );
-final sidebarCollapsedProvider = StateProvider<bool>((ref) => false);
-
+final sidebarCollapsedProvider = StateProvider<bool>((ref) => true);
 
 class SidebarCollapsedNotifier extends StateNotifier<bool> {
   SidebarCollapsedNotifier() : super(_load());

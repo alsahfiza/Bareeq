@@ -13,8 +13,7 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final isWide = MediaQuery.of(context).size.width > 1100;
 
-    return Scaffold(
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
@@ -92,7 +91,7 @@ class DashboardPage extends StatelessWidget {
             const Footer(),
           ],
         ),
-      ),
+      
     );
   }
 }

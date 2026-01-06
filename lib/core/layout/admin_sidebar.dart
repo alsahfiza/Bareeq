@@ -1,25 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../routing/app_routes.dart';
 import '../state/active_route_provider.dart';
-import '../state/navigation_notifier.dart';
 import '../state/sidebar_collapsed_provider.dart';
+import '../state/navigation_notifier.dart';
+import '../routing/app_routes.dart';
 
 class AdminSidebar extends ConsumerWidget {
   const AdminSidebar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final collapsed = ref.watch(sidebarCollapsedProvider);
     final active = ref.watch(activeRouteProvider);
+    final collapsed = ref.watch(sidebarCollapsedProvider);
 
     return Container(
-      color: const Color(0xFF111827),
+      color: Colors.grey.shade900,
       child: Column(
         children: [
-          const SizedBox(height: 12),
-
+          const SizedBox(height: 8),
+          ListTile(
+            leading: Icon(
+              collapsed ? Icons.menu : Icons.menu_open,
+              color: Colors.white,
+            ),
+            title: collapsed ? null : const Text(
+              'Collapse',
+              style: TextStyle(color: Colors.white),
+            ),
+            onTap: () {
+              ref.read(sidebarCollapsedProvider.notifier).state = !collapsed;
+            },
+          ),
           _navItem(
             context,
             ref,
@@ -56,19 +67,19 @@ class AdminSidebar extends ConsumerWidget {
             active,
             collapsed,
           ),
-
           const Spacer(),
-
           Divider(color: Colors.grey.shade700),
-
-          _logoutItem(context, ref, collapsed),
-
-          const SizedBox(height: 12),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.redAccent),
+            title: collapsed ? null : const Text('Logout', style: TextStyle(color: Colors.white)),
+            onTap: () => NavigationNotifier.logout(context, ref),
+          ),
         ],
       ),
     );
   }
 
+  // ================= NAV ITEM =================
   Widget _navItem(
     BuildContext context,
     WidgetRef ref,
@@ -90,39 +101,27 @@ class AdminSidebar extends ConsumerWidget {
         leading: Icon(
           icon,
           color: isActive ? Colors.white : Colors.grey.shade400,
+          size: 22,
         ),
         title: collapsed
             ? null
             : Text(
                 title,
                 style: TextStyle(
-                  color:
-                      isActive ? Colors.white : Colors.grey.shade300,
+                  color: isActive
+                      ? Colors.white
+                      : Colors.grey.shade300,
                   fontWeight: FontWeight.w600,
+                  fontSize: 14,
                 ),
               ),
+        minLeadingWidth: 0,
+        horizontalTitleGap: 12,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: collapsed ? 0 : 12,
+        ),
         onTap: () => NavigationNotifier.go(context, ref, route),
       ),
-    );
-  }
-
-  Widget _logoutItem(
-    BuildContext context,
-    WidgetRef ref,
-    bool collapsed,
-  ) {
-    return ListTile(
-      leading: const Icon(Icons.logout, color: Colors.redAccent),
-      title: collapsed
-          ? null
-          : const Text(
-              'Logout',
-              style: TextStyle(
-                color: Colors.redAccent,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-      onTap: () => NavigationNotifier.logout(context, ref),
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'main_admin.dart';
+import 'main_public.dart';
 
-Future<void> main() async {
-  await runAdminApp();
+void main() {
+  // Firebase Hosting decides which build runs.
+  // This file exists only to satisfy Flutter.
 }

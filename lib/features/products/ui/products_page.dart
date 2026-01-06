@@ -136,8 +136,7 @@ class _ProductsPageState extends State<ProductsPage> {
   // ================= UI =================
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
+    return Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
@@ -344,7 +343,6 @@ class _ProductsPageState extends State<ProductsPage> {
             ),
           ],
         ),
-      ),
     );
   }
 
