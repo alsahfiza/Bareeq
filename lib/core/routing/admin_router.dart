@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
 import '../layout/admin_shell.dart';
 import 'app_routes.dart';
 
-// pages
+// Admin pages
 import '../../features/dashboard/ui/dashboard_page.dart';
 import '../../features/products/ui/products_page.dart';
 import '../../features/products/ui/add_product_page.dart';
@@ -13,35 +14,33 @@ import '../../features/users/ui/users_page.dart';
 import '../../features/auth/ui/login_page.dart';
 import '../../data/models/product_model.dart';
 
-
-class AppRouter {
+class AdminRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-
     switch (settings.name) {
       case AppRoutes.login:
         return _page(const LoginPage(), shell: false);
 
-      case AppRoutes.dashboard:
+      case AppRoutes.adminDashboard:
         return _page(const DashboardPage());
 
-      case AppRoutes.products:
+      case AppRoutes.adminProducts:
         return _page(const ProductsPage());
-      
-      case AppRoutes.addProduct:
+
+      case AppRoutes.adminAddProduct:
         return _page(const AddProductPage());
 
-      case AppRoutes.viewProduct:
+      case AppRoutes.adminViewProduct:
         final product = settings.arguments as ProductModel;
         return _page(ViewProductPage(product: product));
 
-      case AppRoutes.editProduct:
+      case AppRoutes.adminEditProduct:
         final product = settings.arguments as ProductModel;
         return _page(EditProductPage(product: product));
-      
-      case AppRoutes.sales:
+
+      case AppRoutes.adminSales:
         return _page(const SalesPage());
 
-      case AppRoutes.users:
+      case AppRoutes.adminUsers:
         return _page(const UsersPage());
 
       default:
@@ -54,8 +53,8 @@ class AppRouter {
     bool shell = true,
   }) {
     return MaterialPageRoute(
-      builder: (_) =>
-          shell ? AdminShell(child: page) : page,
+      settings: RouteSettings(name: page.runtimeType.toString()),
+      builder: (_) => shell ? AdminShell(child: page) : page,
     );
   }
 }

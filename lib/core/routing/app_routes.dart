@@ -1,22 +1,13 @@
-// class AppRoutes {
-//   static const dashboard = '/dashboard';
-//   static const products = '/products';
-//   static const inventory = '/inventory';
-//   static const sales = '/sales';
-//   static const users = '/users';
-//   static const productForm = '/product-form';
-//   static const inventoryAdjust = '/inventory-adjust';
-//   static const snapshots = '/snapshots';
-//   static const systemHealth = '/system-health';
-//   static const login = '/login';
-// }
 class AppRoutes {
-  static const dashboard = '/dashboard';
-  static const products = '/products';
-  static const addProduct = '/products/add';
-  static const editProduct = '/products/edit';
-  static const viewProduct = '/products/view';
-  static const sales = '/sales';
-  static const users = '/users';
+  // Auth
   static const login = '/login';
+
+  // Admin
+  static const adminDashboard = '/admin/dashboard';
+  static const adminProducts = '/admin/products';
+  static const adminAddProduct = '/admin/products/add';
+  static const adminEditProduct = '/admin/products/edit';
+  static const adminViewProduct = '/admin/products/view';
+  static const adminSales = '/admin/sales';
+  static const adminUsers = '/admin/users';
 }

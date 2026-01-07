@@ -145,7 +145,7 @@ class _ProductsPageState extends State<ProductsPage> {
               onAdd: () async {
                 final created = await Navigator.pushNamed<ProductModel>(
                   context,
-                  AppRoutes.addProduct,
+                  AppRoutes.adminAddProduct,
                 );
 
                 if (created != null) {
@@ -266,7 +266,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                             onView: () async {
                                               final updated = await Navigator.pushNamed<ProductModel>(
                                                 context,
-                                                AppRoutes.viewProduct,
+                                                AppRoutes.adminViewProduct,
                                                 arguments: p,
                                               );
                                               if (updated != null) {
@@ -279,7 +279,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                             onEdit: () async {
                                               final updated = await Navigator.pushNamed<ProductModel>(
                                                 context,
-                                                AppRoutes.editProduct,
+                                                AppRoutes.adminEditProduct,
                                                 arguments: p,
                                               );
                                               if (updated != null) {

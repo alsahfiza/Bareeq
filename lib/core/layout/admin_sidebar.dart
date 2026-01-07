@@ -14,7 +14,9 @@ class AdminSidebar extends ConsumerWidget {
     final activeRoute = ref.watch(activeRouteProvider);
     final collapsed = ref.watch(sidebarCollapsedProvider);
 
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      curve: Curves.easeOut,
       width: collapsed ? 72 : 240,
       color: Colors.grey.shade900,
       child: Column(
@@ -40,33 +42,37 @@ class AdminSidebar extends ConsumerWidget {
 
           _navItem(
             context,
+            ref,
             Icons.dashboard,
             'Dashboard',
-            AppRoutes.dashboard,
+            AppRoutes.adminDashboard,
             activeRoute,
             collapsed,
           ),
           _navItem(
             context,
+            ref,
             Icons.shopping_bag,
             'Products',
-            AppRoutes.products,
+            AppRoutes.adminProducts,
             activeRoute,
             collapsed,
           ),
           _navItem(
             context,
+            ref,
             Icons.receipt_long,
             'Sales',
-            AppRoutes.sales,
+            AppRoutes.adminSales,
             activeRoute,
             collapsed,
           ),
           _navItem(
             context,
+            ref,
             Icons.people,
             'Users',
-            AppRoutes.users,
+            AppRoutes.adminUsers,
             activeRoute,
             collapsed,
           ),
@@ -102,6 +108,7 @@ class AdminSidebar extends ConsumerWidget {
   // ================= NAV ITEM =================
   Widget _navItem(
     BuildContext context,
+    WidgetRef ref,
     IconData icon,
     String title,
     String route,
@@ -141,6 +148,9 @@ class AdminSidebar extends ConsumerWidget {
         onTap: isActive
             ? null
             : () {
+                // 🔑 PRE-SET route to avoid double rebuild
+                ref.read(activeRouteProvider.notifier).state = route;
+
                 Navigator.of(context).pushReplacementNamed(route);
               },
       ),

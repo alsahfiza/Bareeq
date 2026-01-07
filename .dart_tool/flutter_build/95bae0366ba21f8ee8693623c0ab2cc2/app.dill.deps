@@ -2265,8 +2265,7 @@ file:///workspaces/Bareeq/.dart_tool/flutter_build/95bae0366ba21f8ee8693623c0ab2
 file:///workspaces/Bareeq/.dart_tool/package_config.json
 file:///workspaces/Bareeq/lib/core/layout/admin_shell.dart
 file:///workspaces/Bareeq/lib/core/layout/admin_sidebar.dart
-file:///workspaces/Bareeq/lib/core/layout/admin_topbar.dart
-file:///workspaces/Bareeq/lib/core/routing/app_router.dart
+file:///workspaces/Bareeq/lib/core/routing/admin_router.dart
 file:///workspaces/Bareeq/lib/core/routing/app_routes.dart
 file:///workspaces/Bareeq/lib/core/state/active_route_provider.dart
 file:///workspaces/Bareeq/lib/core/state/sidebar_collapsed_provider.dart

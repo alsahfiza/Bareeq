@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'core/routing/app_router.dart';
+import 'core/routing/admin_router.dart';
 import 'core/routing/app_routes.dart';
 import 'firebase_options.dart';
 
@@ -28,7 +28,7 @@ class AdminApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.login,
-      onGenerateRoute: AppRouter.onGenerateRoute,
+      onGenerateRoute: AdminRouter.onGenerateRoute,
     );
   }
 }
