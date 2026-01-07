@@ -1,16 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-sealed class AuthState {}
-
-class AuthLoading extends AuthState {}
-
-class AuthAuthenticated extends AuthState {
-  final User user;
-  AuthAuthenticated(this.user);
+enum AuthStatus {
+  unauthenticated,
+  authenticated,
 }
 
-class AuthUnauthenticated extends AuthState {}
+class AuthState {
+  final AuthStatus status;
+
+  const AuthState(this.status);
+
+  bool get isAuthenticated => status == AuthStatus.authenticated;
+}
 
 final authStateProvider =
     StateNotifierProvider<AuthStateNotifier, AuthState>(
@@ -18,13 +20,11 @@ final authStateProvider =
 );
 
 class AuthStateNotifier extends StateNotifier<AuthState> {
-  AuthStateNotifier() : super(AuthLoading()) {
+  AuthStateNotifier() : super(const AuthState(AuthStatus.unauthenticated)) {
     FirebaseAuth.instance.authStateChanges().listen((user) {
-      if (user == null) {
-        state = AuthUnauthenticated();
-      } else {
-        state = AuthAuthenticated(user);
-      }
+      state = user == null
+          ? const AuthState(AuthStatus.unauthenticated)
+          : const AuthState(AuthStatus.authenticated);
     });
   }
 }

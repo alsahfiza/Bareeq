@@ -1,7 +1,14 @@
-import 'main_admin.dart';
-import 'main_public.dart';
+import 'dart:html' as html;
+
+import 'main_public.dart' as pub;
+import 'main_admin.dart' as admin;
 
 void main() {
-  // Firebase Hosting decides which build runs.
-  // This file exists only to satisfy Flutter.
+  final path = html.window.location.pathname;
+
+  if (path.startsWith('/admin')) {
+    admin.runAdminApp();
+  } else {
+    pub.runPublicApp();
+  }
 }

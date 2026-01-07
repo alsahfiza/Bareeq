@@ -1,78 +1,98 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../state/active_route_provider.dart';
 import '../state/sidebar_collapsed_provider.dart';
-import '../state/navigation_notifier.dart';
 import '../routing/app_routes.dart';
+import '../../features/auth/providers/auth_provider.dart';
 
 class AdminSidebar extends ConsumerWidget {
   const AdminSidebar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final active = ref.watch(activeRouteProvider);
+    final activeRoute = ref.watch(activeRouteProvider);
     final collapsed = ref.watch(sidebarCollapsedProvider);
 
     return Container(
+      width: collapsed ? 72 : 240,
       color: Colors.grey.shade900,
       child: Column(
         children: [
           const SizedBox(height: 8),
+
+          // Collapse toggle
           ListTile(
             leading: Icon(
               collapsed ? Icons.menu : Icons.menu_open,
               color: Colors.white,
             ),
-            title: collapsed ? null : const Text(
-              'Collapse',
-              style: TextStyle(color: Colors.white),
-            ),
+            title: collapsed
+                ? null
+                : const Text(
+                    'Collapse',
+                    style: TextStyle(color: Colors.white),
+                  ),
             onTap: () {
               ref.read(sidebarCollapsedProvider.notifier).state = !collapsed;
             },
           ),
+
           _navItem(
             context,
-            ref,
             Icons.dashboard,
             'Dashboard',
             AppRoutes.dashboard,
-            active,
+            activeRoute,
             collapsed,
           ),
           _navItem(
             context,
-            ref,
             Icons.shopping_bag,
             'Products',
             AppRoutes.products,
-            active,
+            activeRoute,
             collapsed,
           ),
           _navItem(
             context,
-            ref,
             Icons.receipt_long,
             'Sales',
             AppRoutes.sales,
-            active,
+            activeRoute,
             collapsed,
           ),
           _navItem(
             context,
-            ref,
             Icons.people,
             'Users',
             AppRoutes.users,
-            active,
+            activeRoute,
             collapsed,
           ),
+
           const Spacer(),
           Divider(color: Colors.grey.shade700),
+
+          // Logout
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.redAccent),
-            title: collapsed ? null : const Text('Logout', style: TextStyle(color: Colors.white)),
-            onTap: () => NavigationNotifier.logout(context, ref),
+            title: collapsed
+                ? null
+                : const Text(
+                    'Logout',
+                    style: TextStyle(color: Colors.white),
+                  ),
+            onTap: () async {
+              await ref.read(authProvider.notifier).logout();
+
+              if (!context.mounted) return;
+
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                AppRoutes.login,
+                (_) => false,
+              );
+            },
           ),
         ],
       ),
@@ -82,7 +102,6 @@ class AdminSidebar extends ConsumerWidget {
   // ================= NAV ITEM =================
   Widget _navItem(
     BuildContext context,
-    WidgetRef ref,
     IconData icon,
     String title,
     String route,
@@ -108,9 +127,8 @@ class AdminSidebar extends ConsumerWidget {
             : Text(
                 title,
                 style: TextStyle(
-                  color: isActive
-                      ? Colors.white
-                      : Colors.grey.shade300,
+                  color:
+                      isActive ? Colors.white : Colors.grey.shade300,
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
                 ),
@@ -120,7 +138,11 @@ class AdminSidebar extends ConsumerWidget {
         contentPadding: EdgeInsets.symmetric(
           horizontal: collapsed ? 0 : 12,
         ),
-        onTap: () => NavigationNotifier.go(context, ref, route),
+        onTap: isActive
+            ? null
+            : () {
+                Navigator.of(context).pushReplacementNamed(route);
+              },
       ),
     );
   }
